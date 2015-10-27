@@ -1275,7 +1275,6 @@ BEGIN
    'and vdpa_quenom in ('+quenom+') group by f.COMPAQ ';
 
    SAVETOFILELOG(q.sql.text);
-   SHOWMESSAGE('PARA');
    q.open;
    barrap.MinValue:=0;
    BARRAP.Progress:=0;
