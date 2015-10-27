@@ -1,0 +1,9 @@
+                                                   Universidad Juárez Autónoma de Tabasco
+                                                   Balanza Nivel Scta:                  1
+                               Periodo:02/2008    a   29/02/2008
+                                          Cuenta:5998         AJUSTES DE ALMACEN    10/03/2008 13:00:11
+                Fondo:  %%           Todos                  Subfondo: %            Todos
+    Scta.      Nombre de la Subcuenta Saldos Iniciales     Movimientos            Saldos
+                                   Deudor    Acreedor   Debe       Haber    Deudor         Acreedor
+    11070ALMACEN DE MEDICAMENTOS - 1.07083  $.00000    $.00000   $.00000  $127.07083     $.00000
+                          Total $127.07083   $.00000   $.00000   $.00000  $127.07083      $.00000

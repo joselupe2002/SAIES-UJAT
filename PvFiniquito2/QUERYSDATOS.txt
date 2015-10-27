@@ -1,0 +1,37 @@
+PRESTAMOS PERSONALES
+
+
+SELECT D.VEMP_EMPL AS EMPL, D.VEMP_ApePat|| ' '||D.VEMP_ApeMat||' '||D.VEMP_Nombre AS NOMBRE, E.TPUE_DESCRIP AS TPUESTO, C.NOMI_FECHA AS FECHA, B.DPAG_MONTO AS MONTO
+FROM PPAGOS A, PDPAGOS B, PNOMINAS C, PVEMPLDOS D, PTPUESTOS E, PCANCPAGO F
+WHERE A.PAGO_Pago = B.DPAG_Pago
+AND A.PAGO_NOMINA = C.NOMI_NOMINA
+AND C.NOMI_FECHA BETWEEN '01/01/2012' AND '31/12/2012'
+AND B.DPAG_Conp = '050'
+AND B.DPAG_PERDED = 'D'
+AND D.VEMP_EMPL = A.PAGO_EMPL
+AND E.TPUE_TPSTO = A.PAGO_TPSTO
+AND F.CANC_PAGO = A.PAGO_PAGO
+AND F.CANC_CANCELA = 'N'
+
+
+
+DEDUDCCIONES Y PERCEPCIOENS
+--AYUDA DESPENSA, MATERIAL ECT
+
+select a.VPAG_Empl, 
+       a.VPAG_Nombre, 
+       a.VPAG_Fecha, 
+       b.VDPA_Conp, 
+       c.conc_descrip, 
+       b.VDPA_PerDed ,
+       b.VDPA_Monto
+from pvpagos a, pvdpagos b, pconcepto c
+where b.VDPA_Pago = a.VPAG_Pago
+and a.VPAG_Fecha between '15/01/2012' and '31/12/2012'
+and a.VPAG_Empl = '00799'
+--and b.VDPA_PerDed = 'P'
+--AND   b.VDPA_Conp='001'
+And a.VPAG_Cancelado = 'N'
+and c.conc_conp = b.VDPA_Conp
+and A.VPAG_TPSTO='D'
+ORDER  BY b.VDPA_PerDed

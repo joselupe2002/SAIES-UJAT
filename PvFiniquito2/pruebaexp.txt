@@ -1,0 +1,305 @@
+qIdetalle	
+
+INSERT INTO PDMOVPRESTA
+(DMOV_SEQ, DMOV_EXPED,DMOV_TPSTO,DMOV_MPRES,
+ DMOV_FECHA_PRES,DMOV_FECHA_DEV,
+ DMOV_USU_PRESTO,DMOV_FEC_PRESTO,
+ DMOV_USU_RECIBIO,DMOV_FEC_RECIBIO,
+ DMOV_USU_DEVOL,DMOV_FIRMA_DEVOL) VALUES
+ ( :CONSEC, :EXPED, :TPSTO, :MPRES,
+     :FPRES,:FDEV,
+    :USU_PRESTO, :FECHA_PRESTO,
+    USER, SYSDATE,:USU_DEVOL,:FIRMA_DEVOL)
+
+
+qDetaalle
+
+SELECT 
+  DMOV_SEQ AS CONSEC,
+  DMOV_EXPED as EXPED,
+  DMOV_TPSTO AS TPSTO,
+  DMOV_MPRES AS MPRES,
+  DMOV_FECHA_PRES AS FPRES,
+  DMOV_FECHA_DEV AS FDEV,
+  DMOV_USU_PRESTO AS USU_PRESTO,
+  DMOV_FEC_PRESTO AS FECHA_PRESTO,
+  DMOV_USU_RECIBIO AS USU_RECIB,
+  DMOV_FEC_RECIBIO AS FRECIB,
+  DMOV_USU_DEVOL AS USU_DEVOL,
+  DMOV_FIRMA_DEVOL AS FIRMA_DEVOL
+ FROM PDMOVPRESTA
+WHERE DMOV_SEQ IN (SELECT PRES_SEQ FROM PPRESEXP 
+                                         WHERE PRES_SOLIC=:VMOV_SOLIC) 
+AND DMOV_FECHA_DEV IS NULL
+
+
+tdataSource
+DSDetalle dataset qDetalle
+
+
+QPsto
+
+SELECT
+ TPUE_TPSTO As T_Puesto,
+ TPUE_Descrip As Descripcion
+From PTPUESTOS
+
+
+
+CJAS TDBEDIT
+
+DATAFIELD  EXPED  (CAMPO EXPED)NAME
+DATASOURCE DSdETALLE
+
+
+ FModulo.Query1.FieldByName('VPHN_NOMBH').AsString :=NOMBHN.TEXT;
+
+
+*******************************************
+
+unit Detalle;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PDetalle, Db, DBTables, Menus, ComCtrls, ToolWin, ExtCtrls, Grids,
+  DBGrids, StdCtrls, DBCtrls, Mask, DBCGrids;
+
+type
+  TFDetalle = class(TPFDetalle)
+    Label1: TLabel;
+    SEQ: TDBEdit;
+    Label10: TLabel;
+    LVMOV_SOLIC: TEdit;
+    SOLIC: TDBEdit;
+    Label3: TLabel;
+    FIRMA: TDBEdit;
+    DBCtrlGrid1: TDBCtrlGrid;
+    qDetalle: TQuery;
+    dsDetalle: TDataSource;
+    qConcepto: TQuery;
+    Label4: TLabel;
+    Label5: TLabel;
+    EXPED: TDBEdit;
+    TPSTO: TDBEdit;
+    LExped: TDBEdit;
+    qdDetalle: TQuery;
+    qiDetalle: TQuery;
+    Label9: TLabel;
+    Label11: TLabel;
+    qEmpl: TQuery;
+    Label12: TLabel;
+    Label14: TLabel;
+    Label2: TLabel;
+    FPRES: TDBEdit;
+    FDEV: TDBEdit;
+    LPsto: TDBEdit;
+    LMpres: TDBEdit;
+    QFIRMA: TQuery;
+    qDetalleEXPED: TStringField;
+    qDetalleTPSTO: TStringField;
+    qDetalleMPRES: TFloatField;
+    qDetalleFPRES: TDateTimeField;
+    qDetalleFDEV: TDateTimeField;
+    qDetalleLExped: TStringField;
+    Qpsto: TQuery;
+    qDetalleLPsto: TStringField;
+    QMotivo: TQuery;
+    qDetalleLMpres: TStringField;
+    MPRES: TDBEdit;
+    QMotivoMOTI_CLAVE: TFloatField;
+    QMotivoMOTI_DESCRIP: TStringField;
+    QMotivoMOTI_USU: TStringField;
+    QMotivoMOTI_FEC: TDateTimeField;
+    procedure FormCreate(Sender: TObject);
+    procedure DesInivar ; override ;
+    procedure Inivar ; override ;
+    procedure GrabaDetalle ; override ;
+  procedure GrabaUpdate; override;
+    procedure qDetalleNewRecord(DataSet: TDataSet);
+    procedure cNomb(Sender : TField) ;
+    procedure ActivaCajas ;
+
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FDetalle: TFDetalle;
+ MiFecha: TDateTime;
+implementation
+
+{$R *.DFM}
+
+procedure TFDetalle.FormCreate(Sender: TObject);
+begin
+ inherited ;
+ Height := 499 ;
+ Width := 585 ;
+ qDetalle.Open ;
+ MiFecha:= date();
+  FDEV.ENABLED := FALSE ;
+  FDEV.Color := clMenu;
+  Fpres.ReadOnly:= true ;
+  //FModulo.Query1.FieldByName('VMOV_Nomb').OnValidate := cNomb ;
+//if (modo= 2) And not FModulo.Query1.FieldByName('VMOV_EMPL').isnull   --MODIFICACION
+ //then EMPL.ReadOnly := True ;
+    if (modo=2) then
+      begin
+         firma.enabled:= false ;
+         SOLIC.ENABLED:=FALSE
+       end
+end;
+
+procedure TFDetalle.Inivar ;   //pasar datos de campo a variables
+begin
+//DBCtrlGrid1
+// ActivaCajas ;
+// showmessage('inivar');
+
+end ;
+
+procedure TFDetalle.DesInivar ;    //pasar datos de variables a campos
+begin
+   {     QFIRMA.Close ;
+        QFIRMA.Sql.Clear ;
+        QFIRMA.SQL.Add('SELECT VCAT_PASSW AS FIRMAUSU FROM PVCATUSUEXP');
+        QFIRMA.sql.add(' Where VCAT_EMPL='+ quotedStr(SOLIC.TEXT ));
+        QFIRMA.Open ;
+         // showmessage(inttostr(QFIRMA.recordcount));
+    }
+       if FModulo.Query1.FieldByName('VMOV_SEQ').IsNull then
+         begin
+            QVal.Close ;
+            QVal.Sql.Clear ;
+            QVal.SQL.Add('Select PSQPRESEXP.nextval as Sigue From Dual') ;
+            QVal.Open ;
+            FModulo.Query1['VMOV_SEQ'] := QVal['Sigue'] ;
+            SEQ.TEXT:=QVal['Sigue'] ;
+          end ;
+   FPRES.text:= DateToStr(DATE());
+   FModulo.Query1['VMOV_solic'] := solic.Text ;
+   FModulo.Query1['VMOV_firma'] := firma.Text ;
+
+end ;
+
+procedure TFDetalle.GrabaDetalle ;
+begin
+ qdDetalle.ExecSql ;
+ qiDetalle.ParamByName('SEQ').AsInteger := FModulo.Query1['VMOV_SEQ'] ;
+ qDetalle.First ;
+ IF MODO = 2 THEN
+   BEGIN
+    if qDetalle.RecordCount > 1 then
+      begin
+       // showmessage(inttostr(Qdetalle.recordcount));
+       while not qDetalle.eof do
+       begin
+          FPRES.text:= DateToStr(DATE());
+          qiDetalle.ParamByName('EXPED').AsString := EXPED.Text ;
+          qiDetalle.ParamByName('TPSTO').AsString := TPSTO.text;   //psto.datafield:='VMOV_TPSTO;
+          qiDetalle.ParamByName('MPRES').AsString := MPRES.TEXT;
+          qiDetalle.ParamByName('FPRES').AsString := FPRES.TEXT;
+          qiDetalle.ExecSql ;
+          qDetalle.Next ;
+        end ;
+      end
+     Else
+       begin
+       showmessage(' No se pueden Agregar Movimientos a un préstamo concluido,Genere Otro Número de Préstamo');
+      end;
+   END
+ ELSE
+    begin
+      while not qDetalle.eof do
+       begin
+        FPRES.text:= DateToStr(DATE());
+        qiDetalle.ParamByName('EXPED').AsString := EXPED.Text ;
+        qiDetalle.ParamByName('TPSTO').AsString := TPSTO.text;   //psto.datafield:='VMOV_TPSTO;
+        qiDetalle.ParamByName('MPRES').AsString := MPRES.TEXT;
+        qiDetalle.ParamByName('FPRES').AsString := FPRES.TEXT;
+        qiDetalle.ExecSql ;
+        qDetalle.Next ;
+       end ;
+    end ;
+
+ end ;
+
+procedure TFDetalle.qDetalleNewRecord(DataSet: TDataSet);
+begin
+ //qDetallePERDED.AsString := 'Percepcion' ;
+  qDetalleFpres.AsString:= DateToStr(DATE());
+  Fpres.ReadOnly:= true ;
+end;
+
+procedure TFDetalle.GrabaUpdate ;
+begin
+ IF MODO= 2  THEN
+   BEGIN
+ // SHOWMESSAGE('graba update');
+    GRABADETALLE;
+   END
+ ELSE
+   BEGIN
+    //SHOWMESSAGE(QUPDATE.SQL.TEXT);
+     QUpdate.ExecSql ; // Ejecutamos el Update
+     GRABADETALLE;
+   END
+end ;
+
+
+
+procedure TFDetalle.cNomb(Sender : TField) ;
+begin
+ {qEmpl.Close ;
+ qEmpl.Open ;
+ if FModulo.Query1.FieldByName('VMOV_Nomb').isNull
+ then Empl.ReadOnly := False
+ else Empl.ReadOnly := True ;
+ FModulo.Query1.FieldByName('VMOV_Empl').AsString := qEmpl.FieldByName('Empl').AsString ;
+ presup ; }
+end ;
+
+procedure TFDetalle.ActivaCajas ;
+begin
+ //if FModulo.Query1.FieldByName('VMOV_SEQ').IsNull then
+ if (modo= 1)or (modo = 2 )then
+  begin
+  // showmessage('activacajas 2');
+   SOLIC.ReadOnly :=true ;
+   FIRMA.ReadOnly := true ;
+   FDEV.ReadOnly:= true ;
+   FPRES.ReadOnly:=true;
+   SOLIC.Color := clMENU ;
+   FIRMA.Color := clMenu ;
+   FDEV.COLOR := clMenu;
+   FPRES.Color:=clMenu;
+   SOLIC.TabStop := True ;
+   FIRMA.TabStop := True ;
+   end
+ else
+  begin
+   if modo <> 1 then
+    begin
+     FModulo.Query1.FieldByName('VMOV_SOLIC').Clear ;
+     FModulo.Query1.FieldByName('VMOV_FIRMA').Clear ;
+     end ;
+
+  end ;
+end ;
+
+end.
+
+
+
+
+
+
+
+
+
+

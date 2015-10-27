@@ -1,0 +1,34 @@
+
+
+	=BUSCARV(B15,DATOS!$B$2:$H$6607,4,FALSO)
+
+
+SELECT A.VNOM_Empl,
+       A.VNOM_Nombre,
+       TRIM(F.VEMP_ApePat||' '||F.VEMP_ApeMat||' '||F.VEMP_Nombre) AS NOMBRECOM,
+      b.VCPU_PDescrip as Puesto,
+       b.VCPU_Descrip as categoria,
+       A.VNOM_URes,A.VNOM_UResDesc,
+       D.URES_pago AS CVEPPAL,
+       D.URES_DESCRIP AS UNIDAD_RESPONSABLE, 
+ b.vcpu_tpsto AS TPUESTO
+FROM PVNOMBRAM A, PVCPUESTOS B, FURES C, FURES D,PVEMPLDOS F 
+WHERE 
+ A.VNOM_Nomb IN (SELECT MAX(E.VNOM_Nomb)
+               FROM PVNOMBRAM E
+     WHERE E.VNOM_TPsto IN ('D','BE','DN','BN')
+     GROUP BY E.VNOM_Empl)
+ AND b.VCPU_Psto=A.VNOM_Psto
+and b.VCPU_Categ=A.VNOM_CategR
+AND C.URES_URES = A.VNOM_URes
+AND D.URES_URES = C.URES_Pago
+AND A.VNOM_Empl=F.VEMP_EMPL
+
+
+
+
+SELECT A.VEMP_EMPL, A.VEMP_RFC,
+ TRIM(A.VEMP_ApePat||' '||A.VEMP_ApeMat||' '||A.VEMP_Nombre) AS NOMBRE,
+ A.VEMP_ApePat,A.VEMP_ApeMat,A.VEMP_Nombre,
+  A.VEMP_CURP,A.VEMP_SPIUJAT
+ FROM  pvempldos A

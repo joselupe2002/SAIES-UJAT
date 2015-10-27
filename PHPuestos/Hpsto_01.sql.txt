@@ -1,0 +1,197 @@
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+connect shake/shake@bd;
+
+INSERT INTO SMODULOS (MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_Detalle, MODU_Inserta, MODU_Edita, MODU_Borra, MODU_SCRIPT)
+  VALUES ('PHPUESTOS', 'PNOMISH','Puestos HAS', 'S', 'S', 'S', 'S', 'Hpsto_01') ;
+
+
+INSERT INTO SREFDESC(REFD_CAMPO, REFD_SCRIP, REFD_SQL)
+VALUES('PSTOH','Hpsto_01','SELECT
+ PUES_PSTO As Puesto,
+ PUES_Descrip As Descripcion,
+ PUES_TPSTO As T_Puesto
+From PHPUESTOS');
+
+commit;
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+
+-------------------
+-------------------
+------ PUESTOS ----
+-------------------
+-------------------
+
+
+connect personal/personal/bd;
+
+
+
+CREATE TABLE PERSONAL.PHPUESTOS
+(
+ PUES_Psto		varchar2(10),
+ PUES_Descrip	varchar2(35),
+ PUES_Texto		varchar2(300),
+ PUES_TPsto		varchar2(2),
+ PUES_FPago		varchar2(1),
+ PUES_Suel_Alt	varchar2(1) DEFAULT 'N',
+ PUES_Profe       varchar2(1) DEFAULT 'N',
+ PUES_Conp		varchar2(5),
+ PUES_Categ_Defa	varchar2(10)
+) ;
+
+CREATE PUBLIC SYNONYM PHPUESTOS FOR PERSONAL.PHPUESTOS ;
+
+ALTER TABLE PHPUESTOS ADD CONSTRAINT PK$PHPUESTOS$PSTO
+ PRIMARY KEY (PUES_PSTO) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$DESCRIP
+ CHECK (PUES_DESCRIP IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$TPSTO
+ CHECK (PUES_TPSTO IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT FK$PHPUESTOS$TPSTO
+ FOREIGN KEY (PUES_TPSTO) REFERENCES PERSONAL.PTPUESTOS ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$FPAGO
+ CHECK (PUES_FPAGO IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT CC$PHPUESTOS$FPAGO
+ CHECK (PUES_FPAGO IN ('H', 'M') ) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$SUEL_ALT
+ CHECK (PUES_SUEL_Alt IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT CC$PHPUESTOS$SUEL_ALT
+ CHECK (PUES_SUEL_Alt IN ('S','N') ) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$PROFE
+ CHECK (PUES_Profe IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT CC$PHPUESTOS$PROFE
+ CHECK (PUES_PROFE IN ('S', 'N') ) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT CC$PHPUESTOS$PROFE1
+ CHECK (PUES_PROFE= 'N' OR PUES_FPAGO= 'H' ) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$CONP
+ CHECK (PUES_CONP IS NOT NULL) ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT FK$PHPUESTOS$CONP
+ FOREIGN KEY (PUES_CONP) REFERENCES PERSONAL.PCONCEPTO ;
+ALTER TABLE PHPUESTOS ADD CONSTRAINT NN$PHPUESTOS$Categ_Defa
+ CHECK (PUES_Categ_Defa IS NOT NULL) ;
+
+ 
+INSERT INTO SERRMES (ERRM_REFER, ERRM_MENSAJE, ERRM_SCRIPT)
+ VALUES ('PERSONAL.CC$PHPUESTOS$PROFE1', 'Profesor debe tener pago por Horas', 'P01') ;
+         
+COMMENT ON TABLE PERSONAL.PHPUESTOS IS 'Catalogo de Puestos' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_PSTO IS 'Puesto
+Clave del Puesto
+00
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_DESCRIP IS 'Descripcion
+Descripcion del Puesto
+01
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_Texto IS 'Texto
+Texto Descriptivo del Puesto
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_TPSTO IS 'T Puesto
+Tipo de Puesto
+02
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_FPAGO IS 'FPago
+Forma de Pago, H= Por Hora, Q=Por Quincena
+03
+*S
+*F
+LISTA
+H
+Hora
+M
+Mes' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_Suel_Alt IS 'SdoAlt
+Sueldo Alterno, indica si se puede cambiar el sueldo (S=Si, N=No)
+04
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_Profe IS 'Profesor
+Indica si el Puesto es de Profesor o No
+05
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_Conp IS 'Concepto
+Indica el concepto base de pago
+*' ;
+
+
+COMMENT ON COLUMN PERSONAL.PHPUESTOS.PUES_Categ_Defa IS 'Categoria Default
+Categoria por Default del puesto
+*' ;
+
+INSERT INTO SREFDESC (REFD_CAMPO, REFD_SCRIPT, REFD_SQL) VALUES ('PSTO', 'P01',
+'SELECT
+ PUES_PSTO As Puesto,
+ PUES_Descrip As Descripcion,
+ PUES_TPSTO As T_Puesto
+From PHPUESTOS' ) ;
+
+
+
+--**----**----**----**----**----**----**----**----**----**----**----**----**----**----**----**----**--
+--**----**----**----**----**----**----**----**----**----**----**----**----**----**----**----**----**--
+
+
+
+create or replace trigger PERSONAL.TBIU_PHPUESTOS
+BEFORE INSERT OR UPDATE OF PUES_Categ_Defa ON PERSONAL.PHPUESTOS FOR EACH ROW
+DECLARE
+ cnt number ;
+BEGIN
+
+-- Checamos concepto base
+
+ SELECT Count(*) into cnt
+ From PConcepto
+ Where CONC_Conp= :new.PUES_Conp
+   And CONC_PerDed= 'P' ;
+
+ if cnt= 0 then
+  Raise_Application_Error(-20001, 'Concepto no existe o no es de percepcion') ;
+ end if ;
+
+
+-- Insertamos Categaria Default si no existe
+ if Inserting then
+  INSERT INTO PHCPUESTOS (CPUE_Psto, CPUE_Categ, CPUE_Descrip)
+  VALUES (:new.PUES_Psto, 'A', 'A') ;
+  :new.PUES_Categ_Defa := 'A' ;
+ end if ;
+
+
+-- Checamos categoria default
+ Select count(*)
+ Into cnt
+ From PHCPUESTOS
+ Where CPUE_Psto= :new.PUES_Psto
+   And CPUE_Categ= :new.PUES_Categ_Defa ;
+
+ if cnt= 0 then
+  Raise_Application_Error(-20001, 'No existe esa categoria default para ese puesto') ;
+ end if ;
+END ;
+/
+
+
+create or replace trigger PERSONAL.TAD_PHPUESTOS
+AFTER DELETE ON PERSONAL.PHPUESTOS FOR EACH ROW
+DECLARE
+--
+BEGIN
+ UPDATE PHCPUESTOS SET
+  CPUE_Descrip= '%&^'
+ WHERE CPUE_Psto= :old.PUES_Psto ;
+
+ DELETE FROM PHCPUESTOS
+ WHERE CPUE_Psto= :old.PUES_Psto ;
+END ;
+/

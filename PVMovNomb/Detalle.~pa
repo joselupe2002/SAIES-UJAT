@@ -1,0 +1,156 @@
+unit Detalle;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PDetalle, Db, DBTables, Menus, ComCtrls, ToolWin, ExtCtrls, Grids,
+  DBGrids, StdCtrls, Mask, DBCtrls;
+
+type
+  TFDetalle = class(TPFDetalle)
+    Label1: TLabel;
+    Label3: TLabel;
+    PerDed: TDBRadioGroup;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Acum: TDBEdit;
+    FecIni: TDBEdit;
+    Total: TDBEdit;
+    Movi: TDBEdit;
+    Baja: TDBEdit;
+    Nomb: TDBEdit;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    LVMOV_Empl: TEdit;
+    LURes: TEdit;
+    LPsto: TEdit;
+    LVMOV_Conp: TEdit;
+    Conp: TDBEdit;
+    Descrip: TDBEdit;
+    QVNomb: TQuery;
+    Ures: TEdit;
+    Psto: TEdit;
+    Empl: TDBEdit;
+    Expr: TDBMemo;
+    Label13: TLabel;
+    QUpdate2: TQuery;
+    procedure FormCreate(Sender: TObject);
+    procedure VNomb(Sender : TField) ;
+    procedure Inivar ; override ;
+    procedure DesInivar ; override ;
+    procedure GrabaUpdate ; override ;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FDetalle: TFDetalle;
+
+implementation
+
+{$R *.DFM}
+
+procedure TFDetalle.FormCreate(Sender: TObject);
+begin
+  inherited;
+ height := 475 ;
+ width := 475 ;
+ Fmodulo.Query1.FieldByName('VMOV_Nomb').OnChange := VNomb ;
+end;
+
+
+procedure TFDetalle.Inivar ;
+begin
+ if modo= 3 then
+  begin
+   FModulo.Query1['VMOV_PerDed'] := 'D' ;
+   FModulo.Query1['VMOV_FecIni'] := Date ;
+  end ;
+
+ if (modo= 2) and (FModulo.Query1.FieldByName('VMOV_Acum').AsCurrency > 0) then
+  begin
+   Nomb.TabStop := False ;
+   Nomb.ReadOnly := True ;
+   Nomb.Color := clMenu ;
+
+   Perded.Enabled := False ;
+   Conp.TabStop := False ;
+   Conp.ReadOnly := True ;
+   Conp.Color := clMenu ;
+
+   Descrip.TabStop := False ;
+   Descrip.ReadOnly := True ;
+   Descrip.Color := clMenu ;
+
+   FecIni.TabStop := False ;
+   FecIni.ReadOnly := True ;
+   FecIni.Color := clMenu ;
+
+   Expr.TabStop := False ;
+   Expr.ReadOnly := True ;
+   Expr.Color := clMenu ;
+  end ;
+
+ VNomb(nil) ;
+end ;
+
+procedure TFDetalle.DesInivar ;
+begin
+ if FModulo.Query1.FieldByName('VMOV_Movi').IsNull then
+ begin
+  QVal.Close ;
+  QVal.Sql.Clear ;
+  QVal.SQL.Add('Select PSQMovims.NextVal as Sigue From Dual') ;
+  QVal.Open ;
+  FModulo.Query1['VMOV_Movi'] := QVal['Sigue'] ;
+ end ;
+
+ FModulo.Query1['VMOV_Empl'] := Empl.Text ;
+ FModulo.Query1['VMOV_URes'] := URes.Text ;
+ FModulo.Query1['VMOV_Psto'] := Psto.Text ;
+end ;
+
+
+procedure TFDetalle.VNomb(Sender : TField) ;
+begin
+
+ if FModulo.Query1.FieldByName('VMOV_Nomb').IsNull then
+ begin
+  URes.Clear ;
+  LURes.Clear ;
+  Psto.Clear ;
+  LPsto.Clear ;
+  exit ;
+ end ;
+
+
+ QVNomb.Close ;
+ QVNomb.Open ;
+
+ if FModulo.Query1.FieldByName('VMOV_Empl').IsNull
+ then FModulo.Query1.FieldByName('VMOV_Empl').AsString :=
+    QVNomb.FieldByName('Empl').AsString ;
+ URes.Text := QVNomb.FieldByName('URes').AsString ;
+ LURes.Text := QVNomb.FieldByName('NUres').AsString ;
+ Psto.Text := QVNomb.FieldByName('Psto').AsString ;
+ LPsto.Text := QVNomb.FieldByName('NPsto').AsString ;
+
+end ;
+
+procedure TFDetalle.GrabaUpdate ;
+begin
+ if FModulo.Query1.FieldByName('VMOV_Acum').AsCurrency > 0
+ then QUpdate.ExecSql
+ else QUpdate2.ExecSql ;
+end ;
+
+
+end.

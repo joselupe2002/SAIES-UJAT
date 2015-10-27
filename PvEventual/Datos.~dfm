@@ -1,0 +1,40 @@
+object dmDatos: TdmDatos
+  OldCreateOrder = False
+  Left = 18
+  Top = 162
+  Height = 480
+  Width = 696
+  object ModDS: TDataSource
+    Left = 24
+    Top = 8
+  end
+  object qNomb: TQuery
+    DatabaseName = 'Sistema'
+    DataSource = ModDS
+    SQL.Strings = (
+      'Select'
+      ' VNOM_Empl As Empl,'
+      ' VNOM_Nombre As Nombre,'
+      ' VNOM_URes As URes,'
+      '  URES_Descrip As LURes,'
+      ' VNOM_Psto As Psto,'
+      ' PUES_Descrip As LPsto'
+      'FROM PVNOMBRAM, FURES, PPUESTOS'
+      'WHERE VNOM_Nomb= :VEVE_Nomb'
+      ' And URES_URes= VNOM_URes'
+      ' And PUES_Psto= VNOM_Psto')
+    Left = 72
+    Top = 13
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'VEVE_Nomb'
+        ParamType = ptUnknown
+      end>
+  end
+  object dsNomb: TDataSource
+    DataSet = qNomb
+    Left = 120
+    Top = 16
+  end
+end

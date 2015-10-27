@@ -1,0 +1,90 @@
+library PVMovNomb;
+
+{ Important note about DLL memory management: ShareMem must be the
+  first unit in your library's USES clause AND your project's (select
+  Project-View Source) USES clause if your DLL exports any procedures or
+  functions that pass strings as parameters or function results. This
+  applies to all strings passed to and from your DLL--even those that
+  are nested in records and classes. ShareMem is the interface unit to
+  the BORLNDMM.DLL shared memory manager, which must be deployed along
+  with your DLL. To avoid using BORLNDMM.DLL, pass string information
+  using PChar or ShortString parameters. }
+
+uses
+  SysUtils,
+  Classes,
+  Modulo,
+  Forms,
+  DBTables,
+  Dialogs,
+  Windows,
+  PDetalle in 'C:\Saies\Bin\v2.4.1\PDetalle.pas' {PFDetalle},
+  Detalle in 'Detalle.pas' {FDetalle};
+
+{$R *.res}
+  
+procedure Borra(xmodulo: TFmodulo) ;
+var BQuery : TQuery ;
+begin
+ xmodulo.LMensaje := False ;
+
+ BQuery := TQuery.Create(Application) ;
+ BQuery.DataBaseName := 'Sistema' ;
+
+ BQuery.Sql.Add ('Delete From PMovNomb') ;
+ BQuery.Sql.Add('Where MOVN_Movi= '+
+   xmodulo.Query1.FieldByName('VMOV_MOVI').AsString  ) ;
+
+ try
+  BQuery.ExecSql ;
+  xModulo.Query1.Delete ;
+  BQuery.Free ;
+ except
+  on E: Exception do
+  begin
+   BQuery.Free ;
+   MessageDlg(E.Message ,mtError, [mbOK], 0 ) ;
+  end ;
+ end ;
+end ;
+
+function Detalle(xmodulo: TFmodulo) : TForm;
+var xQuery : TQuery ;
+ cc : Integer ;
+begin
+ result :=  nil ;
+
+// Checamos que no haya nominas abiertas
+
+ if xmodulo.modo <> 1 then
+ begin
+  xQuery := TQuery.Create(nil) ;
+  xQuery.DataBaseName := 'Sistema' ;
+  xQuery.Sql.Add('Select count(*) As num From PNominas ') ;
+  xQuery.Sql.Add('Where NOMI_Tipo= ''O'' ') ;
+  xQuery.Sql.Add( 'And NOMI_Polid is Null') ;
+  xQuery.Sql.Add( 'And NOMI_FecCancel is Null') ;
+  xQuery.Open ;
+  cc := xQuery.FieldByName('Num').AsInteger ;
+  xQuery.Free ;
+  if  cc <> 0 then
+   begin
+    xmodulo.Mensaje := 'No se pueden editar movimientos con nomina abierta' ;
+    exit ;
+   end ;
+ end ;
+
+ case xmodulo.modo of
+  1,2,3 : result:= TFDetalle.Create(xmodulo) ;
+  4 : if Application.MessageBox('Borrar Movimiento','Confirmar',
+         MB_ICONQUESTION+ MB_YESNO)= IDNO
+      then Xmodulo.LMensaje := False
+      else Borra(XModulo) ;
+ end ;
+end;
+
+exports Detalle;
+
+
+begin
+end.

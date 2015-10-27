@@ -1,0 +1,315 @@
+unit Recibos;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PDETALLE, Db, DBTables, Menus, ComCtrls, ToolWin, ExtCtrls, Grids,
+  DBGrids, StdCtrls, Mask, DBCtrls;
+
+type
+  TFSueldo = class(TPFDetalle)
+    PagCon: TPageControl;
+    TabBorra: TTabSheet;
+    Button1: TButton;
+    QPERCEP: TQuery;
+    QDEDUC: TQuery;
+    QEncabeza: TQuery;
+    Guardar: TSaveDialog;
+    procedure FormCreate(Sender: TObject);
+    procedure Aceptar1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+type registro1 = Record //total de 135
+     c1:string[76];
+     c2:string[59];
+end;
+
+type registro2 = Record  //total de 135
+     c1:string[9];
+     c2:string[21];
+     c3:string[66];
+     c4:string[33];
+     c5:string[6];
+end;
+
+type registro3 = Record 
+     c1:string[4];
+     c2:string[2];
+     c3:string[21];
+     c4:string[9];
+     c5:string[4];
+     c6:string[4];
+     c7:string[2];
+     c8:string[21];
+     c9:string[9];
+     c10:string[4];
+     c11:string[4];
+     c12:string[2];
+     c13:string[21];
+     c14:string[9];
+end;
+
+
+type registro4 = Record //total de 135
+     c1:string[72];
+     c2:string[42];
+     c3:string[21];
+end;
+
+
+
+var
+
+  FSueldo: TFSueldo;
+
+  r : string[135];
+
+  R1 : registro1;
+  R2 : registro2;
+  R3 : array[1..12] of registro3;
+  R4 : registro4;
+  F: TextFile;
+
+
+implementation
+
+{$R *.DFM}
+
+procedure TFSueldo.FormCreate(Sender: TObject);
+begin
+  inherited;
+ height := 200 ;
+ width := 350 ;
+end;
+
+procedure limpiar;
+var
+  x:Integer;
+begin
+
+  R1.c1:='';
+  R1.c2:='';
+
+  R2.c1:='';
+  R2.c2:='';
+  R2.c3:='';
+  R2.c4:='';
+  R2.c5:='';
+
+  for x:=1 to 12 do
+   begin
+
+    R3[x].c1:= format('%4S',[' ']);
+    R3[x].c2:= format('%2S',[' ']);
+    R3[x].c3:= format('%21S',[' ']);
+    R3[x].c4:= format('%9S',[' ']);
+    R3[x].c5:= format('%4S',[' ']);
+    R3[x].c6:= format('%4S',[' ']);
+    R3[x].c7:= format('%2S',[' ']);
+    R3[x].c8:= format('%21S',[' ']);
+    R3[x].c9:= format('%9S',[' ']);
+    R3[x].c10:= format('%4S',[' ']);
+    R3[x].c11:= format('%4S',[' ']);
+    R3[x].c12:= format('%2S',[' ']);
+    R3[x].c13:= format('%21S',[' ']);
+    R3[x].c14:= format('%9S',[' ']);
+
+   end;
+
+  R4.c1:='';
+  R4.c2:='';
+  R4.c3:='';
+
+end;
+
+
+procedure TFSueldo.Aceptar1Click(Sender: TObject);
+
+var
+  ruta : string[200];
+
+  TotRecibos : Integer;
+  TotPercep : Integer;
+  TotDeduc : Integer;
+
+  numrec : string[6];
+
+  y : Integer;
+  x : Byte;
+  xx : Byte;
+  z : Byte;
+
+begin
+  inherited;
+
+
+
+   guardar.Execute;
+
+   RUTA := TRIM(guardar.FileName);
+
+    if RUTA <> '' THEN
+      begin
+        qencabeza.close;
+        qencabeza.Params.ParamByName('Nomina').asstring := trim(Fmodulo.Query1.Fieldbyname('nomi_nomina').asstring);
+        qencabeza.open;
+
+         TotRecibos := qencabeza.recordcount;
+
+         if TotRecibos > 0 then
+          begin
+
+            AssignFile(F, guardar.FileName);
+            Rewrite (F);
+
+
+            Y := 1;
+
+            REPEAT
+
+                 r:='';
+                 writeln(F, R);
+
+                 limpiar;
+
+                 r1.c1 := format('%76S',[' ']);
+                 r1.c2 := qencabeza.Fields.fieldbyname('fecha').asstring;
+                 r := r1.c1 + r1.c2;
+                 writeln(F, R);
+
+                 r2.c1 := format('%9S',[' ']);
+                 r2.c2 := format('%21S',[' ']);
+                 r2.c3 := format('%-66S',[qencabeza.Fields.fieldbyname('nombre').asstring]);
+                 r2.c4 := format('%-33S',[qencabeza.Fields.fieldbyname('psto').asstring + ' ' + qencabeza.Fields.fieldbyname('dcateg').asstring]);
+                 r := r2.c1 + r2.c2 + r2.c3 + r2.c4;
+                 writeln(F, R);
+
+                 r2.c1 := format('%9S',[' ']);
+                 r2.c2 := format('%21S',[' ']);
+                 r2.c3 := format('%-66S',[qencabeza.Fields.fieldbyname('rfc').asstring]);
+                 r2.c4 := format('%-33S',[qencabeza.Fields.fieldbyname('dtpsto').asstring]);
+                 numrec := 'R00000';
+                 insert(inttostr(Y) , numrec , 7 - length(inttostr(Y)));
+                 r2.c5 := numrec;
+                 r := r2.c1 + r2.c2 + r2.c3 + r2.c4 + r2.c5;
+                 writeln(F, R);
+
+                 r2.c1 := format('%9S',[' ']);
+                 r2.c2 := format('%-21S',[qencabeza.Fields.fieldbyname('ures').asstring]);
+                 r2.c3 := format('%-66S',[qencabeza.Fields.fieldbyname('numss').asstring]);
+                 r2.c4 := format('%-33N',[qencabeza.Fields.fieldbyname('SueldoM').asfloat]);
+                 r2.c5 := format('%-6S',[qencabeza.Fields.fieldbyname('empl').asstring]);
+                 r := r2.c1 + r2.c2 + r2.c3 + r2.c4 + r2.c5;
+                 writeln(F, R);
+
+
+                 r:='';
+                 writeln(F, R);
+                 writeln(F, R);
+
+
+                 //aqui empieza el detalle
+                 qpercep.close;
+                 qpercep.Params.ParamByName('Pago').asstring := trim(qencabeza.Fields.fieldbyname('pago').asstring);
+                 qpercep.open;
+
+                  TotPercep := qpercep.recordcount;
+
+                  if TotPercep > 0 then
+                    begin
+
+                     xx := 0;
+                     for x := 1 to TotPercep do
+                      begin
+                        if x > 12 then
+                         begin
+                           xx:= xx + 1;
+                           r3[xx].c6 := format('%4S',[qpercep.Fields.fieldbyname('cve').asstring]);
+                           r3[xx].c7 := format('%2S',[' ']);
+                           r3[xx].c8 := format('%-21S',[qpercep.Fields.fieldbyname('concepto').asstring]);
+                           r3[xx].c9 := format('%9N',[qpercep.Fields.fieldbyname('monto').asfloat]);
+                           r3[xx].c10 := format('%4S',[' ']);
+                         end //DEL IF
+                        else
+                         begin
+                           r3[x].c1 := format('%4S',[qpercep.Fields.fieldbyname('cve').asstring]);
+                           r3[x].c2 := format('%2S',[' ']);
+                           r3[x].c3 := format('%-21S',[qpercep.Fields.fieldbyname('concepto').asstring]);
+                           r3[x].c4 := format('%9N',[qpercep.Fields.fieldbyname('monto').asfloat]);
+                           r3[x].c5 := format('%4S',[' ']);
+                           {if totpercep <= 12 then
+                            begin
+                              r3[x].c6 := format('%4S',[' ']);
+                              r3[x].c7 := format('%2S',[' ']);
+                              r3[x].c8 := format('%21S',[' ']);
+                              r3[x].c9 := format('%9S',[' ']);
+                              r3[x].c10 := format('%4S',[' ']);
+                            end;                               }
+                         end; //DEL ELSE
+
+                         qpercep.Next;
+                      end; //DEL FOR
+                   end; //DEL IF
+
+
+                 qdeduc.close;
+                 qdeduc.Params.ParamByName('Pago').asstring := trim(qencabeza.Fields.fieldbyname('pago').asstring);
+                 qdeduc.open;
+
+                  TotDeduc := qdeduc.recordcount;
+
+                  if TotDeduc > 0 then
+                    begin
+
+                     for x := 1 to TotDeduc do
+                       begin
+                           r3[x].c11 := format('%4S',[qdeduc.Fields.fieldbyname('cve').asstring]);
+                           r3[x].c12 := format('%2S',[' ']);
+                           r3[x].c13 := format('%-21S',[qdeduc.Fields.fieldbyname('concepto').asstring]);
+                           r3[x].c14 := format('%9N',[qdeduc.Fields.fieldbyname('monto').asfloat]);
+
+                           qdeduc.Next;
+                       end; //DEL FOR
+                   end; //DEL IF
+
+                 for z := 1 to 12 do
+                  begin
+                    r := r3[z].c1 + r3[z].c2 + r3[z].c3 + r3[z].c4 + r3[z].c5 + r3[z].c6 + r3[z].c7 +
+                         r3[z].c8 + r3[z].c9 + r3[z].c10 + r3[z].c11 + r3[z].c12 + r3[z].c13 + r3[z].c14 ;
+                    writeln(F, R);
+                  end; //DEL FOR
+
+
+                 //aqui empieza el pie de pagina
+                 r4.c1 := format('%72N',[qencabeza.Fields.fieldbyname('Perceps').asfloat]);
+                 r4.c2 := format('%42N',[qencabeza.Fields.fieldbyname('Deduccs').asfloat]) ;
+                 r4.c3 := format('%21N',[qencabeza.Fields.fieldbyname('Neto').asfloat]) ;
+                 r := r4.c1 + r4.c2 + r4.c3;
+                 writeln(F, R);
+
+
+
+                 r:='';
+                 writeln(F, R);
+
+                 qencabeza.Next;
+
+                 Y := SUCC(Y);
+
+
+           UNTIL Y > TOTRECIBOS;
+
+          CloseFile(F);
+
+         end; //DEL IF
+      end; //DEL IF
+
+
+end;
+
+end.

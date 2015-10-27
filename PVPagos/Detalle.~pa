@@ -1,0 +1,25 @@
+unit Detalle;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PDetalle, Db, DBTables, Menus, ComCtrls, ToolWin, ExtCtrls, Grids,
+  DBGrids;
+
+type
+  TFDetalle = class(TPFDetalle)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FDetalle: TFDetalle;
+
+implementation
+
+{$R *.DFM}
+
+end.

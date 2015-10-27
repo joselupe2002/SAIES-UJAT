@@ -1,0 +1,92 @@
+INSERT INTO SMODULOS (MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_APLICACION, MODU_Detalle, MODU_Inserta, MODU_Edita, MODU_Borra, MODU_SCRIPT) 
+  VALUES ('PVORDPAGCG', 'PNOMIS', 'Ordenes de Pago', '3', 'N', 'N', 'N', 'N', 'PVORDPAGcg') ;
+
+commit;
+
+create or replace view PVORDPAGcg AS 
+SELECT 
+/*========================================================================
+Vista para la pantalla de ordenes de pago Nueva Contabilidad Gubernamental
+=======================================================================*/
+S.DOCX_POLID as POLID, 
+S.DOCX_PERSONA AS PERSONA,
+t.pers_nombre||' '||T.PERS_APEPAT||' '||T.pers_apemat  AS NOMBRE,
+S.DOCX_FECHA AS FECHA, 
+S.DOCX_DESCRIP AS DESCRIPCION,
+S.DOCX_TOTAL AS TOTAL, 
+S.DOCX_PAGADO AS PAGADO, 
+S.DOCX_APROBADO AS APROBADO, 
+S.DOCX_FECCANCEL AS FECHACANCEL,
+S.DOCX_FCANCREAL AS FECHACANREAL
+FROM FINANZAS.AFDOCXPAG S, fpersonas t 
+where s.docx_persona=t.pers_persona 
+and S.DOCX_TIPDOC IS NULL;
+
+Create or Replace Public Synonym PVORDPAGcg for PVORDPAGcg;
+
+
+COMMENT ON TABLE PERSONAL.PVORDPAGcg IS 'Vista Orden Pago
+Listado de Ordenes de Pago de nomina y Pagos Fuera de nomina' ;
+
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.Polid IS 'POLID
+Número de orden de pago
+00
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.Persona IS 'PERSONA
+Número de persona
+01
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.Nombre IS 'NOMBRE
+Nombre de la persona
+02
+*S
+*T
+50' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.FECHA IS 'FECHA
+Fecha de la Orden de pago
+03
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.DESCRIPCION IS 'DESCRIPCION
+Decripción de la Orden de Pago
+04
+*S
+*T
+50' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.TOTAL IS 'TOTAL
+Total de la Orden de Pago
+05
+*S
+*C' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.PAGADO IS 'PAGADO
+Monto que se ha pagado de la Orden de pago
+06
+*S
+*C' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.APROBADO IS 'APROBADO
+Indica si la Orden de pago ya se ha aprobado S/N
+07
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.APROBADO IS 'APROBADO
+Indica si la Orden de pago ya se ha aprobado S/N
+07
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.FECHACANCEL IS 'FECHA_CANCEL
+Fecha de cancelación de la orden de pago
+08
+*S' ;
+
+
+COMMENT ON COLUMN PERSONAL.PVORDPAGcg.FECHACANREAL IS 'FECHA_CANCEL_REAL
+Fecha de cancelación de la orden de pago (La real del sistema)
+09
+*S' ;

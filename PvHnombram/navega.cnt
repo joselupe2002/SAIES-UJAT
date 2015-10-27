@@ -1,0 +1,7 @@
+:Base Navega.hlp>main
+:Title Navegación en Shake
+1 Navegación en Shake
+2 Inicio=NAV_NAVEGA
+2 Conectándose al sistema=NAV_CONECTAR
+2 Selección de Subsistema y Ventana Principal=NAV_SUBSISTEMA
+2 Ventana Inicial de Módulo=NAV_MODULO

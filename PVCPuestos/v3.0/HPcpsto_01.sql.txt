@@ -1,0 +1,465 @@
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+connect shake/shake@bd;
+
+
+INSERT INTO SMODULOS (MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_Detalle, MODU_Inserta, MODU_Edita, MODU_Borra, MODU_SCRIPT)
+ VALUES ('PVHCPUESTOS', 'PNOMISH','Categorias Puestos HAS', 'S', 'S', 'S', 'S', 'Hpcsto_01') ;
+
+INSERT INTO SPROCESO (PROC_MODULO, PROC_PROCESO, PROC_DESCRIP)
+  VALUES ('PVHCPUESTOS', 'sueldos','Sueldos' ) ;
+
+
+
+commit;
+
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+-------------------------------
+-------------------------------
+------ CATEGORIAS DE PUESTOS --
+-------------------------------
+-------------------------------
+
+
+connect personal/personal@bd;
+
+
+
+CREATE TABLE PERSONAL.PHCPUESTOS
+(
+ CPUE_Psto    varchar2(10),
+ CPUE_Categ   varchar2(10),
+ CPUE_Descrip varchar2(35),
+ CPUE_SPue    number
+) ;
+
+CREATE PUBLIC SYNONYM PHCPUESTOS FOR PERSONAL.PHCPUESTOS ;
+
+CREATE INDEX IX$PHCPUESTOS$PSTO ON PERSONAL.PHCPUESTOS (CPUE_Psto) ;
+CREATE INDEX IX$PHCPUESTOS$CATEG ON PERSONAL.PHCPUESTOS (CPUE_Categ) ;
+
+ALTER TABLE PERSONAL.PHCPUESTOS ADD CONSTRAINT PK$PHCPUESTOS$CATEG
+ PRIMARY KEY (CPUE_Psto, CPUE_Categ) ;
+ALTER TABLE PHCPUESTOS ADD CONSTRAINT NN$PHCPUESTOS$DESCRIP
+ CHECK (CPUE_Descrip IS NOT NULL) ;
+ALTER TABLE PHCPUESTOS ADD CONSTRAINT NN$PHCPUESTOS$SPue
+ CHECK (CPUE_SPue IS NOT NULL) ;
+
+ 
+COMMENT ON TABLE PERSONAL.PHCPUESTOS IS 'Categorias de los Puestos' ;
+
+COMMENT ON COLUMN PERSONAL.PHCPUESTOS.CPUE_PSTO IS 'Puesto
+Clave del Puesto
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHCPUESTOS.CPUE_Categ IS 'Categoria
+Clave de la Categoria
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHCPUESTOS.CPUE_Descrip IS 'Descripcion
+Descripcion de la Categoria
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHCPUESTOS.CPUE_SPue IS 'Sueldo
+Sueldo Activo en la Categoria
+*' ;
+
+
+--------------------------------------------------------------------------------------------------------
+
+
+
+create or replace trigger PERSONAL.TBI_PHCPUESTOS
+before INSERT on PERSONAL.PHCPUESTOS FOR EACH ROW
+DECLARE
+ SPue Number ;
+BEGIN
+ Select PSQSPUESTOS.nextval into SPue
+ From Dual ;
+
+ INSERT INTO PHSPUESTOS
+  (SPUE_Spue, SPUE_Psto, SPUE_Categ, SPUE_Sueldo, SPUE_Ini)
+ VALUES
+  (SPue, :new.CPUE_Psto, :new.CPUE_Categ, 0, TO_DATE('01/01/1900', 'DD/MM/YYYY') ) ;
+
+ :new.CPUE_SPue := SPue ;  
+END ;
+/
+
+
+create or replace trigger PERSONAL.TBD_PHCPUESTOS
+before Delete on PERSONAL.PHCPUESTOS FOR EACH ROW
+DECLARE
+ Defa varchar2(10) ;
+BEGIN
+ if :old.CPUE_Descrip= '%&^' then
+  return ;
+ end if ;
+ 
+ SELECT PUES_Categ_Defa into Defa
+ FROM PHPUESTOS
+ Where PUES_Psto= :old.CPUE_Psto ;
+ 
+ if Defa= :old.CPUE_Categ then
+  Raise_Application_Error(-20001, 'No se puede borrar Categoria x Default del Puesto') ;
+ end if ;
+ 
+END ;
+/
+
+
+create or replace trigger PERSONAL.TBIU_PHCPUESTOS
+Before INSERT or UPDATE on PERSONAL.PHCPUESTOS FOR EACH ROW
+DECLARE
+ SuelAlt varchar2(1) ;
+BEGIN
+ if :new.CPUE_Categ= 'A' then
+  return ;
+ end if ;
+
+ SELECT PUES_Suel_Alt
+ Into SuelAlt
+ From PHPUESTOS
+ Where PUES_Psto= :new.CPUE_Psto ;
+
+ if SuelAlt= 'S'  then
+   Raise_Application_Error(-20001, 'Puestos con Sueldo Alterno solo pueden tener una categoria') ;
+ end if ;
+
+END ;
+/
+
+
+create or replace trigger PERSONAL.TAD_PHCPUESTOS
+AFTER DELETE ON PERSONAL.PHCPUESTOS FOR EACH ROW
+DECLARE
+--
+BEGIN
+ UPDATE PHSPUESTOS Set
+  SPUE_Marca= 'x'
+ Where SPUE_Psto= :old.CPUE_Psto
+   And SPUE_Categ= :old.CPUE_Categ ;
+
+ DELETE FROM PHSPUESTOS
+ Where SPUE_Psto= :old.CPUE_Psto
+   And SPUE_Categ= :old.CPUE_Categ ;
+
+END ;
+/
+
+-------------------------------------------------------------------------------------------------------------
+
+
+
+---------------------------
+---------------------------
+------ PUESTOS SUELDOS ----
+---------------------------
+---------------------------
+
+CREATE TABLE PERSONAL.PHSPUESTOS
+(
+ SPUE_Spue   number,
+ SPUE_Psto   varchar2(10),
+ SPUE_Categ  varchar2(10),
+ SPUE_Sueldo number(16,2) Default 0,
+ SPUE_Ini    date,
+ SPUE_Antes  number,
+ SPUE_AIni   date,
+ SPUE_Marca  varchar2(1),
+ SPUE_USU    VARCHAR2(30) default user,
+ SPUE_FEC    DATE default sysdate
+
+) ;
+
+
+CREATE PUBLIC SYNONYM PHSPUESTOS FOR PERSONAL.PHSPUESTOS ;
+
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT PK$PHSPUESTOS$SPUE
+ PRIMARY KEY (SPUE_SPue) ;
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT NN$PHSPUESTOS$PSTO
+ CHECK (SPUE_Psto is not null) ;
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT NN$PHSPUESTOS$CATEG
+ CHECK (SPUE_Categ is not null) ;
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT NN$PHSPUESTOS$SUELDO
+ CHECK (SPUE_Sueldo is not null) ;
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT NN$PHSPUESTOS$INI
+ CHECK (SPUE_Ini is not null) ;
+ALTER TABLE PERSONAL.PHSPUESTOS ADD CONSTRAINT CC$PHSPUESTOS$AIni
+ CHECK (SPUE_Ini > SPUE_AIni) ;
+
+CREATE INDEX IX$PHSPUESTOS$PSTO ON PERSONAL.PHSPUESTOS (SPUE_Psto) ;
+CREATE INDEX IX$PHSPUESTOS$CATEG ON PERSONAL.PHSPUESTOS (SPUE_Categ) ;
+CREATE INDEX IX$PHSPUESTOS$INI ON PERSONAL.PHSPUESTOS (SPUE_Ini) ;
+CREATE INDEX IX$PHSPUESTOS$Antes ON PERSONAL.PHSPUESTOS (SPUE_Antes) ;
+
+INSERT INTO SERRMES(ERRM_REFER, ERRM_MENSAJE, ERRM_SCRIPT)
+VALUES ('PERSONAL.CC$PHSPUESTOS$AINI', 'Fecha Inicio de Sueldo debe ser mayor a Fecha anterior de Inicio', 'P01') ;
+
+
+COMMENT ON TABLE PERSONAL.PHSPUESTOS IS 'Sueldos de las Categorias de los Puestos' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Spue IS 'Clave
+Clave del sueldo
+*';
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Psto IS 'Puesto
+Clave del Puesto
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Categ IS 'Categoria
+Clave de la Categoria
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Sueldo IS 'Sueldo
+Sueldo
+*C' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Ini IS 'Inicio
+Fecha de Inicio
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Antes IS 'Sueldo Anterior
+Sueldo Anterior
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PHSPUESTOS.SPUE_Marca IS 'Marca
+Marca para indicar si esta por borrar o no el Sueldo
+*' ;
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+create or replace trigger PERSONAL.TBI_PHSPUESTOS
+BEFORE INSERT ON PERSONAL.PHSPUESTOS FOR EACH ROW
+DECLARE
+ Antes Number ;
+ AIni Date ;
+BEGIN
+ Select MAX(SPUE_Ini) Into AIni
+ From PHSPUESTOS
+ Where SPUE_Psto = :new.SPUE_Psto
+   and SPUE_Categ= :new.SPUE_Categ ;
+ 
+ if AIni is null then
+  Return ;
+ end if ;
+ 
+ Select SPUE_Spue Into Antes
+ From PHSPUESTOS
+ Where SPUE_Psto = :new.SPUE_Psto
+   and SPUE_Categ= :new.SPUE_Categ 
+   and SPUE_Ini= AIni ;
+
+ :new.SPUE_Antes := Antes ;
+ :new.SPUE_AIni  := AIni ;
+ 
+END ;
+/
+
+
+create or replace trigger PERSONAL.TBU_PHSPUESTOS
+BEFORE UPDATE ON PERSONAL.PHSPUESTOS FOR EACH ROW
+DECLARE
+ Antes Number ;
+BEGIN
+ if UPDATING('SPUE_Marca') then
+  return ; 
+ end if ;
+
+ if (UPDATING('SPUE_Antes') and :new.SPUE_Antes <> :new.SPUE_Spue)   or UPDATING('SPUE_AIni') then
+  Raise_Application_Error(-20001, 'No se puede modificar Sueldo Anterior') ;
+ end if ;
+
+ Select CPUE_SPue Into Antes
+ From PHCPUESTOS
+ Where CPUE_Psto = :new.SPUE_Psto
+   and CPUE_Categ= :new.SPUE_Categ  ;
+
+ if Antes is not null And Antes <> :new.SPUE_SPue then
+  Raise_Application_Error(-20001, 'Solo se puede modificar sueldo activo en la categoria '||TO_Char(Antes) ) ;
+ end if ;
+
+END ;
+/
+
+create or replace trigger PERSONAL.TBD_PHSPUESTOS
+BEFORE DELETE ON PERSONAL.PHSPUESTOS FOR EACH ROW
+DECLARE
+ Antes Number ;
+BEGIN
+
+ if :old.SPUE_Marca is not null then
+  return ;
+ end if ;
+
+ if :old.SPUE_Antes is null then
+  Raise_Application_Error(-20001, 'No se puede borrar sueldo inicial' ) ;
+ end if ;
+
+ Select CPUE_SPue Into Antes
+ From PHCPUESTOS
+ Where CPUE_Psto = :old.SPUE_Psto
+   and CPUE_Categ= :old.SPUE_Categ  ;
+
+ if Antes is not null And Antes <> :old.SPUE_SPue then
+  Raise_Application_Error(-20001, 'Solo se puede borrar sueldo activo en la categoria '||TO_Char(Antes) ) ;
+ end if ;
+
+END ;
+/
+
+create or replace trigger PERSONAL.TAI_PHSPUESTOS
+after insert on PERSONAL.PHSPUESTOS FOR EACH ROW
+DECLARE
+ Antes Number ;
+BEGIN
+ Update PHCPUESTOS SET
+  CPUE_SPue= :new.SPUE_SPue
+ Where CPUE_Psto = :new.SPUE_Psto
+   and CPUE_Categ= :new.SPUE_Categ  ;
+END ;
+/
+
+
+create or replace trigger PERSONAL.TAD_PHSPUESTOS
+after delete on PERSONAL.PHSPUESTOS FOR EACH ROW
+declare
+ Antes Number ;
+BEGIN
+ if :old.SPUE_Marca is null then
+  Update PHCPUESTOS SET
+   CPUE_SPue= :old.SPUE_Antes
+  Where CPUE_Psto = :old.SPUE_Psto
+    and CPUE_Categ= :old.SPUE_Categ  ;
+ end if ;
+END ;
+/
+
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+------------------------------
+------------------------------
+------ VISTA DE CATEGORIAS ---
+------------------------------
+------------------------------
+
+
+CREATE or REPLACE VIEW PVHCPUESTOS As
+SELECT
+ PUES_TPsto   as VCPU_TPsto,
+ CPUE_Psto    as VCPU_Psto,
+ PUES_Descrip as VCPU_PDescrip,
+ CPUE_Categ   as VCPU_Categ,
+ CPUE_Descrip as VCPU_Descrip,
+ CPUE_Spue    as VCPU_SPue,
+ SPUE_Sueldo  as VCPU_Sueldo,
+ SPUE_Ini     as VCPU_Ini
+FROM PHCPUESTOS, PHSPUESTOS, PHPUESTOS
+Where SPUE_Spue= CPUE_SPue
+  And PUES_Psto= CPUE_Psto
+  And PUES_Suel_Alt= 'N' ;
+
+
+CREATE PUBLIC SYNONYM PVHCPUESTOS FOR PERSONAL.PVHCPUESTOS ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_TPSTO IS 'TPuesto
+Tipo de Puesto
+00
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_PSTO IS 'Puesto
+Clave del Puesto
+01
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_PDESCRIP IS 'Desc Puesto
+Descripcion del Puesto
+02
+*S' ;
+
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_Categ IS 'Categoria
+Clave de la Categoria
+03
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_Descrip IS 'Descripcion
+Descripcion de la Categoria
+04
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_SPue IS 'Reg Sueldo
+Registro del Sueldo de la Categoria
+*' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_Sueldo IS 'Sueldo
+Sueldo de la Categoria
+05
+*S
+*C' ;
+
+COMMENT ON COLUMN PERSONAL.PVHCPUESTOS.VCPU_Ini IS 'Inicio
+Desde cuando esta vigente el sueldo
+06
+*S' ;
+
+
+--------------------------------------------------------------------------------------------------------
+
+
+create or replace trigger TII_PVHCPUESTOS
+ instead of insert on PVHCPUESTOS  for each row
+declare
+  -- 
+begin
+
+-- Insertamos en PHCPUESTOS
+ INSERT INTO PHCPUESTOS
+ (CPUE_Psto, CPUE_Categ, CPUE_Descrip)
+ VALUES
+  (:new.VCPU_Psto, :new.VCPU_Categ, :new.VCPU_Descrip) ;
+
+
+-- Actualizamos Sueldo
+ UPDATE PHSPUESTOS Set
+  SPUE_Sueldo= :new.VCPU_Sueldo,
+  SPUE_Ini= :new.VCPU_Ini
+ WHERE SPUE_Psto= :new.VCPU_Psto
+  And SPUE_Categ= :new.VCPU_Categ ;
+ 
+end ;
+/
+
+
+create or replace trigger TIU_PVHCPUESTOS
+ instead of update on PVHCPUESTOS  for each row
+declare
+  --
+begin
+
+-- Actualizamos PHCPUESTOS
+ UPDATE PHCPUESTOS Set
+  CPUE_Descrip= :new.VCPU_Descrip
+WHERE CPUE_Psto= :new.VCPU_Psto
+  And CPUE_Categ= :new.VCPU_Categ ;
+
+-- Actualizamos Sueldo
+ UPDATE PHSPUESTOS Set
+  SPUE_Sueldo= :new.VCPU_Sueldo,
+  SPUE_Ini= :new.VCPU_Ini
+ WHERE SPUE_Spue= :new.VCPU_SPue ;
+
+end ;
+/
+
+
+--------------------------------------------------------------------------------------------------------

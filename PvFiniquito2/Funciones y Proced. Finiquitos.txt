@@ -1,0 +1,217 @@
+--*** Calcula antiguedad***---
+
+create or replace function CALCULA_ANTIG (FecNomina in Date, FecIngreso in Date, Band in number)
+return Number is
+
+ Total number := 0;
+ Adicional number := 0;
+
+ Años number := 0;
+ Meses number := 0;
+ Dias number := 0;
+ AñosA number := 0;
+ MesA number := 0;
+ DiaA number := 0;
+ AñosI number := 0;
+ MesI number := 0;
+ DiaI number := 0;
+
+ 
+ 
+begin
+
+---años
+     --fecha actual
+     añosA := TO_CHAR(Fecnomina,'YYYY');    
+     
+     --ingreso
+     añosI := TO_CHAR(FecIngreso,'YYYY');
+     
+     --calcula años     
+     Años := AñosA - AñosI;
+     
+     
+---meses     
+     
+     --fecha actual
+     mesA := substr(Fecnomina,4,2);
+     
+     --ingreso
+     mesI := substr(FecIngreso,4,2);
+     
+     
+     Meses := MesA - MesI;
+     
+
+---dias
+     
+     --fecha actual
+     DiaA := substr(Fecnomina,1,2);
+     
+     If DiaA = 31 or DiaA = 28 or DiaA = 29 then 
+          DiaA := 30;
+     end if;
+     
+     --ingreso
+     DiaI := substr(FecIngreso,1,2);
+
+     If DiaI = 31 then 
+          DiaI := 30;
+     end if;
+
+     --Diferencia de dias      
+     Dias := DiaA - DiaI;
+     
+     
+     If DiaI < DiaA then
+        Adicional := 0;
+     else 
+        Adicional := 0;
+     end if;
+
+     
+     Total := (Años * 360) + (Meses * 30) + (Dias + Adicional);
+     
+     Años := trunc(Total/360);
+     Dias := ((Total/360) - trunc(Total/360)) * 360;     
+          
+ if Band = 1 then
+   return  Años ;
+ else
+   return  Dias ;     
+ end if;
+
+/*
+EXCEPTION
+WHEN OTHERS THEN
+  Raise_Application_Error(-20001, FecIngreso ) ;
+*/
+ 
+--     raise_application_error(-20001,años);
+
+end ;
+
+
+
+--****************calcula Antiguedad para quinquenio**----------
+
+
+
+CREATE OR REPLACE Function NOM$ANTIG
+(Empl in varchar2, TPsto in varchar2, SBase in Number, ATB1 in number, Psto in varchar2,
+ Categ in varchar2, DBase in Number, Horas in number) return Number is
+-- Antig Number ;
+ AntigD Number ;
+ Monto Number := 0 ;
+ base Number ;
+ Adicional number;
+ Porc Number;
+ Quinquenio Number;
+BeGIN
+
+
+IF CATEG = 'PSGSLDO' THEN
+   RETURN(0);
+END IF;
+ 
+ 
+-- Calculamos
+ if TPsto IN ('D','BE') then --DOCENTE
+    
+   SELECT CALCULA_ANTIG(NOMI_FECHA, nvl(ATRE_FINGRESOD,Nomi_Fecha), 1)
+   Into AntigD
+   From PATREMPL, PNOMINAS
+   Where ATRE_Empl= Empl
+   And Nomi_Nomina = (select max(nomi_nomina) from pnominas) ;
+  
+  IF TPSTO IN ('D','BE') THEN
+    SELECT QPUE_QUINQ
+    INTO Adicional
+    FROM PQPUESTOS
+    WHERE QPUE_PSTO = PSTO
+    AND QPUE_CATEG = CATEG;
+  END IF;
+  
+  SELECT ANTD_Porc
+  INTO PORC
+  FROM PANTDOCEN
+  Where AntigD >= ANTD_De
+    And AntigD <= ANTD_A ;
+
+  IF PORC > 0 THEN          
+      QUINQUENIO := PORC + ADICIONAL;
+      MONTO := QUINQUENIO * (SBase + (ATB1/2) )/100;
+  ELSE
+      MONTO := 0;
+  END IF;                
+
+ end if ;
+
+
+
+ return(Monto) ;
+
+ /*
+EXCEPTION
+WHEN OTHERS THEN
+  Raise_Application_Error(-20001, empl||'x'||TPsto ||'x'||sbase||'x' || monto ||'x'|| Horas) ;
+*/
+
+END ;
+
+
+
+--***********Calcular dias 31 **--------------
+
+
+create or replace function DIAS31_FINIQ(Fecha in Date) return number is
+  Result number;
+--FUNCION UTILIZADA PARA EL CALCULO DE LOS DÍAS 31 PARA FINIQUITO
+
+ -- lafecha varchar2(10);
+
+begin
+
+   --  lafecha := '01/01/' || substr(fecha,7,4);
+
+    -- MES := TO_CHAR(TO_DATE(lafecha),'MM');
+
+     if FECHA >='01/01/' || substr(fecha,7,4) AND FECHA <= '31/01/'|| substr(fecha,7,4)then
+       Result:=1;
+     elsif FECHA >='01/02/' || substr(fecha,7,4) AND FECHA <= '29/02/'|| substr(fecha,7,4) then
+         Result:=1;
+     elsif FECHA >='01/03/' || substr(fecha,7,4) AND FECHA <= '31/03/'|| substr(fecha,7,4) then
+          Result:=2;
+     elsif FECHA >='01/04/' || substr(fecha,7,4) AND FECHA <= '30/04/'|| substr(fecha,7,4) then
+         Result:=2;
+     elsif FECHA >='01/05/' || substr(fecha,7,4) AND FECHA <= '31/05/'|| substr(fecha,7,4) then
+         Result:=3;
+     elsif FECHA >='01/06/' || substr(fecha,7,4) AND FECHA <= '31/06/'|| substr(fecha,7,4) then
+        Result:=3;
+     elsif FECHA >='01/07/' || substr(fecha,7,4) AND FECHA <= '31/07/'|| substr(fecha,7,4) then
+         Result:=4;
+     elsif FECHA >='01/08/' || substr(fecha,7,4) AND FECHA <= '31/08/'|| substr(fecha,7,4) then
+           Result:=5;
+     elsif FECHA >='01/09/' || substr(fecha,7,4) AND FECHA <= '30/09/'|| substr(fecha,7,4) then
+       Result:=5;
+     elsif FECHA >='01/10/' || substr(fecha,7,4) AND FECHA <= '31/10/'|| substr(fecha,7,4) then
+        Result:=6;
+     elsif FECHA >='01/11/' || substr(fecha,7,4) AND FECHA <= '30/11/'|| substr(fecha,7,4) then
+        Result:=6;
+     elsif FECHA >='01/12/' || substr(fecha,7,4) AND FECHA <= '31/12/'|| substr(fecha,7,4) then
+       Result:=7;
+
+
+    end if;
+
+  return(Result);
+End;
+
+
+--***************
+
+
+
+
+
+

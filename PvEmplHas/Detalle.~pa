@@ -1,0 +1,245 @@
+unit Detalle;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PDetalle, Menus, Db, DBTables, ComCtrls, ToolWin, ExtCtrls, Grids,
+  DBGrids, ExtDlgs, StdCtrls, Buttons, DBCtrls, Mask, JPEG, DBCGrids;
+
+type
+  TFDetalle = class(TPFDetalle)
+    ODFoto: TOpenPictureDialog;
+    QId: TQuery;
+    QFoto: TQuery;
+    PageControl1: TPageControl;
+    TabGral: TTabSheet;
+    TabEmpl: TTabSheet;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label4: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label13: TLabel;
+    Label9: TLabel;
+    RFC: TDBEdit;
+    Sexo: TDBComboBox;
+    Nombre: TDBEdit;
+    ApePat: TDBEdit;
+    ApeMat: TDBEdit;
+    Direccion: TDBMemo;
+    Telefono: TDBEdit;
+    Contactos: TDBMemo;
+    CargaFoto: TBitBtn;
+    Panel1: TPanel;
+    Foto: TImage;
+    Usuario: TDBEdit;
+    Activo: TDBCheckBox;
+    Persona: TDBEdit;
+    LVEMP_USUARIO: TEdit;
+    Panel2: TPanel;
+    Label14: TLabel;
+    Label12: TLabel;
+    Label11: TLabel;
+    Antig: TDBEdit;
+    MDias: TDBEdit;
+    QDAtribs: TQuery;
+    QIAtribs: TQuery;
+    TabCateg: TTabSheet;
+    DBCtrlGrid1: TDBCtrlGrid;
+    QDCateg: TQuery;
+    QICateg: TQuery;
+    dCateg: TQuery;
+    dsCateg: TDataSource;
+    Categ: TDBEdit;
+    LPsto: TDBEdit;
+    Label10: TLabel;
+    Label15: TLabel;
+    QPsto: TQuery;
+    Psto: TDBEdit;
+    dCategCATEG: TStringField;
+    dCategPSTO: TStringField;
+    dCategDESCRIP: TStringField;
+    dCategLPsto: TStringField;
+    CDescrip: TDBEdit;
+    QCDescrip: TQuery;
+    procedure FormCreate(Sender: TObject);
+    procedure CargaFotoClick(Sender: TObject);
+    procedure GrabaInsert ; override ;
+    procedure GrabaUpdate ; override ;
+    procedure GrabaDetalle ;
+    procedure dCategPSTOChange(Sender: TField);
+    procedure dCategCATEGChange(Sender: TField);
+    function rnombre : String ; override ;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+
+   procedure Inivar ; override ;
+   procedure DesInivar ; override ;
+
+  end;
+
+var
+  FDetalle: TFDetalle;
+
+implementation
+var hayfoto : Boolean ;
+
+{$R *.DFM}
+
+
+procedure TFDetalle.Inivar ;
+var   mjpg : TJPEGImage ;
+begin
+ inherited ;
+ PageControl1.ActivePage := TabGral ;
+
+ if Fmodulo.Query1.FieldByName('VEMP_Sexo').AsString= 'F'
+ then sexo.ItemIndex := 1
+ else sexo.ItemIndex := 0 ;
+
+ if modo= 3
+ then FModulo.Query1['VEMP_Activo'] := 'S' ;
+
+ hayfoto := False ;
+ if modo= 3 then Foto.Picture := nil
+ else
+  begin
+   QFoto.ParamByName('Persona').AsString := FModulo.Query1['VEMP_EMPL'] ;
+   QFoto.Close ;
+   QFoto.Open ;
+
+   if not QFoto.EOF then
+    begin
+     hayfoto := True ;
+     mjpg := TJPEGImage.Create ;
+     if FileExists('45e#tmp.JPG')
+     then DeleteFile('45e#tmp.JPG') ;
+     TBlobField(QFoto.FieldByName('Pers_Foto')).SaveToFile('45e#tmp.JPG');
+     mjpg.LoadFromFile('45e#tmp.JPG');
+     Foto.Picture.assign(mjpg) ;
+     mjpg.Free ;
+    end
+
+  end ;
+  dCateg.Open ;
+end ;
+
+procedure TFDetalle.DesInivar ;
+begin
+ inherited ;
+ if sexo.ItemIndex= 1
+ then FModulo.Query1['VEMP_Sexo'] := 'F'
+ else FModulo.Query1['VEMP_Sexo'] := 'M' ;
+
+ if modo= 3 then
+ begin
+  if FModulo.Query1.FieldByName('VEMP_EMPL').IsNull then
+  begin
+   QId.Close ;
+   QID.Open ;
+   FModulo.Query1.FieldByName('VEMP_EMPL').AsInteger := QID['ID'] ;
+  end ;
+
+  if hayfoto
+  then QInsert.ParamByName('Foto').LoadFromFile('45e#tmp.JPG', ftBlob)
+  else QInsert.ParamByName('Foto').AsString := Chr(0) ;
+ end ;
+
+ if modo= 2 then
+  if hayfoto
+  then QUpdate.ParamByName('Foto').LoadFromFile('45e#tmp.JPG', ftBlob)
+  else QUpdate.ParamByName('Foto').AsString := Chr(0) ;
+
+end ;
+
+
+
+procedure TFDetalle.FormCreate(Sender: TObject);
+begin
+  inherited;
+ Width := 600 ;
+ Height := 450 ;
+ if modo= 1
+ then CargaFoto.Enabled := False ;
+end;
+
+procedure TFDetalle.CargaFotoClick(Sender: TObject);
+var mjpg : TJPEGImage ;
+begin
+  inherited;
+ if ODFoto.Execute then
+ begin
+  mjpg := TJPEGImage.Create ;
+  mjpg.LoadFromFile(ODFoto.FileName);
+  Foto.Picture.assign(mjpg);
+  if FileExists('45e#tmp.JPG')
+  then DeleteFile('45e#tmp.JPG') ;
+  mjpg.SaveToFile('45e#tmp.JPG') ;
+  mjpg.Free ;
+  FModulo.Query1.Edit;
+  hayfoto := True ;
+ end;
+end;
+
+
+procedure TFDetalle.GrabaInsert ;
+begin
+ inherited ;
+ QDatribs.ExecSql ;
+ QIAtribs.ExecSql ;
+ GrabaDetalle ;
+end ;
+
+procedure TFDetalle.GrabaUpdate ;
+begin
+ inherited ;
+ QDatribs.ExecSql ;
+ QIAtribs.ExecSql ;
+ GrabaDetalle ;
+end ;
+
+procedure TFDetalle.GrabaDetalle ;
+begin
+ QDCateg.ExecSql ;
+ QICateg.ParamByName('Empl').AsString := FModulo.Query1['VEMP_Empl'] ;
+ dCateg.First ;
+ while not dCateg.Eof do
+ begin
+  QICateg.ExecSql ;
+  dCateg.Next ;
+ end ;
+
+end ;
+
+procedure TFDetalle.dCategPSTOChange(Sender: TField);
+begin
+ dCategCATEG.Clear ;
+end;
+
+procedure TFDetalle.dCategCATEGChange(Sender: TField);
+begin
+ QCDescrip.Close ;
+ QCDescrip.Open ;
+ dCategDESCRIP.AsString := QCDescrip.FieldByName('Descrip').AsString ;
+end;
+
+function TFDetalle.RNombre : String ;
+begin
+ VSql.Clear ;
+ result := ActiveControl.Name ;
+ if result= 'Categ' then
+  begin
+   VSql.Add('Select CPUE_Categ, CPUE_Descrip') ;
+   VSql.Add('From PCPUESTOS') ;
+   VSql.Add('Where CPUE_Psto= '''+ dCategPSTO.AsString+ '''') ;
+  end ;
+end ;
+
+
+end.

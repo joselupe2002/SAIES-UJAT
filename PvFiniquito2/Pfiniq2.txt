@@ -1,0 +1,1000 @@
+--04157 PRUEBA
+
+CONNECT SHAKE/SHAKE@BD;
+
+--submenu
+
+INSERT INTO SMODULOS(MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_APLICACION,MODU_DETALLE,
+ MODU_MANTEN, MODU_REPORTE, MODU_VERSION, MODU_SCRIPT, MODU_INSERTA, MODU_EDITA, MODU_BORRA)
+ VALUES('PFINIQ','PEMPLDOS','Liquidaciones',0,'N','N','N','0','PVFINI','N','N','N');
+
+
+
+--opcion--*****
+
+INSERT INTO SMODULOS(MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_APLICACION,MODU_DETALLE,
+ MODU_MANTEN, MODU_REPORTE, MODU_SCRIPT, MODU_VERSION, MODU_INSERTA, MODU_EDITA, MODU_BORRA)
+ VALUES('PVFINIQADMIN','PFINIQ','Finiquitos Administrativos',0,'S','S','S','PVFiniq','3.0.0.1','S','S','S');
+
+
+---TABLAS  **********
+
+CREATE TABLE PFINIQADMTVO 
+(
+PFIN_CONSEC NUMBER not null,
+PFIN_NOEMPL VARCHAR2(10),
+PFIN_NOMBRAM VARCHAR(20),
+PFIN_TPFINIQ VARCHAR2(12),
+PFIN_CVEURES VARCHAR2(10),
+PFIN_TPSTO  VARCHAR2(10),
+PFIN_CATEGORIA VARCHAR2(12),
+PFIN_FECHAINGRESO DATE,
+PFIN_FECHABAJA DATE,
+PFIN_PERMISO_SG VARCHAR2(10),
+PFIN_FALTAS VARCHAR2(10),
+PFIN_PSLDOMEN NUMBER(10,2),
+PFIN_DECONOMICOS  NUMBER(10,2),
+PFIN_PADICION  NUMBER(10,2),
+PFIN_COMENTARIO VARCHAR2(100),
+PFIN_USUARIO VARCHAR2(20),
+PFIN_FECHA DATE,
+PFIN_REVISO VARCHAR2(60),
+PFIN_ELABORO VARCHAR2(60)
+)
+
+CREATE PUBLIC SYNONYM PFINIQADMTVO FOR PERSONAL.PFINIQADMTVO ;
+
+alter table PFINIQADMTVO
+  add constraint PK$PFINIQADMTVO$PFIN_CONSEC  primary key (PFIN_CONSEC );
+
+alter table PFINIQADMTVO
+  add constraint UK$PFINIQADMTVO$pempto unique (PFIN_NOEMPL,PFIN_TPSTO);
+
+--alter table PFINIQADMTVO add constraint CC$PFINIQADMTVO$PFIN_TPFINIQ
+  --check (PFIN_TPFINIQ IN ('JU','FA','PE','RC','PJ','RE','PI','TC','PA'));
+
+alter table PFINIQADMTVO
+  add constraint FK$PFINIQADMTVO$TPFINIQ foreign key (PFIN_TPFINIQ)
+  references PTRENUNCIA (TREN_CVETREN);
+
+
+alter table PFINIQADMTVO
+  add constraint FK$PFINIQADMTVO$NOMBRAFIN foreign key (PFIN_NOMBRAM)
+  references PNOMBRAM (NOMB_NOMB);
+
+
+
+-- Add comments to the table 
+
+comment on table PFINIQADMTVO is 'Tabla para Finiquitos';
+
+-- Add comments to the columns 
+comment on column PFINIQADMTVO.PFIN_CONSEC is 'Consecutivo
+Consecutivo de Finiquito
+*';
+
+comment on column PFINIQADMTVO.PFIN_NOEMPL is 'Clave Empleado
+Clave del Empleado
+*';
+
+comment on column PFINIQADMTVO.PFIN_NOMBRAM is 'Último nombramiento
+Número del último nombramiento
+*'; 
+
+
+comment on column PFINIQADMTVO.PFIN_TPFINIQ  is 'Tipo finiquito
+Tipo finiquito JU Jubilación, PE pensión,FA, Fallecimiento, RC Resición, PJ pensión por jubilación
+*'; 
+
+comment on column PFINIQADMTVO.PFIN_CVEURES is 'Unidad Responsable
+Unidad responsable a la que pertenece el trabajador
+*';
+
+comment on column PFINIQADMTVO.PFIN_TPSTO is 'Tipo de Puesto
+Tipo de Puesto
+*';
+
+comment on column PFINIQADMTVO.PFIN_CATEGORIA is 'Categoria
+Categoria del Empleado
+*';
+
+comment on column PFINIQADMTVO.PFIN_FECHAINGRESO is 'Fecha de Ingreso
+Fecha de ingreso del Empleado
+*';
+comment on column PFINIQADMTVO.PFIN_FECHABAJA is 'Fecha baja
+Fecha de baja
+*';
+comment on column PFINIQADMTVO.PFIN_PERMISO_SG is 'Permiso Sin Goce Sldo
+Permiso sin goce de sueldo
+*';
+
+comment on column PFINIQADMTVO.PFIN_FALTAS is 'Faltas
+Faltas que tuvo el empleado
+*';
+
+comment on column PFINIQADMTVO.PFIN_PSLDOMEN is 'Salario Mensual
+Salario Mensual
+*';
+
+ 
+comment on column PFINIQADMTVO.PFIN_DECONOMICOS is 'Días Económicos
+Días Económicos
+*';
+
+comment on column PFINIQADMTVO.PFIN_PADICION is 'Pago Adicional
+Pago Adicional
+*';
+
+comment on column PFINIQADMTVO.PFIN_COMENTARIO is 'Observaciones
+Observaciones
+*';
+
+comment on column PFINIQADMTVO.PFIN_ELABORO is 'Persona Calculo
+Persona que Calculo el Finiquito
+*';
+
+comment on column PFINIQADMTVO.PFIN_REVISO is 'Persona Reviso
+Persona que Reviso el cálculo del Finiquito
+*';
+comment on column PFINIQADMTVO.PFIN_USUARIO is 'Usuario
+Usuario 
+*';
+comment on column PFINIQADMTVO.PFIN_FECHA is 'Fecha
+Fecha de registro del finiquito
+*';
+
+
+
+
+***********************************************************************************
+
+*****REDISEÑO DE TABLA
+
+
+CREATE TABLE PFINPRESTACIONES
+(
+PFINP_SEQUENCIA NUMBER not null,
+PFINP_NOCONSEC  NUMBER not null,
+PFINP_TIPOPERCEP VARCHAR2(1),
+PFINP_CVECONCEP  VARCHAR2(4),
+PFINP_MONTO  NUMBER(10,2),
+PFINP_ANT_FALLEC NUMBER(10,2),
+PFINP_DESC_ADIC NUMBER(10,2),
+PFINP_USUARIO VARCHAR2(20),
+PFINP_FECHA DATE )
+
+CREATE PUBLIC SYNONYM PFINPRESTACIONES FOR PERSONAL.PFINPRESTACIONES ;
+
+alter table PFINPRESTACIONES
+  add constraint PK$PFINPRESTACIONES$PFINP_SEQ primary key (PFINP_SEQUENCIA);
+
+--alter table PFINPRESTACIONES add constraint FK$PFINPRESTACIONES$NUMFINIQ foreign key (PFINP_NOCONSEC)
+  references PFINIQADMTVO(PFIN_CONSEC);
+
+alter table PFINPRESTACIONES add constraint FK$PFINPRESTACIONES$NUMFINIQ foreign key (PFINP_NOCONSEC)
+  references PFINIQADMTVO(PFIN_CONSEC) ON DELETE CASCADE;
+
+--alter table PFINPRESTACIONES drop constraint FK$PFINPRESTACIONES$NUMFINIQ;
+
+
+
+-- Add comments to the table 
+comment on table PFINPRESTACIONES is 'Tabla prestaciones y deducciones para finiquito';
+
+
+comment on column PFINPRESTACIONES.PFINP_SEQUENCIA is 'Consecutivo
+Consecutivo de la tabla
+*';
+
+comment on column PFINPRESTACIONES.PFINP_NOCONSEC is 'No Finiquito
+Numero consecutivo que tiene el finiquito, en la tabla PFINIQADMTVO
+*';
+
+comment on column PFINPRESTACIONES.PFINP_TIPOPERCEP is 'Tipo percepcion
+Tipo de percepcion P prestación, D Deduccion
+*';
+
+comment on column PFINPRESTACIONES.PFINP_CVECONCEP is 'Clave Prestacion
+Clave de la prestacion
+*';
+
+comment on column PFINPRESTACIONES.PFINP_MONTO is 'Monto
+Monto de la prestacion
+*';
+
+comment on column PFINPRESTACIONES.PFINP_ANT_FALLEC  is 'Anticipo Fallecimiento
+Anticipo de Ayuda de Fallecimiento
+*';
+comment on column PFINPRESTACIONES.PFINP_DESC_ADIC IS 'Deducciones Adicionales
+Deducciones Adicionales
+*';
+
+comment on column PFINPRESTACIONES.PFINP_USUARIO is 'Usuario
+Usuario 
+*';
+comment on column PFINPRESTACIONES.PFINP_FECHA is 'Fecha
+Fecha de registro del finiquito
+*';
+
+
+
+
+--querydatos
+
+SELECT DISTINCT A.VNOM_EMPL AS VPFIN_EMPL,
+A.VNOM_NOMBRE AS VPFIN_NOMBRE,
+D.VCPU_PDescrip as Puesto,
+D.VCPU_Descrip as categoria,
+B.RENU_FINGRESO AS VPFIN_FINGRESO, 
+B.RENU_FECHA AS VPFIN_FBAJA,
+B.RENU_SALARIO AS VPFIN_SUELDO,
+A.VNOM_URES,
+A.VNOM_URESDESC
+--PFIN_CONSEC
+FROM PVNOMBRAM A, PRENUNCIAS B, FURES C, PVCPUESTOS D--,PFINIQADMTVO E  
+   
+WHERE B.RENU_NOMBP = A.VNOM_Nomb
+--AND E.PFIN_NOEMPL =A.VNOM_EMPL
+AND D.VCPU_Psto= A.VNOM_Psto
+AND D.VCPU_Categ=A.VNOM_Categ
+
+
+---****query percepciones---****
+
+select a.VPAG_Empl, 
+       a.VPAG_Nombre, 
+       A.VPAG_TPsto,A.VPAG_Psto,
+        b.VDPA_PerDed ,
+       b.VDPA_Conp, 
+       c.conc_descrip, 
+      sum(b.VDPA_Monto) as monto
+from pvpagos a, pvdpagos b, pconcepto c
+where b.VDPA_Pago = a.VPAG_Pago
+and a.VPAG_Fecha  -- = '31/01/2012'
+between '15/01/2012' and '31/01/2012'                      
+ and a.VPAG_Empl = '02104'
+and b.VDPA_PerDed = 'P'
+AND  b.VDPA_Conp in ('002','004','010','030','037','040','041','042','043','044','046','047','048')
+--AND  b.VDPA_Conp in ('002','004','010','030','037','041','042','047','048') --docente
+--AND  b.VDPA_Conp in ('040','041','043','044','046')   --confianza
+And a.VPAG_Cancelado = 'N'
+and c.conc_conp = b.VDPA_Conp
+and A.VPAG_TPSTO='D'
+group by  b.VDPA_Conp,a.VPAG_Empl, a.VPAG_Nombre, A.VPAG_TPsto,A.VPAG_Psto,
+b.VDPA_PerDed , b.VDPA_Conp,  c.conc_descrip,  b.VDPA_PerDed
+
+
+
+----VISTA
+
+Create or replace view PERSONAL.PVFINIQADMIN
+AS
+SELECT PFIN_CONSEC  as VPFI_CONSEC,
+VNOM_NOMBRE AS VPFI_NOMBRE,
+PFIN_NOEMPL AS  VPFI_NOEMPL,
+PFIN_TPFINIQ AS VPFI_TPFINIQ,
+PFIN_CVEURES	AS VPFI_CVEURES,
+PFIN_NOMBRAM	AS VPFI_NOMBRAM,
+PFIN_TPSTO	AS VPFI_TPSTO,
+VCPU_PDESCRIP AS VPFI_PSTODES,
+PFIN_CATEGORIA	AS VPFI_CATEGORIA,
+PFIN_FECHAINGRESO AS VPFI_FECHAINGRE,
+PFIN_FECHABAJA	AS VPFI_FECHABAJA,
+PFIN_PERMISO_SG	AS VPFI_PERMISO_SG,
+PFIN_FALTAS	AS VPFI_FALTAS,
+PFIN_DECONOMICOS AS VPFI_DECONOMICOS,
+PFIN_COMENTARIO	AS VPFI_COMENTARIO,
+PFIN_USUARIO	AS VPFI_USUARIO,
+PFIN_FECHA	AS VPFI_FECHA,
+PFIN_REVISO	AS VPFI_REVISO,
+PFIN_ELABORO	AS VPFI_ELABORO
+FROM PFINIQADMTVO, PVCPUESTOS,PVNOMBRAM
+WHERE  PFIN_NOMBRAM=VNOM_NOMB
+AND VCPU_Psto= VNOM_Psto
+AND VCPU_Categ=VNOM_Categ;
+
+
+CREATE PUBLIC SYNONYM PVFINIQADMIN FOR PERSONAL.PVFINIQADMIN ;
+
+COMMENT ON TABLE PVFINIQADMIN IS 'Vista dela Tabla de Finiquitos' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_CONSEC is 'Consecutivo
+Consecutivo de Finiquito
+00
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_NOEMPL is 'Clave Empleado
+Clave del Empleado
+01
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_NOMBRE is 'Nombre
+Nombre del Empleado
+02
+*S' ;
+comment on column PERSONAL.PVFINIQADMIN.VPFI_NOMBRAM is 'Ult nombramiento
+Número del último nombramiento
+03
+*S' ; 
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_TPFINIQ  is 'Tipo finiquito
+Tipo finiquito JU Jubilación, PE pensión,FA, Fallecimiento, RC Resición, PJ pensión por jubilación
+04
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_CVEURES is 'Unidad Responsable
+Unidad responsable a la que pertenece el trabajador
+05
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_TPSTO is 'Tipo de Puesto
+Tipo de Puesto
+06
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_CATEGORIA is 'Categoria
+Categoria del Empleado
+07
+*S' ;
+
+comment on column PERSONAL.PVFINIQADMIN.VPFI_FECHABAJA is 'Fecha Baja
+Fecha de baja del Empleado
+08
+*S' ;
+comment on column PERSONAL.PVFINIQADMIN.VPFI_ELABORO is 'Elaborado
+Usuario que elaboro el finiquito del Empleado
+09
+*S' ;
+comment on column PERSONAL.PVFINIQADMIN.VPFI_FECHA is 'Fecha
+Fecha
+10
+*S' ;
+
+
+
+-- Create sequence 
+create sequence PSQPFINIQ
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+cache 10
+order;
+
+
+CREATE PUBLIC SYNONYM PSQPFINIQ FOR PERSONAL.PSQPFINIQ;
+
+
+
+--sequencia de prestaciones
+
+
+create sequence PSQDPRESTACION
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 1
+increment by 1
+cache 10
+order;
+
+
+CREATE PUBLIC SYNONYM PSQDPRESTACION FOR PERSONAL.PSQDPRESTACION;
+
+
+--*** CAJA TFINIQ.. EL NOMBRE TABLA DEBE SER 4 DIGITOS (VPFI_TPFINIQ),PARA TRAER LA DESRCIP
+
+INSERT INTO SREFDESC(REFD_CAMPO, REFD_SCRIPT, REFD_SQL)
+ VALUES('TPFINIQ','PFINIQ_01','SELECT
+ TREN_CVETREN AS Tipo,
+ TREN_DESCRIP AS Descripcion
+FROM PTRENUNCIA
+WHERE TREN_CVETREN NOT LIKE ''P%''');
+
+
+
+-- Insertamos en FINIQUITO
+
+INSERT INTO PVFINIQADMIN
+ (
+VPFI_CONSEC,VPFI_NOMBRE,VPFI_NOEMPL,VPFI_TPFINIQ,
+VPFI_CVEURES,VPFI_NOMBRAM,VPFN_TPSTO,VPFI_CATEGORIA,
+VPFI_FECHAINGRE,VPFI_FECHABAJA,VPFI_PERMISO_SG,
+VPFI_FALTAS,VPFI_PSLDOMEN,VPFI_PRIMA_ANTI,VPFI_PRIMA_VAC,
+VPFI_AGUINALDO,VPFI_DIAS31,VPFI_BONONAV,VPFI_VACACIONES,
+VPFI_BONOEXTRA,VPFI_DECONOMICOS,VPFI_PADICION,
+VPFI_GASTOSFUN,VPFIN_REVISO,VPFI_ELABORO, VPFI_COMENTARIO,VPFI_USUARIO,VPFI_FECHA,)
+
+VALUES (
+:VPFI_CONSEC,:VPFIN_NOMBRE,:VPFI_NOEMPL,:VPFI_TPFINIQ,
+:VPFI_CVEURES,:VPFI_NOMBRAM,:VPFI_TPSTO,:VPFI_CATEGORIA,
+:VPFI_FECHAINGRE,:VPFI_FECHABAJA,:VPFI_PERMISO_SG,
+:VPFI_FALTAS,:VPFI_PSLDOMEN,:VPFI_PRIMA_ANTI,:VPFI_PRIMA_VAC,
+:VPFI_AGUINALDO,:VPFI_DIAS31,:VPFI_BONONAV,:VPFI_VACACIONES,
+:VPFI_BONOEXTRA,:VPFI_COMENTARIO,:VPFI_DECONOMICOS,:VPFI_PADICION,
+:VPFI_GASTOSFUN,:VPFI_REVISO,:VPFI_ELABORO,:VPFI_COMENTARIO, USER,:VPFI_FECHA,);
+
+--INSERTAR EN PRESTACIONES***********
+
+
+
+
+---VISTASEJEMPLO***************
+
+CREATE OR REPLACE VIEW PVFINIQADMIN AS
+SELECT B.PERS_PERSONA AS VFIN_EMPL,
+       SUBSTR(TRIM(B.PERS_APEPAT||' '||B.PERS_APEMAT ||' '|| B.PERS_NOMBRE),1,45) AS VFIN_NOMBRE,
+       C.PUES_DESCRIP AS VFIN_PUESTO, G.CPUE_DESCRIP AS VFIN_CATEGORIA, A.RENU_FINGRESO AS VFIN_FINGRESO, 
+       A.RENU_FECHA AS VFIN_FBAJA, '01/01/' || TO_CHAR(A.RENU_FECHA,'YYYY') AS VFIN_ANIO_BAJA,
+
+       A.RENU_SALARIO AS VFIN_SUELDO, ROUND(A.RENU_SALARIO * I.QUIN_ANTIG / 100,2) AS VFIN_QUINQUENIO,
+       J.HPRE_TRANSPORTE AS VFIN_TRANSPORTE, J.HPRE_RENTA AS VFIN_RENTA, J.HPRE_GUARDERIA AS VFIN_GUARDERIA, 
+       DECODE(E.NOMB_CATEG,'A',J.HPRE_DESPENSA_SQ, J.HPRE_DESPENSA_CQ) AS VFIN_DESPENSA, 
+       TRUNC((A.RENU_FECHA - A.RENU_FINGRESO) /365) AS VFIN_ANTIGUEDAD, 0 AS VFIN_PRIMAVACAC,
+       K.DATG_SM AS VFIN_SAL_MIN
+FROM PRENUNCIAS A, FPERSONAS B, PPUESTOS C, PCPUESTOS G, PSPUESTOS H, FURES D, PNOMBRAM E, PPLAZAS F, 
+     PQUINDESP I, PHPRESADMIN J, PDATGEN K
+WHERE B.PERS_PERSONA = E.NOMB_EMPL
+AND A.RENU_NOMBP = E.NOMB_NOMB
+AND F.PLAZ_PLAZA = E.NOMB_PLAZA
+AND C.PUES_PSTO = F.PLAZ_PSTO
+AND D.URES_URES = F.PLAZ_URes
+AND G.CPUE_PSTO = F.PLAZ_PSTO
+AND G.CPUE_CATEG = E.NOMB_CATEG
+AND G.CPUE_SPUE = H.SPUE_SPUE
+AND C.PUES_TPSTO IN ('A')
+AND I.QUIN_PSTO = F.PLAZ_PSTO
+AND I.QUIN_CATEG = E.NOMB_CATEG
+AND I.QUIN_ANIOS = TRUNC((A.RENU_FECHA - A.RENU_FINGRESO) /365)
+AND A.RENU_FECHA BETWEEN J.HPRE_INICIO AND J.HPRE_FIN;
+/
+
+--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*--**-*-*-*
+
+CREATE PUBLIC SYNONYM PVFINIQADMIN for PERSONAL.PVFINIQADMIN;
+
+
+***********
+
+SELECT A.*,A.ROWID FROM SREFDESC A
+WHERE A.REFD_CAMPO= 'TPFINIQ'
+
+
+
+***FUNCION PARA CALCULO FINIQUITO************************************************
+
+CREATE OR REPLACE Function PRIMA_FINIQ --FINIQUITOS
+(PERCEP in number,VNOM IN VARCHAR2,BAND IN NUMBER) return Number is
+  Prima  number :=0;
+ AnioPrima number := 20;
+ SMG Number ;
+ DiasVac number :=22; --para primavac y vacaciones
+ DiasAdic number:=0;
+ Quinq number :=0; QuinDiario number;
+ SalDTab number:=0; DiasAct number:=0;
+ Vacaciones number;
+ SDI number;
+ Aguinal number:=0; D31 number:=0;
+ BonoNav number:=0; GtoFun number:=0;
+MONTOPERC NUMBER;
+   
+ CURSOR Datos is
+    SELECT A.VNOM_Empl as EMPL,A.VNOM_Psto as PSTO,
+     A.VNOM_TPsto  TPSTO,
+    A.VNOM_CATEGR AS CVECATEG,
+    B.VREN_FIngreso AS FECHAINGRE,
+   -- A.VNOM_INGRESO AS VPFI_FECHAINGRE,
+    B.VREN_Fecha AS FECHABAJA,
+    B.VREN_Sueldo AS SUELDO,
+    --ROUND(B.RENU_SALARIO * C.QUIN_ANTIG / 100,2) AS QUINQUENIO
+    --ROUND(((B.VREN_Fecha - A.VNOM_INGRESO ) /365),2) AS ANTIGUEDAD
+   round((B.VREN_Fecha - B.VREN_FIngreso ) /365) AS ANTIGD
+    
+    FROM PVNOMBRAM A, PVRENUNCIAS B  --, PQUINDESP C
+    WHERE  B.VREN_Nomb = a.VNOM_Nomb
+    and a.VNOM_NOMB =VNOM;
+
+rDatos Datos%RowType ;
+
+BEGIN
+
+if PERCEP = 0 then
+  return 0 ;
+ end if ;
+
+SELECT SUM(b.VDPA_Monto) INTO MONTOPERC 
+FROM pvpagos a, pvdpagos b, pconcepto c
+where b.VDPA_Pago = a.VPAG_Pago
+and a.VPAG_Fecha   -- '31/01/2012'
+between '15/01/2012' and '31/01/2012'                      
+and a.VPAG_Empl = '02104'
+and b.VDPA_PerDed = 'P'
+AND  b.VDPA_Conp in ('002','004','010','030','037','040','042','043','044','046','047','048')
+And a.VPAG_Cancelado = 'N'
+and c.conc_conp = b.VDPA_Conp
+and A.VPAG_TPSTO= 'D';
+ 
+ SELECT NVL(DATG_SM,0) * 5
+   Into SMG
+   FROM PDATGEN;
+   
+DiasAct:= CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);--diastrabajdosAñoEnCurso
+   
+open Datos ;
+ Fetch Datos into rDatos ;
+
+ LOOP  -- empleado
+   EXIT WHEN Datos%NOTFOUND ;
+   
+   
+   SDI:= (MONTOPERC + rDatos.SUELDO + Quinq)/30; --SalarioDiarioIntegrado
+ SalDTab:=rDatos.SUELDO/30; --salariotabularDiario
+ Quinq:=NOM$ANTIG(rDatos.EMPL,rDatos.TPSTO,rDatos.SUELDO,0,rDatos.psto,rDatos.CVECATEG,0,0); --quinquenio
+  QuinDiario:= Quinq/30;
+    
+    IF BAND =1 THEN  --PRIMA ANTIGUEDAD
+        Prima:= (anioPrima * rDatos.ANTIGD)* SMG ;
+     ELSIF BAND =2 THEN --PRIMAVAC
+--         Quinq:=Nom$antig(rDatos.EMPL,rDatos.TPSTO,rDatos.SUELDO,0,rDatos.psto,rDatos.CVECATEG,0,0);
+--       QuinDiario:= Quinq/30;
+     --  SalDTab:=rDatos.SUELDO/30;
+        SalDtab:=SalDTab + QuinDiario;
+         IF rDatos.ANTIGD >= 5 AND rDatos.ANTIGD <= 9 THEN
+               DiasAdic := 0.5;
+            ELSIF rDatos.ANTIGD >= 10 AND rDatos.ANTIGD <= 14 THEN
+               DiasAdic := 1;
+            ELSIF rDatos.ANTIGD>= 15 AND rDatos.ANTIGD <= 19 THEN
+               DiasAdic := 1.5;
+            ELSIF rDatos.ANTIGD >= 20 AND rDatos.ANTIGD <= 24 THEN
+               DiasAdic := 2;
+            ELSIF rDatos.ANTIGD >= 25 AND rDatos.ANTIGD <= 99 THEN
+               DiasAdic := 2.5;
+         END IF;
+        --calcula num dias trabj del año en curso
+       --   DiasAct:=  CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);
+     -- Raise_Application_Error(-20001, rDatos.EMPL||'psto '||rDatos.TPSTO ||'sldo '||rDatos.SUELDO||'quin' ||QuinDiario ||'diasad '|| DiasAdic) ;
+
+            DiasVac:= DiasVac + DiasAdic;
+            DiasVac:= (DiasAct * DiasVac)/365;
+            --calcula prima vacacional
+            Prima:=   (DiasVac * SalDtab * 120)/100;
+     ELSIF BAND =3 THEN --VACACIONES 
+      --  DiasAct:=  CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);  
+        Vacaciones:= (DiasAct * DiasVac)/365;
+        prima:= vacaciones * SDI ;
+        
+     ELSIF BAND =4 THEN --AGUINALDO 
+        Aguinal:= (DiasAct * 80)/365;
+        Prima:= Aguinal*SDI;
+        
+     ELSIF BAND =5 THEN --DIAS31***
+      D31:=(SalDTab *220)+ ( QuinDiario * D31) ;
+   
+     ELSIF BAND =5 THEN --BONO NAVI
+       BonoNav:=(DiasAct * 7000)/365;
+       Prima:=Bononav;
+       
+     ELSIF BAND =6 THEN --Gsto funeral
+       GtoFun:=420 * SalDTab;
+       Prima:=GtoFun;  
+     END IF;
+    
+ Fetch Datos into rDatos ;
+
+end loop;
+
+ return Prima ;
+
+END ;
+
+
+
+CREATE PUBLIC SYNONYM PRIMA_FINIQ for PERSONAL.PRIMA_FINIQ;
+
+--****para dias 31*******
+
+create or replace function DIAS31_FINIQ(Fecha in Date) return number is
+  Result number;
+--FUNCION UTILIZADA PARA EL CALCULO DE LOS DÍAS 31 PARA FINIQUITO
+
+ -- lafecha varchar2(10);
+
+begin
+
+   --  lafecha := '01/01/' || substr(fecha,7,4);
+
+    -- MES := TO_CHAR(TO_DATE(lafecha),'MM');
+
+     if FECHA >='01/01/' || substr(fecha,7,4) AND FECHA <= '31/01/'|| substr(fecha,7,4)then
+       Result:=1;
+     elsif FECHA >='01/02/' || substr(fecha,7,4) AND FECHA <= '29/02/'|| substr(fecha,7,4) then
+         Result:=1;
+     elsif FECHA >='01/03/' || substr(fecha,7,4) AND FECHA <= '31/03/'|| substr(fecha,7,4) then
+          Result:=2;
+     elsif FECHA >='01/04/' || substr(fecha,7,4) AND FECHA <= '30/04/'|| substr(fecha,7,4) then
+         Result:=2;
+     elsif FECHA >='01/05/' || substr(fecha,7,4) AND FECHA <= '31/05/'|| substr(fecha,7,4) then
+         Result:=3;
+     elsif FECHA >='01/06/' || substr(fecha,7,4) AND FECHA <= '31/06/'|| substr(fecha,7,4) then
+        Result:=3;
+     elsif FECHA >='01/07/' || substr(fecha,7,4) AND FECHA <= '31/07/'|| substr(fecha,7,4) then
+         Result:=4;
+     elsif FECHA >='01/08/' || substr(fecha,7,4) AND FECHA <= '31/08/'|| substr(fecha,7,4) then
+           Result:=5;
+     elsif FECHA >='01/09/' || substr(fecha,7,4) AND FECHA <= '30/09/'|| substr(fecha,7,4) then
+       Result:=5;
+     elsif FECHA >='01/10/' || substr(fecha,7,4) AND FECHA <= '31/10/'|| substr(fecha,7,4) then
+        Result:=6;
+     elsif FECHA >='01/11/' || substr(fecha,7,4) AND FECHA <= '30/11/'|| substr(fecha,7,4) then
+        Result:=6;
+     elsif FECHA >='01/12/' || substr(fecha,7,4) AND FECHA <= '31/12/'|| substr(fecha,7,4) then
+       Result:=7;
+
+
+    end if;
+
+  return(Result);
+End;
+
+
+CREATE PUBLIC SYNONYM DIAS31_FINIQ for PERSONAL.DIAS31_FINIQ;
+
+
+--antiguedad
+
+CREATE OR REPLACE Function NOM$ANTIG
+(Empl in varchar2, TPsto in varchar2, SBase in Number, ATB1 in number, Psto in varchar2,
+ Categ in varchar2, DBase in Number, Horas in number) return Number is
+-- Antig Number ;
+ AntigD Number ;
+ Monto Number := 0 ;
+ base Number ;
+ Adicional number;
+ Porc Number;
+ Quinquenio Number;
+BeGIN
+
+
+IF CATEG = 'PSGSLDO' THEN
+   RETURN(0);
+END IF;
+ 
+ 
+-- Calculamos
+ if TPsto IN ('D','BE') then --DOCENTE
+    
+   SELECT CALCULA_ANTIG(NOMI_FECHA, nvl(ATRE_FINGRESOD,Nomi_Fecha), 1)
+   Into AntigD
+   From PATREMPL, PNOMINAS
+   Where ATRE_Empl= Empl
+   And Nomi_Nomina = (select max(nomi_nomina) from pnominas) ;
+  
+  IF TPSTO IN ('D','BE') THEN
+    SELECT QPUE_QUINQ
+    INTO Adicional
+    FROM PQPUESTOS
+    WHERE QPUE_PSTO = PSTO
+    AND QPUE_CATEG = CATEG;
+  END IF;
+  
+  SELECT ANTD_Porc
+  INTO PORC
+  FROM PANTDOCEN
+  Where AntigD >= ANTD_De
+    And AntigD <= ANTD_A ;
+
+  IF PORC > 0 THEN          
+      QUINQUENIO := PORC + ADICIONAL;
+      MONTO := QUINQUENIO * (SBase + (ATB1/2) )/100;
+  ELSE
+      MONTO := 0;
+  END IF;                
+
+ end if ;
+
+
+
+ return(Monto) ;
+
+ /*
+EXCEPTION
+WHEN OTHERS THEN
+  Raise_Application_Error(-20001, empl||'x'||TPsto ||'x'||sbase||'x' || monto ||'x'|| Horas) ;
+*/
+
+END ;
+
+
+
+--*********DEDUCCIONES***
+
+CREATE OR REPLACE PROCEDURE CAL_PRIMAFINIQ --FINIQUITOS
+(VNOM IN VARCHAR2,BAND IN NUMBER) is
+  Prima  number :=0;
+ AnioPrima number := 20;
+ SMG Number ;
+ DiasVac number :=22; --para primavac y vacaciones
+ DiasAdic number:=0;
+ Quinq number :=0; QuinDiario number;
+ SalDTab number:=0; DiasAct number:=0;
+ Vacaciones number;
+ SDI number;  SALINTEGRA NUMBER:=0;
+ Aguinal number:=0; D31 number:=0;
+ BonoNav number:=0; GtoFun number:=0;
+MONTOPERC NUMBER; PRIMAVAC NUMBER:=0;
+
+ CURSOR Datos is
+    SELECT A.VNOM_Empl as EMPL,A.VNOM_Psto as PSTO,
+     A.VNOM_TPsto  TPSTO,
+    A.VNOM_CATEGR AS CVECATEG,
+    B.VREN_FIngreso AS FECHAINGRE,
+   -- A.VNOM_INGRESO AS VPFI_FECHAINGRE,
+    B.VREN_Fecha AS FECHABAJA,
+    B.VREN_Sueldo AS SUELDO,
+    --ROUND(B.RENU_SALARIO * C.QUIN_ANTIG / 100,2) AS QUINQUENIO
+    --ROUND(((B.VREN_Fecha - A.VNOM_INGRESO ) /365),2) AS ANTIGUEDAD
+   round((B.VREN_Fecha - B.VREN_FIngreso ) /365) AS ANTIGD
+
+    FROM PVNOMBRAM A, PVRENUNCIAS B  --, PQUINDESP C
+    WHERE  B.VREN_Nomb = a.VNOM_Nomb
+    and a.VNOM_NOMB =VNOM;
+
+rDatos Datos%RowType ;
+
+BEGIN
+
+/*if PERCEP = 0 then
+  
+ end if ;*/
+
+ SELECT NVL(DATG_SM,0) * 5
+   Into SMG
+   FROM PDATGEN;
+
+OPEN Datos ;
+ Fetch Datos into rDatos ;
+
+ LOOP  -- empleado
+   EXIT WHEN Datos%NOTFOUND ;
+   -- suma prestaciones
+   SELECT SUM(b.VDPA_Monto) INTO MONTOPERC
+    FROM pvpagos a, pvdpagos b, pconcepto c
+    where b.VDPA_Pago = a.VPAG_Pago
+    and a.VPAG_Fecha   -- '31/01/2012'
+    between '15/01/2012' and '31/01/2012'
+    and a.VPAG_Empl = '00263' --rDatos.EMPL 02104
+    and b.VDPA_PerDed = 'P'
+    AND  b.VDPA_Conp in ('001','002','004','010','030','037','040','042','043','044','046','047','048')
+    And a.VPAG_Cancelado = 'N'
+    and c.conc_conp = b.VDPA_Conp
+    and A.VPAG_TPSTO= 'D';  --rDatos.TPSTO
+
+    DiasAct:= CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);--diastrabajdosAñoEnCurso
+    SalDTab:=rDatos.SUELDO/30; --salariotabularDiario
+     Quinq:=NOM$ANTIG(rDatos.EMPL,rDatos.TPSTO,rDatos.SUELDO,0,rDatos.psto,rDatos.CVECATEG,0,0); --quinquenio
+    QuinDiario:= Quinq/30;
+    SALINTEGRA:=MONTOPERC + rDatos.SUELDO + Quinq;
+    SDI:= (MONTOPERC + rDatos.SUELDO + Quinq)/30; --SalarioDiarioIntegrado
+
+    IF BAND =1 THEN  --PRIMA ANTIGUEDAD
+        Prima:= (anioPrima * rDatos.ANTIGD)* SMG ;
+    -- ELSIF BAND =2 THEN --PRIMAVAC
+--         Quinq:=Nom$antig(rDatos.EMPL,rDatos.TPSTO,rDatos.SUELDO,0,rDatos.psto,rDatos.CVECATEG,0,0);
+--       QuinDiario:= Quinq/30;
+     --  SalDTab:=rDatos.SUELDO/30;
+        SalDtab:=SalDTab + QuinDiario;
+         IF rDatos.ANTIGD >= 5 AND rDatos.ANTIGD <= 9 THEN
+               DiasAdic := 0.5;
+            ELSIF rDatos.ANTIGD >= 10 AND rDatos.ANTIGD <= 14 THEN
+               DiasAdic := 1;
+            ELSIF rDatos.ANTIGD>= 15 AND rDatos.ANTIGD <= 19 THEN
+               DiasAdic := 1.5;
+            ELSIF rDatos.ANTIGD >= 20 AND rDatos.ANTIGD <= 24 THEN
+               DiasAdic := 2;
+            ELSIF rDatos.ANTIGD >= 25 AND rDatos.ANTIGD <= 99 THEN
+               DiasAdic := 2.5;
+         END IF;
+        --calcula num dias trabj del año en curso
+       --   DiasAct:=  CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);
+     -- Raise_Application_Error(-20001, rDatos.EMPL||'psto '||rDatos.TPSTO ||'sldo '||rDatos.SUELDO||'quin' ||QuinDiario ||'diasad '|| DiasAdic) ;
+            DiasVac:= DiasVac + DiasAdic;
+            DiasVac:= (DiasAct * DiasVac)/365;
+            --calcula prima vacacional
+            PrimaVac:=   (DiasVac * SalDtab * 120)/100; --monto prima vacaional
+    -- ELSIF BAND =3 THEN --VACACIONES
+      --  DiasAct:=  CALCULA_ANTIG(rDatos.FECHABAJA,rDatos.FECHAINGRE,0);
+        Vacaciones:= (DiasAct * DiasVac)/365;
+       VACACIONES:= vacaciones * SDI ;
+
+   --  ELSIF BAND =4 THEN --AGUINALDO
+        Aguinal:= (DiasAct * 80)/365;
+          Aguinal:= Aguinal*SDI;
+
+  --   ELSIF BAND =5 THEN --DIAS31***
+      D31:=DIAS31_FINIQ(rDatos.FECHABAJA);
+      D31:=(SalDTab *220)+ ( QuinDiario * D31) ;
+
+ --    ELSIF BAND =5 THEN --BONO NAVI
+       BonoNav:=(DiasAct * 7000)/365;
+     --  Prima:=Bononav;
+
+   --  ELSIF BAND =6 THEN --Gsto funeral
+       GtoFun:=420 * SalDTab;
+      -- Prima:=GtoFun;
+     END IF;
+
+ -- GUARDAMOS DATOS  PERCEP_PAGOS
+
+INSERT INTO DETFINIQ (DETF_NOMBRAM,DETF_TPSTO,DETF_CATEGO,DETF_PSTO,DETF_ANTIGA	,DETF_SLDOINTEGRADO ,
+DETF_MONTOPRIMA	,DETF_MONTOPRIMVAC ,DETF_VACACIONES,DETF_AGUINAL ,DETF_BONONAV , DETF_DIA31,
+DETF_GASTOFUN,DETF_FECHA)
+VALUES(VNOM,rDatos.TPSTO,rDatos.CVECATEG,rDatos.PSTO,rDatos.ANTIGD,SALINTEGRA,  Prima,
+PrimaVac,Vacaciones,  Aguinal,BonoNav,D31,GtoFun,SYSDATE);
+
+
+
+--Fetch Datos into rDatos ;
+
+
+end loop;
+
+
+
+
+END ;
+
+
+-- calcula isr
+
+
+
+
+
+
+----*** IMPUESTOS 
+
+CREATE OR REPLACE Function ISPT3_MENS
+(GRAVA in number) return Number is
+ ImpMarg number(16,2) ;
+ SubsAcr number(16,2) ;
+ Ispt number(16,2) := 0 ;
+-- Pago Number ;
+ liminf1t number(16,2) := 0 ;
+ limsup1t number(16,2) := 0 ;
+ porc1t number :=0;
+ cuentatmp number := 0;
+BEGIN
+
+
+ if grava= 0 then
+  return 0 ;
+ end if ;
+
+ 
+ 
+
+--A  Tabla de ISPT
+ SELECT count(ISPT_CuotaF)
+ Into cuentatmp
+ FROM PISPT_MENS
+ Where Grava  >= ISPT_LimInf
+ And Grava <= ISPT_LimSup ;
+
+ if cuentatmp > 1 then
+     --cuando hay dos limites inferiores iguales
+     SELECT (((Grava - ISPT_LimInf) * ISPT_Porc/100 ) + ISPT_CuotaF), ISPT_LIMINF, ISPT_LIMSUP, ISPT_Porc
+     Into ImpMarg, LIMINF1t, LIMSUP1t, Porc1t
+     FROM PISPT_MENS
+     where ispt_liminf = (Select min(ispt_liminf)
+                         from pispt_MENS
+                         where Grava  >= ISPT_LimInf
+                         And Grava <= ISPT_LimSup)
+     and ispt_limsup = (Select min(ispt_limsup)
+                         from pispt_MENS
+                         where Grava  >= ISPT_LimInf
+                         And Grava <= ISPT_LimSup);
+ else
+     SELECT (((Grava - ISPT_LimInf) * ISPT_Porc/100 ) + ISPT_CuotaF), ISPT_LIMINF, ISPT_LIMSUP, ISPT_Porc
+     Into ImpMarg, LIMINF1t, LIMSUP1t, Porc1t
+     FROM PISPT_MENS
+     Where Grava  >= ISPT_LimInf
+     And Grava <= ISPT_LimSup ;
+ end if;
+ 
+Ispt := ImpMarg;
+
+ 
+
+-- Ispt := ImpMarg - SubsAcr ;
+
+
+--C Credito al Salario
+ SELECT count(ISPT_Credit)
+ into cuentatmp
+ FROM PISPTCRED_MENS
+ Where Grava  >= ISPT_LimInf
+ And Grava <= ISPT_LimSup ;
+
+
+ if cuentatmp > 1 then
+    --cuando hay dos limites inferiores iguales
+     SELECT Ispt- ISPT_Credit
+     into Ispt
+     FROM PISPTCRED_MENS
+     where ispt_liminf = (Select min(ispt_liminf)
+                         from Pisptcred_MENS
+                         where Grava  >= ISPT_LimInf
+                         And Grava <= ISPT_LimSup)
+     and ispt_limsup = (Select min(ispt_limsup)
+                         from Pisptcred_MENS
+                         where Grava  >= ISPT_LimInf
+                         And Grava <= ISPT_LimSup);
+ else
+     SELECT Ispt- ISPT_Credit
+     into Ispt
+     FROM PISPTCRED_MENS
+     Where Grava  >= ISPT_LimInf
+     And Grava <= ISPT_LimSup ; 
+ end if;
+
+ return Ispt ;
+
+
+END ;
+
+CREATE PUBLIC SYNONYM CAL_ISRFINIQ for PERSONAL.CAL_ISRFINIQ;
+
+CREATE PUBLIC SYNONYM CAL_PRIMAFINIQ for PERSONAL.CAL_PRIMAFINIQ;
+
+
+
+
+
+CREATE TABLE DETFINIQ
+(
+DETF_NOMBRAM	VARCHAR(20) NOT NULL,
+DETF_TPSTO	VARCHAR(10),
+DETF_CATEGO	VARCHAR(12),
+DETF_PSTO	VARCHAR(10),
+DETF_ANTIGA	NUMBER(10,2),
+DETF_SLDOINTEGRADO NUMBER(10,2),
+DETF_MONTOPRIMA	NUMBER(10,2),
+DETF_GRAV_PRIMAA NUMBER(10,2),
+DETF_EXEN_PRIMAA NUMBER(10,2),
+DETF_MONTOPRIMVAC NUMBER(10,2),
+DETF_GRAV_PRIMAVAC NUMBER(10,2),
+DETF_EXEN_PRIMAVAC NUMBER(10,2),
+DETF_VACACIONES   NUMBER(10,2),
+DETF_BONOEXTRA   NUMBER(10,2),
+DETF_AGUINAL  NUMBER(10,2),
+DETF_GRAV_AGUINAL NUMBER(10,2),
+DETF_EXENAGUINAL NUMBER(10,2),
+DETF_BONONAV     NUMBER(10,2),
+DETF_DIA31  NUMBER(10,2),
+DETF_GASTOFUN    NUMBER(10,2),
+DETF_ISRULTSLDO	NUMBER(10,2),
+DETF_TASAVINCU	NUMBER(5,2),
+DETF_ISRLAB	NUMBER(10,2),
+DETF_ISRPERCEP	NUMBER(10,2),
+DETF_OTRASDEDUC	NUMBER(10,2),
+DETF_FECHA	DATE
+)
+
+alter table DETFINIQ
+  add constraint PK$DETFINIQ$DETF_NOMBTPSTO  primary key (DETF_NOMBRAM,DETF_TPSTO);
+
+alter table DETFINIQ add constraint FK$DETFINIQ$NUMNOMBRA foreign key (DETF_NOMBRAM,DETF_TPSTO)
+  references PFINIQADMTVO(PFIN_NOMBRAM,PFIN_TPSTO) ON DELETE CASCADE;NOP
+
+CREATE PUBLIC SYNONYM DETFINIQ FOR PERSONAL.DETFINIQ;
+
+INSERT INTO DETFINIQ(DETF_NOMBRAM,	
+DETF_TPSTO,DETF_CATEGO,DETF_PSTO,DETF_ANTIGA,
+DETF_SLDOINTEGRADO ,DETF_MONTOPRIMA	,DETF_GRAV_PRIMAA ,
+DETF_EXEN_PRIMAA ,DETF_MONTOPRIMVAC ,DETF_GRAV_PRIMAVAC	,
+DETF_EXEN_PRIMAVAC ,DETF_VACACIONES  ,DETF_BONOEXTRA   ,
+DETF_AGUINAL  ,DETF_GRAV_AGUINAL ,DETF_EXENAGUINAL ,
+DETF_BONONAV   ,DETF_DIA31  ,DETF_GASTOFUN  ,
+DETF_ISRULTSLDO	,DETF_TASAVINCU,DETF_ISRLAB	,
+DETF_OTRASDEDUC	,DETF_FECHA) VALUES(	
+
+

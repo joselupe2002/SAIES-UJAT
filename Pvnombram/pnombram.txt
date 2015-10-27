@@ -1,0 +1,539 @@
+-- Create table
+create table PNOMBRAM
+(
+  NOMB_NOMB      NUMBER(10) not null,
+  NOMB_NOMB_REEM NUMBER(10),
+  NOMB_PLAZA     NUMBER(10),
+  NOMB_EMPL      VARCHAR2(12),
+  NOMB_DESCRIP   VARCHAR2(35),
+  NOMB_SSUELDO   NUMBER(16,2) default 0,
+  NOMB_TEXTO     VARCHAR2(500),
+  NOMB_SUSP      VARCHAR2(1) default 'N',
+  NOMB_INI       DATE,
+  NOMB_FIN       DATE,
+  NOMB_ANTES     NUMBER(10),
+  NOMB_AINI      DATE,
+  NOMB_AFIN      DATE,
+  NOMB_LICE      NUMBER,
+  NOMB_ILICE     DATE,
+  NOMB_FLICE     DATE,
+  NOMB_FINRET    DATE,
+  NOMB_SPIUJAT   VARCHAR2(1) default 'N',
+  NOMB_DIRIGIDO  VARCHAR2(10),
+  NOMB_COPIAU    VARCHAR2(10),
+  NOMB_COPIAD    VARCHAR2(10),
+  NOMB_COPIAT    VARCHAR2(12),
+  NOMB_CONT      VARCHAR2(12),
+  NOMB_FECHA     DATE,
+  NOMB_CATEG     VARCHAR2(10),
+  NOMB_USU       VARCHAR2(30) default USER,
+  NOMB_FEC       DATE default SYSDATE,
+  NOMB_BANCO_NOM VARCHAR2(12),
+  NOMB_BANCOD    VARCHAR2(2),
+  NOMB_CBANC     VARCHAR2(15),
+  NOMB_INGRESO   DATE,
+  NOMB_BAJA      DATE,
+  NOMB_USUM      VARCHAR2(30) default USER
+);
+
+
+-- Add comments to the table 
+comment on table PNOMBRAM
+  is 'Tabla de Nombramientos';
+-- Add comments to the columns 
+comment on column PNOMBRAM.NOMB_NOMB
+  is 'Nomb
+Numero de Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_NOMB_REEM
+  is 'Nomb Reemp
+Nombramiento que Reemplaza
+*';
+comment on column PNOMBRAM.NOMB_PLAZA
+  is 'Plaza
+Plaza del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_EMPL
+  is 'Empleado
+Empleado del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_DESCRIP
+  is 'Descripcion
+Descripcion del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_SSUELDO
+  is 'SobreSueldo
+Sueldo extra que se le paga en el nombramiento
+*';
+comment on column PNOMBRAM.NOMB_TEXTO
+  is 'Texto
+Texto descriptivo del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_SUSP
+  is 'Suspendido
+Indica si el nombramiento esta suspendido o no
+*';
+comment on column PNOMBRAM.NOMB_INI
+  is 'Fecha Ini
+Fecha Inicial del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_FIN
+  is 'Fecha Fin
+Fecha Final del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_ANTES
+  is 'Nomb Anterior
+Nombramiento anterior (Cuando corresponde a Nombram)
+*';
+comment on column PNOMBRAM.NOMB_AINI
+  is 'Ini Nomb Anterior
+Inicio del Nombramiento Anterior
+*';
+comment on column PNOMBRAM.NOMB_AFIN
+  is 'Fin Nomb Anterior
+Fin del Nombramiento Anterior
+*';
+comment on column PNOMBRAM.NOMB_LICE
+  is 'Licencia
+Ultima Licencia
+*';
+comment on column PNOMBRAM.NOMB_ILICE
+  is 'Inicio de Licencia
+Fecha Inicial de Ultima Licencia
+*';
+comment on column PNOMBRAM.NOMB_FLICE
+  is 'Fin de Licencia
+Fecha Final de Ultima Licencia
+*';
+comment on column PNOMBRAM.NOMB_FINRET
+  is 'Fin Retr
+Fecha de Fin cuando termina con un Retroactivo
+*';
+comment on column PNOMBRAM.NOMB_SPIUJAT
+  is 'SPIUJAT
+Indica si el Nombramiento pertence o no al SPIUJAT
+*';
+comment on column PNOMBRAM.NOMB_DIRIGIDO
+  is 'Dirigido a
+Persona a la que va dirigido el oficio
+*';
+comment on column PNOMBRAM.NOMB_COPIAU
+  is 'Copia1
+Primera Copia
+*';
+comment on column PNOMBRAM.NOMB_COPIAD
+  is 'Copia2
+Segunda Copia
+*';
+comment on column PNOMBRAM.NOMB_COPIAT
+  is 'Copia3
+Tercera Copia
+*';
+comment on column PNOMBRAM.NOMB_CONT
+  is 'Contrato
+Contrato u Oficio
+*';
+comment on column PNOMBRAM.NOMB_FECHA
+  is 'Fecha
+Fecha de Elaboración del Contrato u Oficio
+*';
+comment on column PNOMBRAM.NOMB_CATEG
+  is 'Categoría
+Categoría del NOmbramiento
+*';
+comment on column PNOMBRAM.NOMB_USU
+  is 'Usuario
+Usuario que Agregó o Modificó el Registro
+*';
+comment on column PNOMBRAM.NOMB_FEC
+  is 'Fecha
+Fecha de Creación o Modificación del Registro
+*';
+comment on column PNOMBRAM.NOMB_BANCO_NOM
+  is 'Banco
+Banco con el que se paga el Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_BANCOD
+  is 'Banco_Dep
+Banco donde se Deposita el pago del nombramiento
+*';
+comment on column PNOMBRAM.NOMB_CBANC
+  is 'Cuenta
+Cuenta Bancaria en donde se Deposita el pago del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_INGRESO
+  is 'Ingreso
+Fecha de Ingreso con el nombramiento
+*';
+comment on column PNOMBRAM.NOMB_BAJA
+  is 'Baja
+Fecha de Baja del Nombramiento
+*';
+comment on column PNOMBRAM.NOMB_USUM
+  is 'Usuario_Mod
+Usuario que Modificó el Registro
+*';
+
+
+
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table PNOMBRAM
+  add constraint PK$PNOMBRAM$NOMB primary key (NOMB_NOMB);
+
+alter table PNOMBRAM
+  add constraint FK$PNOMBRAM$EMPL foreign key (NOMB_EMPL)
+  references FINANZAS.FPERSONAS (PERS_PERSONA);
+alter table PNOMBRAM
+  add constraint FK$PNOMBRAM$NOMB_REEM foreign key (NOMB_NOMB_REEM)
+  references PNOMBRAM (NOMB_NOMB);
+alter table PNOMBRAM
+  add constraint FK$PNOMBRAM$PLAZA foreign key (NOMB_PLAZA)
+  references PPLAZAS (PLAZ_PLAZA);
+-- Create/Recreate check constraints 
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$AFIN
+  check (NOMB_INI > NOMB_AFin);
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$FIN
+  check (NOMB_FIN >= NOMB_INI);
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$FINRET
+  check (NOMB_FinRet > NOMB_Ini);
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$FLICE
+  check (NOMB_FLice <= NOMB_Fin);
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$ILICE
+  check (NOMB_ILice >= NOMB_Ini);
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$SUSP
+  check (NOMB_SUSP IN ('S','N'));
+alter table PNOMBRAM
+  add constraint CC$PNOMBRAM$XLICE
+  check ((NOMB_Lice is null And  NOMB_ILice is null And  NOMB_FLice is null) or  (NOMB_Lice is not null And  NOMB_ILice is not null And  NOMB_FLice is not null));
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$CATEG
+  check (NOMB_CATEG IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$DESCRIP
+  check (NOMB_Descrip IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$EMPL
+  check (NOMB_EMPL IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$FIN
+  check (NOMB_FIN IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$INI
+  check (NOMB_INI IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$PLAZA
+  check (NOMB_Plaza is not Null);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$SSUELDO
+  check (NOMB_SSUELDO IS NOT NULL);
+alter table PNOMBRAM
+  add constraint NN$PNOMBRAM$SUSP
+  check (NOMB_SUSP IS NOT NULL);
+
+
+-- Create/Recreate indexes 
+create index IX$PNOMBRAM$CATEG on PNOMBRAM (NOMB_CATEG);
+
+create index IX$PNOMBRAM$EMPL on PNOMBRAM (NOMB_EMPL);
+
+create index IX$PNOMBRAM$NOMB_REEM on PNOMBRAM (NOMB_NOMB_REEM);
+
+create index IX$PNOMBRAM$PLAZA on PNOMBRAM (NOMB_PLAZA);
+
+create index PK$PNOMBRAM$NOMFIN on PNOMBRAM (NOMB_FIN);
+
+-- Grant/Revoke object privileges 
+grant select on PNOMBRAM to ESCO;
+grant select, insert, update, delete, references, alter, index on PNOMBRAM to ESCOLAR;
+grant select on PNOMBRAM to FINANZAS;
+grant select on PNOMBRAM to MEDICOS;
+grant select on PNOMBRAM to PUBLIC;
+grant select on PNOMBRAM to REPDOC;
+
+
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+
+CREATE OR REPLACE TRIGGER TAD_PNOMBRAM
+AFTER Delete ON PERSONAL.PNOMBRAM FOR EACH ROW
+
+
+
+DECLARE
+--
+BEGIN
+ if :old.NOMB_Nomb_Reem is null then
+  Update PPLAZAS SET
+   PLAZ_Nomb= :old.NOMB_Antes,
+   PLAZ_INomb= :old.NOMB_AIni,
+   PLAZ_FNomb= :old.NOMB_AFin
+  Where PLAZ_Plaza= :old.NOMB_Plaza ;
+ end if ;
+ 
+END ;
+/
+
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+CREATE OR REPLACE TRIGGER TAIU_PNOMBRAM
+AFTER INSERT OR UPDATE OF NOMB_Ini, NOMB_Fin ON PERSONAL.PNOMBRAM FOR EACH ROW
+
+
+
+DECLARE
+ v_esco number;
+--
+BEGIN
+ if :new.NOMB_Nomb_Reem is null then
+  Update PPLAZAS SET
+   PLAZ_Nomb= :new.NOMB_Nomb,
+   PLAZ_INomb= :new.NOMB_Ini,
+   PLAZ_FNomb= :new.NOMB_Fin
+  Where PLAZ_Plaza= :new.NOMB_Plaza ;
+ end if ;
+
+ 
+ IF INSERTING THEN
+     ---AUDITORIA DE MODIFICACION DE NOMBRAMIENTOS
+     INSERT INTO PAUDINOMB (AUDI_NOMB, AUDI_PLAZA, AUDI_EMPL, AUDI_DESCRIP, AUDI_CATEG, AUDI_INI, AUDI_FIN, AUDI_USU,
+                           AUDI_FEC, AUDI_USUM, AUDI_USER, AUDI_TMOV)
+     VALUES (:NEW.NOMB_NOMB, :NEW.NOMB_PLAZA, :OLD.NOMB_EMPL, :NEW.NOMB_DESCRIP, :NEW.NOMB_CATEG, :NEW.NOMB_INI,
+             :NEW.NOMB_FIN, :NEW.NOMB_USU, :NEW.NOMB_FEC, :NEW.NOMB_USUM, USER,'I');
+ END IF; 
+ 
+ IF UPDATING THEN
+     ---AUDITORIA DE MODIFICACION DE NOMBRAMIENTOS
+     INSERT INTO PAUDINOMB (AUDI_NOMB, AUDI_PLAZA, AUDI_EMPL, AUDI_DESCRIP, AUDI_CATEG, AUDI_INI, AUDI_FIN, AUDI_USU,
+                           AUDI_FEC, AUDI_USUM, AUDI_USER, AUDI_TMOV)
+     VALUES (:NEW.NOMB_NOMB, :NEW.NOMB_PLAZA, :OLD.NOMB_EMPL, :NEW.NOMB_DESCRIP, :NEW.NOMB_CATEG, :NEW.NOMB_INI,
+             :NEW.NOMB_FIN, :NEW.NOMB_USU, :NEW.NOMB_FEC, :NEW.NOMB_USUM, USER,'M');
+     
+
+     if :new.NOMB_Fin is not null then
+        select count(*)  into v_esco
+        from pconnomb cn  where cn.conn_nomb = :old.nomb_nomb;
+        
+        if v_esco=0 then 
+                update escolar.acceso_usuarios@esco.ujat  set
+                vence = :new.NOMB_Fin
+                where nombramiento = :old.nomb_nomb;
+        end if;
+     end if;
+     
+
+     
+ END IF; 
+
+ 
+END ;
+
+/
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+CREATE OR REPLACE TRIGGER TBD_PNOMBRAM
+BEFORE DELETE ON PERSONAL.PNOMBRAM FOR EACH ROW
+
+
+
+DECLARE
+ Nomb Number(10,0) ;
+BEGIN
+
+ SELECT COUNT(*) into Nomb
+ FROM PPAGOS
+ WHERE rownum= 1
+   And PAGO_NOMB= :old.NOMB_Nomb
+   And PAGO_FecCancel is null ;
+
+ if Nomb <> 0 then
+  Raise_Application_Error(-20001, 'No se puede borrar nombramiento con pagos' ) ;
+ end if ;
+
+-- SELECT count(*) into nomb
+-- FROM ENCURSOS
+-- Where rownum= 1
+--  And  NCUR_Nomb= :old.NOMB_Nomb ;
+
+-- if Nomb <> 0 then
+--  Raise_Application_Error(-20001, 'No se puede borrar nombramiento con cursos asignados' ) ;
+-- end if ;
+
+ if :old.NOMB_Nomb_Reem is not null then
+  return ;
+ end if ;
+
+ Select PLaz_Nomb Into Nomb
+ From PPlazas
+ Where PLAZ_Plaza= :old.NOMB_Plaza ;
+
+ if Nomb is not null And nomb <> :old.NOMB_Nomb then
+  Raise_Application_Error(-20001, 'Solo se puede borrar nombramiento activo en la plaza '||TO_Char(Nomb) ) ;
+ end if ;
+
+ ---AUDITORIA DE ELIMINACION DE NOMBRAMIENTOS
+ INSERT INTO PAUDINOMB (AUDI_NOMB, AUDI_PLAZA, AUDI_EMPL, AUDI_DESCRIP, AUDI_CATEG, AUDI_INI, AUDI_FIN, AUDI_USU,
+                       AUDI_FEC, AUDI_USUM, AUDI_USER, AUDI_TMOV)
+ VALUES (:OLD.NOMB_NOMB, :OLD.NOMB_PLAZA, :OLD.NOMB_EMPL, :OLD.NOMB_DESCRIP, :OLD.NOMB_CATEG, :OLD.NOMB_INI,
+         :OLD.NOMB_FIN, :OLD.NOMB_USU, :OLD.NOMB_FEC, :OLD.NOMB_USUM, USER,'E');
+ 
+ 
+END ;
+
+
+
+/
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+CREATE OR REPLACE TRIGGER TBI_PNOMBRAM
+BEFORE INSERT ON PERSONAL.PNOMBRAM FOR EACH ROW
+
+
+
+DECLARE
+ Antes Number ;
+ Ini Date ;
+ Fin Date ;
+BEGIN
+
+ if :new.NOMB_Fin is null then
+  :new.NOMB_Fin := TO_Date('31/12/3000', 'DD/MM/YYYY') ;
+ end if ;
+
+ if :new.NOMB_Descrip is null then
+  SELECT PUES_Descrip into :new.NOMB_Descrip
+  FROM PPUESTOS
+  Where PUES_Psto=
+   (SELECT PLAZ_Psto
+    From PPLAZAS
+    Where PLAZ_Plaza= :new.NOMB_Plaza) ;
+ end if ;
+
+ if :new.NOMB_Nomb_Reem is not null then
+  SELECT NOMB_Ini, NOMB_Fin
+  Into Ini, Fin
+  FROM PNOMBRAM
+  Where NOMB_Nomb= :new.NOMB_Nomb_Reem ;
+
+  if :new.NOMB_Ini < Ini then
+   Raise_Application_Error(-20001, 'Inicio de Reemplazo no puede ser menor a Inicio de Titular' ) ;
+  end if ;
+
+  if :new.NOMB_Fin > Fin then
+   Raise_Application_Error(-20001, 'Fin de Reemplazo no puede ser mayor a Fin de Titular' ) ;
+  end if ;
+  return ;
+ end if ;
+
+ 
+ Select Count(*) Into Antes
+ From PNombram
+ Where NOMB_Plaza= :new.NOMB_Plaza ;
+
+
+ if Antes= 0 then
+  Return ;
+ end if ;
+
+--  RAISE_APPLICATION_ERROR(-20001,:new.NOMB_Plaza);
+ 
+ Select NOMB_Nomb, NOMB_Ini, NOMB_Fin Into Antes, Ini, Fin
+ From PNombram
+ Where NOMB_Plaza= :new.NOMB_Plaza
+   And NOMB_Fin=
+    (Select MAX(Nomb_Fin)
+     From PNombram
+     Where NOMB_Plaza= :new.NOMB_Plaza
+   And NOMB_NOMB_REEM IS NULL)
+   And NOMB_Ini=
+    (Select MAX(Nomb_Ini)
+     From PNombram
+     Where NOMB_Plaza= :new.NOMB_Plaza
+   And NOMB_NOMB_REEM IS NULL);
+
+
+     
+ :new.NOMB_Antes := Antes ;
+ :new.NOMB_AIni  := Ini ;
+ :new.NOMB_AFin  := Fin ; 
+ 
+END ;
+
+
+
+/
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+
+CREATE OR REPLACE TRIGGER TBU_PNOMBRAM
+BEFORE UPDATE ON PERSONAL.PNOMBRAM FOR EACH ROW
+
+
+
+DECLARE
+ UltPago Date ;
+ 
+BEGIN
+ if UPDATING('NOMB_Antes') or UPDATING('NOMB_AIni') or UPDATING('NOMB_AFin') then
+  Raise_Application_Error(-20001, 'No se puede modificar Nombramiento Anterior') ;
+ end if ;
+
+ if :new.NOMB_Fin is null then
+  :new.NOMB_Fin := TO_Date('31/12/3000', 'DD/MM/YYYY') ;
+ end if ;
+
+-- Checamos cuando el update es x retroactivo
+
+ if not UPDATING('NOMB_FinRet') And :new.NOMB_FinRet is not null then
+  Raise_Application_Error(-20001, 'No se puede modificar Nombramiento Sustituido x retroactivo') ;
+ end if ;
+
+
+ SELECT MAX(NOMI_Fecha) into UltPago
+ FROM PPAGOS, PNOMINAS
+ WHERE NOMI_Nomina= PAGO_Nomina
+   And NOMI_Tipo= 'O'
+   And PAGO_FecCancel is null
+   And PAGO_Nomb= :old.NOMB_Nomb ;
+
+   
+ if UltPago is not null And (
+  (:old.NOMB_Plaza <> :new.NOMB_Plaza) or
+  (:old.NOMB_Empl <> :new.NOMB_Empl) or
+  (:old.NOMB_Ini <> :new.NOMB_Ini) --or
+  --(:old.NOMB_Categ <> :new.NOMB_Categ)
+   ) then
+  Raise_Application_Error(-20001, 'No se puede Modificar Plaza, Empleado, Categoría ó Fecha de Inicio de nombramiento con pagos' ) ;
+ end if ;
+
+ if UPDATING('NOMB_Fin') And UltPago is not null And :new.NOMB_Fin < UltPago And :new.Nomb_fin <> :old.Nomb_Fin then
+  Raise_Application_Error(-20001, 'Fin de Nombramiento no puede ser menor a fecha de ultimo pago '||TO_Char(UltPago,'DD/MM/YYYY') ) ;
+ end if ;
+
+ if :new.NOMB_Nomb_Reem is not null then
+  return ;
+ end if ;
+/*
+ Select PLaz_Nomb Into Nomb
+ From PPlazas
+ Where PLAZ_Plaza= :new.NOMB_Plaza ;
+
+ if Nomb is not null And nomb <> :new.NOMB_Nomb then
+  Raise_Application_Error(-20001, 'Solo se puede modificar nombramiento activo en la plaza '||TO_Char(Nomb) ) ;
+ end if ;
+*/
+END ;
+
+
+/
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**

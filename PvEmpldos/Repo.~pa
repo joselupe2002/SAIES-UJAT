@@ -1,0 +1,111 @@
+unit Repo;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  PRepo, Qrctrls, QuickRpt, ExtCtrls, Db, DBTables, libreria, QRPrntr,
+  ImgList, Menus, ComCtrls, ToolWin ;
+
+type
+  TFRepo = class(TPFRepo)
+    x: TQRLabel;
+    QRLabel2: TQRLabel;
+    QRLabel3: TQRLabel;
+    QRLabel4: TQRLabel;
+    Detalle: TQRBand;
+    QTemp: TQuery;
+    QTempFUNCION: TStringField;
+    QTempPROG: TStringField;
+    QTempDESCRIP: TStringField;
+    QTempENTRA: TStringField;
+    QTempLFuncion: TStringField;
+    QCheca: TQuery;
+    QFuncion: TQuery;
+    QRGroup1: TQRGroup;
+    QRDBText1: TQRDBText;
+    QRDBText3: TQRDBText;
+    QRDBText2: TQRDBText;
+    QRDBText4: TQRDBText;
+    QRDBText5: TQRDBText;
+    procedure Recurre(Pred : String) ;    
+    procedure QTempUpdateRecord(DataSet: TDataSet; UpdateKind: TUpdateKind;
+      var UpdateAction: TUpdateAction);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FRepo: TFRepo;
+  nivel : Integer ;
+implementation
+
+{$R *.DFM}
+
+procedure TFRepo.QTempUpdateRecord(DataSet: TDataSet;
+  UpdateKind: TUpdateKind; var UpdateAction: TUpdateAction);
+begin
+  inherited;
+ UpDateAction := uaApplied ;
+end;
+
+procedure TFRepo.Recurre(Pred : String) ;
+var mQuery : TQuery ;
+ nPred : String ;
+begin
+ nivel := nivel+ 1 ;
+ mQuery := TQuery.Create(nil) ;
+ mQuery.DataBaseName := 'Sistema' ;
+ with mquery.Sql do
+ begin
+  Add('Select Prog_Funcion As Funcion, Prog_Prog As Prog, ') ;
+  Add( 'Prog_Descrip As Descrip, Prog_Ent_Data As Entra') ;
+  Add('From FProgram') ;
+  if Pred= ''
+  then Add('Where Prog_PProg is Null')
+  else Add('Where Prog_PProg= '''+ Pred+ '''') ;
+  Add('ORDER BY Prog_Funcion, Prog_Prog') ;
+ end ;
+
+ mQuery.Open ;
+ mQuery.First ;
+ while not mQuery.eof do
+ begin
+  nPred := mQuery.FieldByName('Prog').AsString ;
+  QTemp.Append ;
+  QTemp['Funcion'] := mQuery.FieldByName('Funcion').AsString ;
+  QTemp['Prog'] := Replicate(' ',nivel*2)+ nPred ;
+  QTemp['Descrip'] := mQuery.FieldByName('Descrip').AsString ;
+  QTemp['Entra'] := mQuery.FieldByName('Entra').AsString ;
+  QTemp.Post ;
+
+  QCheca.Close ;
+  QCheca.ParamByName('Prog').AsString := nPred ;
+  QCheca.Open ;
+  QCheca.First ;
+  if not QCheca.Eof
+  then recurre(nPred) ;
+  mQuery.Next ;
+ end ;
+
+ nivel := nivel - 1 ;
+ mQuery.Free ;
+end ;
+
+
+procedure TFRepo.FormCreate(Sender: TObject);
+begin
+  inherited;
+// Caption := 'Generando Reporte...' ;
+ QTemp.Close ;
+ QTemp.Open ;
+
+ nivel := -1 ;
+ Recurre('') ;
+ QTemp.First ;
+end;
+
+end.

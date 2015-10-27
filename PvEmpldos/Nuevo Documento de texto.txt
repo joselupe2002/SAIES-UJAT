@@ -1,0 +1,23 @@
+Select 
+       A.VEMP_EMPL as Empl,
+       a.VEMP_RFC as RFC,
+       a.VEMP_ABREVIA || ' ' || a.VEMP_ApePat || ' ' || a.VEMP_ApeMat || ' ' || a.VEMP_Nombre as Nombre,
+       a.VEMP_CURP as CURP,
+       a.VEMP_NUMSS as NUMSS,
+       a.VEMP_Foto as Foto,
+       a.VEMP_Direccion as Dir,
+       a.VEMP_Telefono as Tel,
+       a.VEMP_Contactos as Texto,
+       Decode(a.VEMP_Sexo,'F','Femenino','Masculino') as Sexo,
+       a.VEMP_FNACI as Fnaci,
+       b.edci_descrip as Edociv,
+       c.esco_descrip as Escolaridad,
+       a.VEMP_DESCRIP as Descripcion,
+       a.VEMP_SPIUJAT as Spiujat,
+       a.VEMP_FINGRESO as Fingreso,
+       a.VEMP_FINGRESOD as Fingresod,
+   to_char(Sysdate,'dd/month/yyyy') as Fecha
+from Pvempldos a, Pedcivil b, Pescolari c
+where a.VEMP_EMPL = '03111'
+and b.edci_cveedci = a.VEMP_EDOCIV
+and c.esco_cveesco = a.VEMP_ESCOL 
