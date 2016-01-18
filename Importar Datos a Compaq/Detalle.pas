@@ -52,7 +52,6 @@ uses
     CQ: TQuery;
     obsp: TMemo;
     aux: TQuery;
-    barrap: TGauge;
     Panel1: TPanel;
     SpeedButton4: TSpeedButton;
     SpeedButton5: TSpeedButton;
@@ -93,7 +92,6 @@ uses
     Label16: TLabel;
     thas: TLabel;
     Label19: TLabel;
-    Button2: TButton;
     TabSheet4: TTabSheet;
     SpeedButton10: TSpeedButton;
     gtim: TStringGrid;
@@ -181,6 +179,25 @@ uses
     TabSheet11: TTabSheet;
     g: TStringGrid;
     GFon: TStringGrid;
+    TabSheet12: TTabSheet;
+    Button2: TButton;
+    Label37: TLabel;
+    UPeriodos: TEdit;
+    Uejer: TEdit;
+    Label38: TLabel;
+    barrap: TGauge;
+    Button5: TButton;
+    GCQT: TStringGrid;
+    emplt: TLabel;
+    tpt: TLabel;
+    tdt: TLabel;
+    LasNominas: TEdit;
+    Button12: TButton;
+    Button13: TButton;
+    Label39: TLabel;
+    Button14: TButton;
+    Button15: TButton;
+    Button16: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -237,6 +254,12 @@ uses
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure fondosClick(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
+    procedure Button16Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -285,6 +308,8 @@ begin
  Cuadre.cells[2,0]:='SAIES';
  Cuadre.cells[3,0]:='NOM10007';
  Cuadre.cells[4,0]:='NOM10008';
+
+   uejer.Text:=formatdatetime('YYYY',now);
 
 
 end;
@@ -1029,6 +1054,16 @@ IF (tiponom.Text<>'') AND (TIPOPER.TEXT<>'') AND (PERIODOCQ.TEXT<>'') then
                    cQ.EXECSQL;
                  end;
 
+              if str_(tiponom.text,'-')='D' then
+                 begin
+                   cq.close;
+                   cq.sql.text:='UPDATE nom10001 SET tipoCONTRATO='+#39+'P'+#39+',TIPOREGIMEN=2';
+                   cQ.EXECSQL;
+                   cq.close;
+                   cq.sql.text:='UPDATE nom10034 SET tipoCONTRATO='+#39+'P'+#39;
+                   cQ.EXECSQL;
+                 end;
+
 
 
             {  cq.close;
@@ -1096,27 +1131,30 @@ IF (tiponom.Text<>'') AND (TIPOPER.TEXT<>'') AND (PERIODOCQ.TEXT<>'') then
                Q.next;
             end;
 
-      //Cambiando de nombr a los HAS
-      Q.close;
-      q.sql.text:='SELECT * FROM TMPNOMBREHAS';
-      Q.open;
-      barrap.Progress:=0;
-       barrap.MaxValue:=Q.recordcount;
-      while not(q.eof) do
-         begin
-             cq.sql.text:='UPDATE nom10001 SET '+
-                     'APELLIDOPATERNO='+#39+COPY(Q.fieldbyname('APEPAT1').asstring,1,40)+#39+','+
-                     'APELLIDOMATERNO='+#39+COPY(Q.fieldbyname('APEMAT1').asstring,1,40)+#39+','+
-                     'NOMBRE='+#39+COPY(Q.fieldbyname('NOMBRE1').asstring,1,40)+#39+','+
-                     'NOMBRELARGO='+#39+COPY((Q.fieldbyname('NOMBRE1').asstring+' '+
-                                              Q.fieldbyname('APEPAT1').asstring+' '+
-                                              Q.fieldbyname('APEMAT1').asstring),1,120)+#39+
-                     ' WHERE codigoempleado='+#39+Q.fieldbyname('NOEMPL').asstring+#39;
-            obsp.Lines.Add('Se Actualizo nombre de Empleados --> '+q.fields[0].asstring);
-            cq.EXECSQL;
-            q.next;
-            barrap.Progress:=barraP.Progress+1;
-         end;
+    {  //Cambiando de nombr a los HAS
+     if str_(tipoNom.text,'-')='H' THEN
+        BEGIN
+            Q.close;
+            q.sql.text:='SELECT * FROM TMPNOMBREHAS';
+            Q.open;
+            barrap.Progress:=0;
+             barrap.MaxValue:=Q.recordcount;
+            while not(q.eof) do
+               begin
+                   cq.sql.text:='UPDATE nom10001 SET '+
+                           'APELLIDOPATERNO='+#39+COPY(Q.fieldbyname('APEPAT1').asstring,1,40)+#39+','+
+                           'APELLIDOMATERNO='+#39+COPY(Q.fieldbyname('APEMAT1').asstring,1,40)+#39+','+
+                           'NOMBRE='+#39+COPY(Q.fieldbyname('NOMBRE1').asstring,1,40)+#39+','+
+                           'NOMBRELARGO='+#39+COPY((Q.fieldbyname('NOMBRE1').asstring+' '+
+                                                    Q.fieldbyname('APEPAT1').asstring+' '+
+                                                    Q.fieldbyname('APEMAT1').asstring),1,120)+#39+
+                           ' WHERE codigoempleado='+#39+Q.fieldbyname('NOEMPL').asstring+#39;
+                  obsp.Lines.Add('Se Actualizo nombre de Empleados --> '+q.fields[0].asstring);
+                  cq.EXECSQL;
+                  q.next;
+                  barrap.Progress:=barraP.Progress+1;
+               end;
+         END; }
    end
 else
   Showmessage('Elija el tipo de nómina a procesar Y/O TIpo de periodo de COMPAC');
@@ -1539,6 +1577,7 @@ if str_(tiponom.text,'-')='HON' then quenom:=CHR(39)+'HO'+CHR(39)+','+CHR(39)+'O
 if str_(tiponom.text,'-')='V' then quenom:=CHR(39)+'V'+CHR(39)+','+CHR(39)+'FV'+CHR(39);
 if str_(tiponom.text,'-')='H' then quenom:=CHR(39)+'H'+CHR(39)+','+CHR(39)+'FH'+CHR(39);
 if str_(tiponom.text,'-')='J' then quenom:=CHR(39)+'PO'+CHR(39)+','+CHR(39)+'FP'+CHR(39);
+if str_(tiponom.text,'-')='D' then quenom:=CHR(39)+'DI'+CHR(39);
 
 
 end;
@@ -1699,31 +1738,44 @@ begin
      TipoNom.text:='HON-Nominas Ordinarias (HN) 2015';
  if alias.text='Jubilados2015' then
      TipoNom.text:='J-Jubilados 2015';
+  if alias.text='Difuntos2015' then
+     TipoNom.text:='D-Difuntos 2015';
  TipoNomChange(nil);
 end;
 
 procedure TFDetalle.Button2Click(Sender: TObject);
+
 begin
   inherited;
 
+
     CQ.CLOSE;
     CQ.sql.text:='SELECT count(*) frOM NOM10007 A, nom10004 B, nom10001 c '+
-                 ' WHERE A.idconcepto=B.idconcepto and a.idempleado=c.idempleado ';
+                 ' WHERE A.idconcepto=B.idconcepto and a.idempleado=c.idempleado '+
+                 ' AND A.IDPERIODO IN ('+UPeriodos.text+')';
     cq.OPEN;
+
     barrap.MaxValue:=cq.fields[0].asinteger;
     barrap.Progress:=0;
 
     CQ.CLOSE;
-    CQ.sql.text:='SELECT A.idconcepto, B.DESCRIPCION, B.tipoconcepto, c.codigoempleado,'+
-                 'a.idperiodo, a.importetotal frOM NOM10007 A, nom10004 B, nom10001 c '+
-                 ' WHERE A.idconcepto=B.idconcepto and a.idempleado=c.idempleado ';
+    CQ.sql.text:=' SELECT A.idmovtopdo, A.idperiodo,A.idempleado, B.codigoempleado, '+
+                 ' A.idconcepto, C.numeroconcepto,  A.idmovtopermanente,importetotal,'+
+                 ' a.valor, a.importe1, a.importe2, a.importe3, a.importe4 '+
+                 ' FROM NOM10007 A, NOM10001 B, NOM10004 C  WHERE A.idempleado=B.idEMPLEADO'+
+                 ' AND A.idconcepto=C.idconcepto '+
+                 ' AND A.IDPERIODO IN ('+UPeriodos.text+')';
     cq.OPEN;
 
+    Q.CLOSE;
+    q.sql.text:='DELETE FROM  NOM10007 WHERE IDPERIODO  IN ('+UPeriodos.text+') AND ANIO='+#39+uejer.text+#39;
+    Q.execsql;
 
     WHILE NOT CQ.EOF DO
        BEGIN
           Q.CLOSE;
-          q.sql.text:='insert into nom10007 (conp, descrip, tipo, empl, periodo, monto, tiponom) '+
+          q.sql.text:='insert into nom10007 (idmovtopdo, idperiodo, idempleado, codigoempl, idconcepto, '+
+          'numeroconcepto, idmovtopermanente, importetotal, valor, importe1, importe2, importe3, importe4, QUENOM, anio) '+
           ' values ('+
           #39+cq.fields[0].asstring+#39+','+
           #39+cq.fields[1].asstring+#39+','+
@@ -1731,24 +1783,21 @@ begin
           #39+cq.fields[3].asstring+#39+','+
           #39+cq.fields[4].asstring+#39+','+
           #39+cq.fields[5].asstring+#39+','+
-          #39+copy(alias.text,1,1)+#39+')';
+          #39+cq.fields[6].asstring+#39+','+
+          #39+cq.fields[7].asstring+#39+','+
+          #39+cq.fields[8].asstring+#39+','+
+          #39+cq.fields[9].asstring+#39+','+
+          #39+cq.fields[10].asstring+#39+','+
+          #39+cq.fields[11].asstring+#39+','+
+          #39+cq.fields[12].asstring+#39+','+
+          #39+STR_(TIPOnOM.text,'-')+#39+','+
+          #39+uejer.text+#39+')';
           q.execsql;
           cQ.next;
           barrap.Progress:=barrap.Progress+1;
+          barrap.Update;
        END;
 
-
-  {Q.close;
-  q.sql.text:='SELECT * FROM PTEMCORREOCFDI';
-  Q.open;
-
-  while not(q.eof) do
-    begin
-      CQ.CLOSE;
-      CQ.sql.text:='INSERT INTO PRUEBA (CAMPO1) VALUES ('+#39+Q.fields[0].asstring+#39+')';
-      cq.execsql;
-      q.next;
-    end;   }
 
 
 
@@ -2026,8 +2075,9 @@ begin
 
   cq.close;
   cq.sql.text:='select distinct(d.idempleado), e.codigoempleado, e.nombrelargo  '+
-  ' from nom10008 d, nom10001 e where d.idempleado=e.idempleado '+
+  ' from nom10007 d, nom10001 e where d.idempleado=e.idempleado '+
   ' and e.TIPOREGIMEN IN ('+str_(regimen.text,'-')+') order by d.idempleado';
+  savetofilelog(cq.sql.text);
   cq.open;
   while not (cq.Eof) do
      begin
@@ -2056,7 +2106,7 @@ begin
        begin
            cqD.close;
            cqD.sql.text:='select D.idempleado, D.idconcepto, SUM(D.importetotal) AS TOTAL, '+
-           'SUM(D.importe1) AS GRAVADO, SUM(D.importe2) AS EXENTO from nom10008 d, nom10043 e  '+
+           'SUM(D.importe1) AS GRAVADO, SUM(D.importe2) AS EXENTO from nom10007 d, nom10043 e  '+
            'WHERE d.idperiodo in ('+PER.TEXT+')'+
            ' and d.idperiodo=e.IdPeriodo and d.idempleado=e.idempleado and e.Estado=3 '+
            'GROUP BY  D.idempleado, D.idconcepto'+
@@ -2077,8 +2127,8 @@ S: string; // Es el buffer donde se va a guardar el texto a copiar.
 begin
 {Cuadricula es el nombre del componente StringGrid}
 S := '';
-barrac.position:=0;
-barrac.max:=g.rowcount-1;
+barrap.progress:=0;
+barrap.MaxValue:=g.rowcount-1;
 for R := 0 to G.RowCount - 1 do
     begin
         for C := 0 to G.ColCount - 1 do
@@ -2089,7 +2139,7 @@ for R := 0 to G.RowCount - 1 do
             end;
         if R < G.RowCount - 1 then
            S := S + CR;
-        barrac.position:=barrac.position+1;
+        barrap.progress:=barrap.progress+1;
      end;
 Clipboard.AsText := S; //Este objeto es el que hace todo el trabajo de copiar el texto ala papelera de reciclaje
 Showmessage('Registros copiados --> Abra Excel y presione CTRL + V');
@@ -2109,6 +2159,7 @@ x:integer;
 idempl:string;
 begin
   inherited;
+      savetofilelog(cqd.sql.text);
       cqd.First;
       datos.Cells[0,datos.RowCount-1]:='EMPL';
       datos.Cells[1,datos.RowCount-1]:='CONCEPTO';
@@ -2215,9 +2266,9 @@ begin
    if tipo='G' then ncol:=3;
    if tipo='E' then ncol:=4;
    if (tipo<>'G') and (tipo<>'E') then ncol:=2;
-
-
    monto:='0';
+
+
    for x:=strtoint(empieza) to datos.rowcount-1 do
        begin
            if datos.cells[0,x]<>empl then
@@ -2250,7 +2301,7 @@ begin
        begin
            if datos.cells[0,x]<>empl then
               break;
-           if     empl='PO00003' THEN SHOWMESSAGE(datos.cells[1,x]+'='+concepto); 
+        //   if     empl='PO00003' THEN SHOWMESSAGE(datos.cells[1,x]+'='+concepto);
            if (datos.cells[1,x]=concepto) and (datos.cells[5,x]=perded) then
               begin
                  monto:=datos.cells[ncol,x];
@@ -2303,6 +2354,21 @@ for x:=3 to gcq.colcount-1 do
 gcq.rowcount:=gcq.rowcount+1;
 tp.caption:='Percepción: '+formatfloat('#,#0.00',percep);
 td.caption:='Deducción: '+formatfloat('#,#0.00',deduc);
+
+
+//==================AGREGANDO CLAVE SAT =========================
+
+for y:=3 to  gcq.colcount-1 do
+  begin
+
+
+     cq.Close;
+     cq.sql.text:='select CLAVEAGRUPADORASAT from NOM10004 A WHERE A.IDCONCEPTO='+#39+gcq.cells[y,0]+#39;
+     cQ.Open;
+     //gcq.cells[y,0]:=gcq.cells[y,0]+'|'+q.fields[0].asstring+'|';
+     gcq.cells[y,0]:=Cq.fields[0].asstring;
+  end;      
+//==================AGREGANDO CLAVE SAT =========================
 
 
 end;
@@ -2495,6 +2561,16 @@ gcq2.rowcount:=gcq2.rowcount+1;
 tp2.caption:='Percepción: '+formatfloat('#,#0.00',percep);
 td2.caption:='Deducción: '+formatfloat('#,#0.00',deduc);
 
+//==================AGREGANDO CLAVE SAT =========================
+
+for y:=3 to  gcq2.colcount-1 do
+  begin
+     q.Close;
+     q.sql.text:='select CONS_CVESAT from PCONCEPTO A WHERE A.CONC_CONP='+#39+gcq2.cells[y,0]+#39;
+     Q.Open;
+     gcq2.cells[y,0]:=q.fields[0].asstring;
+  end;
+//==================AGREGANDO CLAVE SAT =========================
 
 end;
 
@@ -2517,6 +2593,275 @@ begin
               sumarNominas;
 
 
+end;
+
+procedure TFDetalle.Button5Click(Sender: TObject);
+var
+x,y:integer;
+LP:STRING;
+begin
+  inherited;
+  limpiagrid(gcqT);
+  limpiagrid(gindx);
+  limpiagrid(datos);
+  gcqT.rowcount:=1;
+  gindx.rowcount:=1;
+  datos.rowcount:=2;
+  
+  tpt.Caption:='...';
+  tdt.Caption:='...';
+  emplt.caption:='...';
+
+
+  q.Close;
+  q.SQL.text:='select count(distinct(B.IDCONP)) '+
+  ' from CONCEPTOSJUNTOS B';
+  savetofilelog(q.sql.text);
+  q.open;
+  barrap.MaxValue:=q.fields[0].asinteger;
+  barrap.Progress:=0;
+
+
+  q.Close;
+  q.SQL.text:='select distinct(B.IDCONP), B.MOV, B.PERDED, b.PERDED||'+#39+'_'+#39+
+  '||B.idconp||'+#39+'_'+#39+'||b.descrip||'+#39+'_'+#39+'||B.MOV'+
+  ' from CONCEPTOSJUNTOS B'+
+  ' order by B.PERDED DESC, B.IDCONP ASC ';
+  savetofilelog(q.sql.text);
+  q.open;
+  GCQT.ColCount:=3;
+  GCQT.rowCount:=4;
+  while not (q.Eof) do
+     begin
+       GCQT.cells[GCQT.ColCount,0]:=q.fields[0].asstring;
+       GCQT.cells[GCQT.ColCount,1]:=q.fields[1].asstring;
+       GCQT.cells[GCQT.ColCount,2]:=q.fields[2].asstring;
+       GCQT.cells[GCQT.ColCount,3]:=q.fields[3].asstring;
+       GCQT.ColCount:=GCQT.ColCount+1;
+       barrap.Progress:=barrap.Progress+1;
+       q.Next;
+     end;
+
+
+  q.close;
+  q.sql.text:='select count(*) from NOM10007RFC t ';
+  savetofilelog(q.sql.text);
+  q.open;
+  barrap.MaxValue:=q.fields[0].asinteger;
+  barrap.Progress:=0;
+
+  q.close;
+  q.sql.text:='select COMPLETO||EMPL, RFC,'+
+  ' APEPAT||'+#39+' '+#39+'||APEMAT||'+#39+' '+#39+'||NOMBRE'+
+  ' from NOM10007RFC t order by rfc';
+  savetofilelog(q.sql.text);
+  q.open;
+
+
+  while not (q.Eof) do
+     begin
+       GCQT.cells[0,GCQT.rowcount]:=q.fields[0].asstring;
+       GCQT.cells[1,GCQT.rowcount]:=q.fields[1].asstring;
+       GCQT.cells[2,GCQT.rowcount]:=q.fields[2].asstring;
+       GCQT.rowcount:=GCQT.rowcount+1;
+        barrap.Progress:= barrap.Progress+1;
+       q.Next;
+     end;
+
+     barrac2.Position:=0;
+     barrac2.Max:= gcq2.rowcount;
+
+     IF uperiodos.Text='%' then lp:=''
+     else lp:=' AND S.idperiodo IN ('+uperiodos.TEXT+')';
+
+     qD.close;
+     qD.sql.text:='SELECT S.RFC as idempleado, B.conc_conp as idconcepto, B.conc_perded AS PERDED,  '+
+     'SUM(S.IMPORTETOTAL) AS TOTAL,'+
+     'decode( B.conc_perded,'+#39+'P'+#39+',SUM(S.IMPORTE1),SUM(S.IMPORTETOTAL)) AS GRAVADO,'+
+     'decode( B.conc_perded,'+#39+'P'+#39+',SUM(S.IMPORTE2),0) AS EXENTO '+
+     'FROM NOM10007 S, NOM10007RFC T,  CQRELTAB C, CQVPCONCEPTO B  WHERE '+
+     '(S.IDCONCEPTO=C.COMPAQ AND C.TABLA='+#39+'PCONCEPTO'+#39+' AND B.CONC_CONP=C.SAIES) AND S.RFC=T.RFC '+
+     ' AND S.QUENOM IN ('+LASNOMINAS.TEXT+')'+lp+
+     ' AND S.TIMBRADO='+#39+'S'+#39+
+     ' GROUP BY S.RFC, B.CONC_CONP, B.conc_perded  '+
+     ' ORDER BY S.RFC, B.CONC_CONP,  B.conc_perded  ';
+     savetofilelog(qd.sql.text);
+     QD.OPEN;
+
+
+
+end;
+
+procedure TFDetalle.Button12Click(Sender: TObject);
+begin
+  inherited;
+
+  Q.close;
+  q.sql.text:=' UPDATE NOM10007RFC A SET  '+
+  ' A.APEPAT=(SELECT EMPL_APEPAT FROM PEMPLHAS S WHERE S.EMPL_PERSONA=A.EMPL), '+
+  ' A.APEMAT=(SELECT EMPL_APEMAT FROM PEMPLHAS S WHERE S.EMPL_PERSONA=A.EMPL), '+
+  ' A.NOMBRE=(SELECT EMPL_NOMBRE FROM PEMPLHAS S WHERE S.EMPL_PERSONA=A.EMPL)  '+
+  ' WHERE A.EMPL  LIKE '+#39+'P%'+#39;
+  savetofilelog(q.sql.text);
+  q.ExecSQL;
+
+  Q.close;
+  q.sql.text:='UPDATE NOM10007RFC A SET  '+
+  'A.APEPAT=(SELECT PERS_APEPAT FROM FPERSONAS S WHERE S.PERS_PERSONA=A.EMPL), '+
+  'A.APEMAT=(SELECT PERS_APEMAT FROM FPERSONAS S WHERE S.PERS_PERSONA=A.EMPL),  '+
+  'A.NOMBRE=(SELECT PERS_NOMBRE FROM FPERSONAS S WHERE S.PERS_PERSONA=A.EMPL)  '+
+  ' WHERE A.EMPL LIKE '+#39+'0%'+#39+
+  ' OR A.EMPL  LIKE '+#39+'PO%'+#39+
+  ' OR A.EMPL  LIKE '+#39+'PV%'+#39+
+  ' OR A.EMPL  LIKE '+#39+'PA%'+#39+
+  ' OR A.EMPL  LIKE '+#39+'V%'+#39+
+  ' OR A.EMPL  LIKE '+#39+'S%'+#39;
+  savetofilelog(q.sql.text);
+  q.execsql;
+
+
+
+end;
+
+procedure TFDetalle.Button13Click(Sender: TObject);
+begin
+  inherited;
+//cOBVERTIMOS LOS RFC
+  Q.close;
+  q.sql.text:='DELETE FROM NOM10007RFC';
+  Q.execsql;
+
+  q.close;
+  q.sql.text:='SELECT count(*) from (select DISTINCT(RFC), CODIGOEMPL FROM  NOM10007)';
+  Q.open;
+  barrap.Progress:=0;
+  barrap.MaxValue:= q.fields[0].asinteger;
+
+  q.close;
+  q.sql.text:='select DISTINCT(RFC), CODIGOEMPL FROM  NOM10007 order by RFC, codigoempl';
+  Q.open;
+
+  while not(q.eof) do
+     begin
+        aux.Close;
+        aux.sql.text:='INSERT INTO NOM10007RFC (EMPL,RFC) VALUES ('+
+        #39+Q.fields[1].asstring+#39+','+
+        #39+Q.fields[0].asstring+#39+')';
+        try aux.execsql; except end;
+        barrap.Progress:=barrap.Progress+1;
+        q.next;
+     end;
+
+end;
+
+procedure TFDetalle.Button14Click(Sender: TObject);
+VAR X:INTEGER;
+idempl:STRING;
+begin
+  inherited;
+      qd.First;
+      datos.Cells[0,datos.RowCount-1]:='EMPL';
+      datos.Cells[1,datos.RowCount-1]:='CONCEPTO';
+      datos.Cells[2,datos.RowCount-1]:='TOTAL';
+      datos.Cells[3,datos.RowCount-1]:='GRAVADO';
+      datos.Cells[4,datos.RowCount-1]:='EXENTO';
+      datos.Cells[5,datos.RowCount-1]:='PERDED';
+
+
+      idempl:=qd.fieldbyname('idempleado').asstring;
+      gindx.Cells[0,gindx.RowCount-1]:=idempl;
+      gindx.Cells[1,gindx.RowCount-1]:=inttostr(datos.RowCount-1);
+      gindx.RowCount:=gindx.RowCount+1;
+
+BARRAP.MaxValue:=qd.RecordCount;
+BARRAP.Progress:=0;
+while not(qd.eof) do
+   begin
+      datos.Cells[0,datos.RowCount-1]:=qd.fieldbyname('idempleado').asstring;
+      datos.Cells[1,datos.RowCount-1]:=qd.fieldbyname('idconcepto').asstring;
+      datos.Cells[2,datos.RowCount-1]:=qd.fieldbyname('total').asstring;
+      datos.Cells[3,datos.RowCount-1]:=qd.fieldbyname('gravado').asstring;
+      datos.Cells[4,datos.RowCount-1]:=qd.fieldbyname('exento').asstring;
+      datos.Cells[5,datos.RowCount-1]:=qd.fieldbyname('PERDED').asstring;
+      if idempl<> qd.fieldbyname('idempleado').asstring then
+         begin
+             idempl:=qd.fieldbyname('idempleado').asstring;
+             gindx.Cells[0,gindx.RowCount-1]:=idempl;
+             gindx.Cells[1,gindx.RowCount-1]:=inttostr(datos.RowCount-1);
+             gindx.RowCount:=gindx.RowCount+1;
+         end;
+      datos.rowcount:=datos.rowcount+1;
+      barrap.Progress:=barrap.Progress+1;
+      qd.next;
+   end;
+
+end;
+
+procedure TFDetalle.Button15Click(Sender: TObject);
+var
+x,y:integer;
+posempl:string;
+percep,deduc:real;
+begin
+  inherited;
+barrap.Progress:=0;
+barrap.MaxValue:=gcqt.rowcount-4;
+lapos:=0;
+for x:=4 to  GCQT.rowcount-1 do
+    begin
+       for y:=3 to  GCQT.colcount-1 do
+          begin
+              posempl:=buscaClave(GCQT.cells[1,x]);
+
+              if posempl<>'' then
+                 begin
+
+                     GCQT.cells[y,x]:=buscaConcepto(posempl,GCQT.cells[y,1],GCQT.cells[y,0],GCQT.cells[1,x]);
+                 end;
+          end;
+       barrap.Progress:=barrap.Progress+1;
+       emplt.Caption:='Empleado'+GCQT.cells[1,x];
+       emplt.Update;
+       GCQT.Update;
+    end;
+
+{
+percep:=0;
+deduc:=0;
+barrap.progress:=0;
+barrap.maxvalue:= GCQT.colcount-1;
+for x:=3 to GCQT.colcount-1 do
+   begin
+       GCQT.cells[x,GCQT.rowcount]:=floattostr(sumacolGrid(GCQT,x));
+       if  GCQT.cells[x,2]='P' then
+          percep:=percep+strtofloat(GCQT.cells[x,GCQT.rowcount])
+       else
+          deduc:=deduc+strtofloat(GCQT.cells[x,GCQT.rowcount]);
+      barrap.Progress:=barrap.Progress+1;
+   end;
+GCQT.rowcount:=GCQT.rowcount+1;
+tpt.caption:='Percepción: '+formatfloat('#,#0.00',percep);
+tdt.caption:='Deducción: '+formatfloat('#,#0.00',deduc);
+                                                            }
+
+//==================AGREGANDO CLAVE SAT =========================
+for y:=3 to  gcqt.colcount-1 do
+  begin
+     q.Close;
+     q.sql.text:='select CONS_CVESAT from PCONCEPTO A WHERE A.CONC_CONP='+#39+gcqt.cells[y,0]+#39;
+     Q.Open;
+     gcqt.cells[y,0]:=q.fields[0].asstring;
+  end;
+//==================AGREGANDO CLAVE SAT =========================
+
+
+end;
+
+
+procedure TFDetalle.Button16Click(Sender: TObject);
+begin
+  inherited;
+copiarGrid(gcqt);
 end;
 
 end.
