@@ -113,6 +113,7 @@ uses
     Contab2: TSpeedButton;
     barra: TProgressBar;
     et: TLabel;
+    ver: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -592,8 +593,10 @@ begin
                ' FROM PCONTPERCEP A WHERE A.CONT_NOMINA='+nomina.text+
                ' and a.cont_tipo='+chr(39)+'P'+chr(39)+
                ' and a.cont_tiponom='+chr(39)+str_(lanomina.text,'-')+chr(39)+
-        'GROUP BY  A.CONT_SFDO, A.CONT_URES, A.CONT_PROG, A.CONT_CNTA, A.CONT_SCTA, A.CONT_TMOVI, A.CONT_PROY)'+
-        ' WHERE CHECAR=0';
+        'GROUP BY  A.CONT_SFDO, A.CONT_URES, A.CONT_PROG, A.CONT_CNTA, A.CONT_SCTA, A.CONT_TMOVI, A.CONT_PROY)';
+        if not(ver.Checked) then
+            qdisp.sql.text:= qdisp.sql.text+' WHERE CHECAR=0';
+
         Savetofilelog(qdisp.sql.text);
         Qdisp.open;
         sd.caption:=inttostr(qdisp.recordcount);
