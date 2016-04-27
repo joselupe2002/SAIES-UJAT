@@ -943,7 +943,7 @@ begin
                  Q.fieldbyname('APEPAT').asstring+'|'+                 //5.Apellido paterno
                  Q.fieldbyname('APEMAT').asstring+'|'+                //6.Apellido materno
                  Q.fieldbyname('NOMBRE').asstring+'|'+                 //7.Nombre
-                 '02|'+                                                //8.Area Geográfica Area B
+                 '01|'+                                                //02 - AREA B 03 AREA C 8.Area Geográfica Area B
                  Q.fieldbyname('PRESENTA_DECLARA').asstring+'|'+       //9.Indique si el patron realizo calculo anual NO
                  '1|'+                                                 //10.Tarifa utilizada: del ejercicio que declara SI
                  '0|'+                   //11. Tarifa utilizada: 1991 Actualizada Sin selección
@@ -961,21 +961,21 @@ begin
                  '1|';                   //32. Pagos del patrón efectuados a Trab 1. SI
                  CADSEPARA:='';
                  if  Q.fieldbyname('SEPARACION').asstring='1' then
-                     CADsepara:=FLOATTOSTR(q.fieldbyname('ING_SEPARACION_G').asfloat+q.fieldbyname('ING_SEPARACION_E').asfloat+
-                             q.fieldbyname('PENSION_G').asfloat+q.fieldbyname('PENSION_E').asfloat)+'|'+                   //33. Ingresos totales por pagos parcialidades
+                     CADsepara:=FLOATTOSTR(q.fieldbyname('INGGR_PENSION').asfloat+q.fieldbyname('INGEX_PENSION').asfloat)+
+                             '|'+                   //33. Ingresos totales por pagos parcialidades
                              '|'+                   //34. Monto diario percibido por jubilaciones
                              '|'+                   //35. Cantidad que se hubiera percibido en el periodo
                              //FLOATTOSTR(q.fieldbyname('ING_SEPARACION_G').asfloat+q.fieldbyname('ING_SEPARACION_E').asfloat+
                              //q.fieldbyname('PENSION_G').asfloat+q.fieldbyname('PENSION_E').asfloat)+
                              '|'+                    //36. Monto total pagado en una sola exi
                              '0|'+                   // 37. Número de días
-                             FLOATTOSTR(q.fieldbyname('ING_SEPARACION_E').asfloat+q.fieldbyname('PENSION_E').asfloat)+
+                             FLOATTOSTR(q.fieldbyname('ING_SEPARACION_E').asfloat+q.fieldbyname('INGEX_PENSION').asfloat)+
                              '|'+                   // 38. Ingresos Excentos.
-                             FLOATTOSTR(q.fieldbyname('ING_SEPARACION_G').asfloat+q.fieldbyname('PENSION_G').asfloat)+
+                             FLOATTOSTR(q.fieldbyname('ING_SEPARACION_G').asfloat+q.fieldbyname('INGGR_PENSION').asfloat)+
                              '|'+                   // 39. Ingresos gravables.
                              '0|'+                   // 40. Ingresos acumulables.
                              '0|'+                   // 41. Ingresos no acumulables.
-                             '0|'+                   // 42. Ingresos retenido
+                             Q.fieldbyname('ISR_PENSION').asstring+'|'+                   // 42. Ingresos retenido
                              '0|'+                   // 43. Monto total pagado de otros pagos de separación
                              '0|'+                   // 44. Número de años de servicio ddel trabajador
                              '0|'+                   // 45. Ingresos exentos
@@ -983,15 +983,15 @@ begin
                              '0|'+                   // 47. Ingresos acumulables.
                              '0|'+                   // 48 Impuesto correspondiente al ultimo sueldo
                              '0|'+                   // 49. Ingresos no acumulables
-                             {Q.fieldbyname('ISR_RETENIDO').asstring+}'|'; // 50. Impuesto retenido
+                             '0|'; // 50. Impuesto retenido
                 cadHAS:='';
                 cadHas2:='';
 
                 IF (Q.fieldbyname('MOVIMIENTO').asstring='HAS')  THEN
                     BEGIN
                       cadHas:=
-                             Q.fieldbyname('TOTAL_INGRESOS_G').asstring+'|'+// 51. ingresos asimilados a salarios
-                             Q.fieldbyname('ISR_RETENIDO').asstring+'|'+ //52. Impuesto retenido durante el ejercicio
+                             Q.fieldbyname('HASMONTOG').asstring+'|'+// 51. ingresos asimilados a salarios
+                             Q.fieldbyname('HASISR').asstring+'|'+ //52. Impuesto retenido durante el ejercicio
                              '0|'+                   //53. Opción para adquirir acciones 0 Sin selección
                              '|'+                   //54 Valor de mercado de las acciones
                              '|'+                     //55. Precio establecido d eingresos de acciones
@@ -1082,7 +1082,7 @@ begin
                        '|'+                     //123.  Monto previsión social  exento
                        Q.fieldbyname('TOTAL_INGRESOS').asstring+'|'+    //124. Suma de ingresos por sueldo y salarios
                        '|'+                     //125.  Monto del impuesto local a los sueldos y salarios
-                       '|'+    //126.  Monto del subsidio para el empleo en efectivo
+                       Q.fieldbyname('SEGUNUJAT').asstring+'|'+    //126.  Monto del subsidio para el empleo en efectivo
                        '|'+                     //127.  Total de aportaciones voluntarias deducibles
                        Q.fieldbyname('ISR_TARIFA').asstring+'|'+    //128.  ISR Conforme a la tarifa anual
                        '|'+                     //129. Subsidio acreditable

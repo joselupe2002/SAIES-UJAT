@@ -50,7 +50,7 @@ DebugSourceDirs=
 UsePackages=1
 [Parameters]
 RunParams=
-HostApplication=F:\SAIES-UJAT\Fuentes\bin\shake.exe
+HostApplication=E:\SAIES-UJAT\Fuentes\bin\shake.exe
 [Language]
 ActiveLang=
 ProjectLang=$0000080A

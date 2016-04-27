@@ -19,6 +19,7 @@ function iif(expresion : Boolean ; value1, value2 : variant) : variant ;
 procedure vcurr(ccurr : TEdit) ;
 procedure OraErr(E : Exception)  ;
 function str_(cad:string;separador:string):string;
+function secondCad(cad:string;separador:string):string;
 function Knumero(var key:char):char;
 procedure LimpiafileLog(s:string);
 procedure savetofileLog(s:string);
@@ -310,6 +311,7 @@ ExcelWorksheet1: TExcelWorksheet;
 begin
 try deletefile(extractfiledir(paramstr(0))+'\File.xlsx'); except end;
 crearFile(extractfiledir(paramstr(0))+'\File.xlsx');
+
 ExcelApplication1:=TExcelApplication.create(nil);
 ExcelWorkbook1:= TExcelWorkbook.create(nil);;
 ExcelWorksheet1:=TExcelWorksheet.create(nil);;
@@ -626,6 +628,19 @@ begin
    else
       str_:=cad;
 end;
+
+
+ {===============================================================================
+ Devuelve la parte derecha separada por "separador" 01-huimanguillo Res=Huimanguillo
+ ===============================================================================}
+function secondCad(cad:string;separador:string):string;
+begin
+   if pos(separador,cad)>0 then
+      secondCad:=copy(cad,pos(separador,cad)+1,length(cad))
+   else
+      secondCad:=cad;
+end;
+
 
 
 function replicate(car : Char ; num :Integer):String ;

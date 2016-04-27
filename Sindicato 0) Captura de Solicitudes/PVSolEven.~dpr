@@ -142,7 +142,7 @@ q.DataBaseName := 'Sistema' ;
                 showmessage(q.fields[0].asstring);
           end;
 
-  
+  XMODULO.Refrescar1.Click;
   XMODULO.DBGrid1.TitleFont.Name:='Arial';
   XMODULO.DBGrid1.TitleFont.Style:=[fsbold];
   Xmodulo.DBGrid1.Font.Name:='Arial';

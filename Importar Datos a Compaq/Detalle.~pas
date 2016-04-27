@@ -1131,8 +1131,8 @@ IF (tiponom.Text<>'') AND (TIPOPER.TEXT<>'') AND (PERIODOCQ.TEXT<>'') then
                Q.next;
             end;
 
-      //Cambiando de nombr a los HAS
-{     if str_(tipoNom.text,'-')='H' THEN
+    {  //Cambiando de nombr a los HAS
+     if str_(tipoNom.text,'-')='H' THEN
         BEGIN
             Q.close;
             q.sql.text:='SELECT * FROM TMPNOMBREHAS';

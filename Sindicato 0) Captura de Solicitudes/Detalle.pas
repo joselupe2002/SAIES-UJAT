@@ -459,7 +459,6 @@ begin
         q.OPEN;
         NUMERO.FIELD.Asstring:=Q.FIELDS[0].ASSTRING;
      end;
-
  qInsert.ExecSql ;
  GrabaDetalle ;
  Limpiagrid(grid);

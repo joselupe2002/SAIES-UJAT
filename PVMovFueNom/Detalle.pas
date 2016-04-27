@@ -94,7 +94,6 @@ type
     Label21: TLabel;
     PROYFN: TDBEdit;
     LVMOV_PROYFN: TEdit;
-    SpeedButton2: TSpeedButton;
     Label22: TLabel;
     TN: TLabel;
     TIPOREP: TDBEdit;
@@ -110,6 +109,10 @@ type
     LVMOV_URESPAGFN: TEdit;
     Label26: TLabel;
     tipc: TComboBox;
+    DEFUNCION: TDBCheckBox;
+    PERSDEF: TDBEdit;
+    LVMOV_PERSDEF: TEdit;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     function rnombre : String ; override ;
     procedure getDescripGrid;
@@ -146,10 +149,11 @@ type
     procedure GRIDTERKeyPress(Sender: TObject; var Key: Char);
     procedure GRIDTERDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
-    procedure SpeedButton2Click(Sender: TObject);
     procedure Label3DblClick(Sender: TObject);
     procedure CargarDJLogistica1Click(Sender: TObject);
     procedure URESFNChange(Sender: TObject);
+    procedure DEFUNCIONClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -347,6 +351,7 @@ begin
  begin
   campo.DataSet.Edit ;
   campo.Value := QVal.Fields[0].Value ;
+
  end ;
  QVal.Close ;
  GValValid.Hide ;
@@ -444,6 +449,15 @@ if result= 'PERS' then
   VSql.add('PERS_NOMBRE||'+#39+' '+#39+'||PERS_APEPAT||'+#39+' '+#39+'||PERS_APEMAT AS NOMBRE');
   VSql.add('FROM FINANZAS.FPERSONAS ');
  end;
+
+ if result= 'PERSDEF' then
+ begin
+  VSql.add('SELECT');
+  VSql.add('PERS_PERSONA AS PERSONA,');
+  VSql.add('PERS_NOMBRE||'+#39+' '+#39+'||PERS_APEPAT||'+#39+' '+#39+'||PERS_APEMAT AS NOMBRE');
+  VSql.add('FROM FINANZAS.FPERSONAS ');
+ end;
+
 
 if result= 'NOMI'  then
  begin
@@ -1422,7 +1436,59 @@ begin
 end;
 
 
-procedure TFDetalle.SpeedButton2Click(Sender: TObject);
+procedure TFDetalle.Label3DblClick(Sender: TObject);
+begin
+  inherited;
+vista.visible:=not(vista.visible);
+vista.BringToFront;
+end;
+
+procedure TFDetalle.CargarDJLogistica1Click(Sender: TObject);
+begin
+  inherited;
+  qdj.close;
+  qdj.sql.text:='SELECT MOVF_PERS FROM PMOVFUENOM T WHERE T.MOVF_PADRE = 475';
+  qdj.open;
+  while not (qdj.eof) do
+     begin
+        lingt:=gridter.RowCount-1;
+        gridter.cells[0,gridter.RowCount-1]:=qdj.fields[0].asstring;
+        colgt:=0; getdescripGridTer;
+        gridter.cells[1,gridter.RowCount-1]:='061';
+        colgt:=1; getdescripGridTer;
+        gridter.Cells[3, gridter.RowCount-1]:='P';
+        gridter.RowCount:=gridter.RowCount+1;
+        qdj.next;
+     end;
+end;
+
+procedure TFDetalle.URESFNChange(Sender: TObject);
+begin
+  inherited;
+TRY
+  IF MODO=1 THEN
+     BEGIN
+        Q.CLOSE;
+        Q.SQL.TEXT:='SELECT URES_PAGO FROM FURES A WHERE A.URES_URES='+#39+URESFN.TEXT+#39;
+        Q.open;
+        urespagfn.FIELD.ASString:=q.fields[0].asstring;
+     END;
+EXCEPT END;
+end;
+
+procedure TFDetalle.DEFUNCIONClick(Sender: TObject);
+begin
+  inherited;
+  if defuncion.Checked THEN
+     persdef.Enabled:=true
+  else
+     begin
+      persdef.Enabled:=false;
+      persdef.clear;
+     end;
+end;
+
+procedure TFDetalle.Button1Click(Sender: TObject);
 var
 x:integer;
 fec1:TdateTime;
@@ -1515,46 +1581,6 @@ if fec2>fec1 then
     end
 else
    Showmessage('la fecha de Inicio debe ser menor a la Fecha final del periodo');
-end;
-
-procedure TFDetalle.Label3DblClick(Sender: TObject);
-begin
-  inherited;
-vista.visible:=not(vista.visible);
-vista.BringToFront;
-end;
-
-procedure TFDetalle.CargarDJLogistica1Click(Sender: TObject);
-begin
-  inherited;
-  qdj.close;
-  qdj.sql.text:='SELECT MOVF_PERS FROM PMOVFUENOM T WHERE T.MOVF_PADRE = 475';
-  qdj.open;
-  while not (qdj.eof) do
-     begin
-        lingt:=gridter.RowCount-1;
-        gridter.cells[0,gridter.RowCount-1]:=qdj.fields[0].asstring;
-        colgt:=0; getdescripGridTer;
-        gridter.cells[1,gridter.RowCount-1]:='061';
-        colgt:=1; getdescripGridTer;
-        gridter.Cells[3, gridter.RowCount-1]:='P';
-        gridter.RowCount:=gridter.RowCount+1;
-        qdj.next;
-     end;
-end;
-
-procedure TFDetalle.URESFNChange(Sender: TObject);
-begin
-  inherited;
-TRY
-  IF MODO=1 THEN
-     BEGIN
-        Q.CLOSE;
-        Q.SQL.TEXT:='SELECT URES_PAGO FROM FURES A WHERE A.URES_URES='+#39+URESFN.TEXT+#39;
-        Q.open;
-        urespagfn.FIELD.ASString:=q.fields[0].asstring;
-     END;
-EXCEPT END;
 end;
 
 end.

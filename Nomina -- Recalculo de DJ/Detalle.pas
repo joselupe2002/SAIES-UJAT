@@ -179,7 +179,9 @@ begin
                            ' and s.VDPA_PerDed='+#39+'D'+#39+
                            ' group by s.VDPA_Empl, t.pers_nombre||'+#39+' '+#39+
                            '||t.pers_apepat||'+#39+' '+#39+'||t.pers_apemat, s.VDPA_Pago, s.VDPA_Movi,  S.VDPA_Nomina)'+
-                           ' WHERE DJ<>DJ_NEW';
+                           ' WHERE MOV_ISR<>0  and DJ<>DJ_NEW';
+        savetofilelog(qcuentas.sql.text);
+
         Qcuentas.open;
         NEMPL.Caption:=inttostr(QCUENTAS.RECORDCOUNT);
 

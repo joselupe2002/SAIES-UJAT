@@ -3,7 +3,9 @@ unit libreria;
 interface
 
 uses Sysutils, Classes, Dialogs, Controls, StdCtrls, DBTables, DB, error, EKRTF,
-Forms, ExtCtrls, Grids, DBCGrids, OleServer, Excel97, Comobj,ClipBrd;
+Forms, ExtCtrls, Grids, DBCGrids, OleServer, Excel97, Comobj,ClipBrd,
+ComCtrls;
+
 
 
 function replicate(car : Char ; num :Integer):String ;
@@ -40,9 +42,80 @@ procedure AbrirExcel(c:String);
 function CopiarExcel(AGrid: TStringGrid; AXLSFile: string): Boolean;
 function Xls_To_StringGrid(AGrid: TStringGrid; AXLSFile: string): Boolean;
 Function SumaColGridOfCero(g:TstringGrid;Col:Integer):real;
+procedure copiarDBGridP(q:Tquery; max:integer; barra:TprogressBar);
+procedure copiarGridP(g:TstringGrid;barra:TProgressBar);
 
 implementation
 
+
+
+procedure copiarDBGridP(q:Tquery; max:integer; barra:TprogressBar);
+const
+TAB = #9; //Tabular para dar espacio entre las columnas.
+CR = #13; // Simula la tecla enter, es decir separa cada fila.
+var
+R, C: integer; // R= de row Fila, y C= de columna
+S: string; // Es el buffer donde se va a guardar el texto a copiar.
+begin
+{Cuadricula es el nombre del componente StringGrid}
+S := '';
+barra.position:=0;
+barra.max:=max;
+r:=0;
+
+for C := 0 to q.FieldCount - 1 do
+    begin
+        S := S + stringReplace(TRIM(q.Fields[c].DisplayName),'#13','',[rfReplaceAll]); //Aqui vamos concatenando las celdas del stringGrid.
+        if C < q.FieldCount - 1 then
+        S := S + TAB; //esta condición es para ir tabulando el las columnas de tal forma que no salgan pegadas.
+    end;
+S := S + CR;
+q.first;
+while not(q.eof) do
+    begin
+        for C := 0 to q.FieldCount - 1 do
+            begin
+                S := S + stringReplace(TRIM(q.Fields[c].asstring),'#13','',[rfReplaceAll]); //Aqui vamos concatenando las celdas del stringGrid.
+                if C < q.FieldCount - 1 then
+                   S := S + TAB; //esta condición es para ir tabulando el las columnas de tal forma que no salgan pegadas.
+            end;
+           S := S + CR;
+        barra.position:=barra.position+1;
+        r:=r+1;
+        q.next;
+     end;
+Clipboard.AsText := S; //Este objeto es el que hace todo el trabajo de copiar el texto ala papelera de reciclaje
+barra.position:=0;
+END;
+
+
+procedure copiarGridP(g:TstringGrid; barra:TProgressBar);
+const
+TAB = #9; //Tabular para dar espacio entre las columnas.
+CR = #13; // Simula la tecla enter, es decir separa cada fila.
+var
+R, C: integer; // R= de row Fila, y C= de columna
+S: string; // Es el buffer donde se va a guardar el texto a copiar.
+begin
+{Cuadricula es el nombre del componente StringGrid}
+S := '';
+barra.position:=0;
+barra.max:=g.rowcount-1;
+for R := 0 to G.RowCount - 1 do
+    begin
+        for C := 0 to G.ColCount - 1 do
+            begin
+                S := S + stringReplace(TRIM(G.Cells[C, R]),'#13','',[rfReplaceAll]); //Aqui vamos concatenando las celdas del stringGrid.
+                if C < G.ColCount - 1 then
+                   S := S + TAB; //esta condición es para ir tabulando el las columnas de tal forma que no salgan pegadas.
+            end;
+        if R < G.RowCount - 1 then
+           S := S + CR;
+        barra.position:=barra.position+1;
+     end;
+Clipboard.AsText := S; //Este objeto es el que hace todo el trabajo de copiar el texto ala papelera de reciclaje
+barra.position:=0;
+END;
 
 
 procedure Sortgrid(Grid : TStringGrid; SortCol:integer; by: byte);
@@ -237,6 +310,7 @@ ExcelWorksheet1: TExcelWorksheet;
 begin
 try deletefile(extractfiledir(paramstr(0))+'\File.xlsx'); except end;
 crearFile(extractfiledir(paramstr(0))+'\File.xlsx');
+
 ExcelApplication1:=TExcelApplication.create(nil);
 ExcelWorkbook1:= TExcelWorkbook.create(nil);;
 ExcelWorksheet1:=TExcelWorksheet.create(nil);;

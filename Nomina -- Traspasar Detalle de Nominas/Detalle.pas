@@ -114,6 +114,7 @@ uses
     barra: TProgressBar;
     et: TLabel;
     ver: TCheckBox;
+    Label15: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -544,10 +545,12 @@ procedure TFDetalle.CalculaMontosNom;
 var
 per,ded:real;
 begin
-ded:=qperded.fields[1].asfloat;
+  ded:=qperded.fields[1].asfloat;
   qperded.next;
   per:= qperded.fields[1].asfloat;
   TOT.Caption:='Neto: '+formatfloat('#,0.00',PER-ded);
+
+
 end;
 
 
@@ -1390,9 +1393,19 @@ begin
                Q.execsql;
 
               //Se contabiliza.
-               q.close;
+
+            q.close;
+           q.sql.text:='CALL PcontDevAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'R'+#39+')';
+           Q.execsql;
+
+          { q.close;
+           q.sql.text:='CALL pcontejeAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'R'+#39+')';
+           Q.execsql;  }
+
+
+              { q.close;
                q.sql.text:='CALL PcontDevengadoTodas('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+')';
-               Q.execsql;  
+               Q.execsql; }
 
                {//Se marca la nomina como contabilizada
                Q.close;
@@ -1400,9 +1413,9 @@ begin
                            ' WHERE NOMI_NOMINA='+NOMINA.TEXT;
                Q.execsql; }
 
-               q.close;
+              { q.close;
                q.sql.text:='CALL pcontejepagtodas('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+')';
-               Q.execsql;
+               Q.execsql;    }
                Showmessage('Se ha contabilizado la nómina y creado las ordenes de Pago');
 
                {//Se marca la nomina como Ejercida pagada

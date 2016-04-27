@@ -318,6 +318,7 @@ q.close;
 q.sql.text:='DELETE FROM PSOLEVENDET WHERE SOLE_SOLICITUD='+#39+NUMERO.Text+#39;
 Q.ExecSQL;
 
+SHOWMESSAGE('ENTRE AL DETALLE');
 for x:=1 to grid.rowcount-2 do
    begin
       if (grid.cells[0,x]<>'') OR (grid.cells[1,x]<>'') then
@@ -459,7 +460,7 @@ begin
         q.OPEN;
         NUMERO.FIELD.Asstring:=Q.FIELDS[0].ASSTRING;
      end;
-
+ SHOWMESSAGE('ENTRE AL PADRE');
  qInsert.ExecSql ;
  GrabaDetalle ;
  Limpiagrid(grid);

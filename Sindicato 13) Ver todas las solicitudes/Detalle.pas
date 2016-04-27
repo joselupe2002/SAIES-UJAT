@@ -270,6 +270,7 @@ begin
          q.sql.text:='SELECT SGETBOLSAS('+#39+GRIDNP.cells[newcol,lingNP]+#39+') FROM DUAL';
          q.open;
          GRIDNP.cells[2,LingNP]:=q.fields[0].asstring;
+
          GUARDANP;
       end;
 
@@ -746,6 +747,7 @@ begin
         gridnp.Cells[1,gridnp.rowcount-2]:=lista.cells[2,ling];
         colgnp:=0;
         lingnp:= gridnp.rowcount-2;
+
         getdescripgridnp;
      end
   else

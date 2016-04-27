@@ -61,7 +61,7 @@ AutoIncBuild=0
 MajorVer=3
 MinorVer=0
 Release=0
-Build=20
+Build=24
 Debug=0
 PreRelease=0
 Special=0
@@ -72,7 +72,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=ASV
 FileDescription=Captura de Eventuales
-FileVersion=3.0.0.20
+FileVersion=3.0.0.24
 InternalName=PTransfer
 LegalCopyright=Copyright © Adolfo Salazar Vargas - SAVA640527-RD8
 LegalTrademarks=Shake 2.4

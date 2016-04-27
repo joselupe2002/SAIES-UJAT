@@ -40,7 +40,6 @@ uses
     Label13: TLabel;
     totalg: TLabel;
     qBancos: TQuery;
-    SpeedButton2: TSpeedButton;
     Tick: TEkRTF;
     det: TQuery;
     TabSheet4: TTabSheet;
@@ -48,7 +47,6 @@ uses
     Label15: TLabel;
     totalGr: TLabel;
     QGr: TQuery;
-    SpeedButton3: TSpeedButton;
     PSAN: TPanel;
     Label16: TLabel;
     Label17: TLabel;
@@ -56,7 +54,6 @@ uses
     fecha2: TDateTimePicker;
     genSan: TSpeedButton;
     Label18: TLabel;
-    cuentasan: TEdit;
     SpeedButton5: TSpeedButton;
     NOP: TLabel;
     bbancomer: TSpeedButton;
@@ -76,7 +73,6 @@ uses
     conveniosit: TEdit;
     Label31: TLabel;
     Fecha3Sit: TDateTimePicker;
-    Button1: TButton;
     Tick2: TEkRTF;
     T: TQuery;
     PROG: TProgressBar;
@@ -111,7 +107,6 @@ uses
     elbanco: TComboBox;
     Label34: TLabel;
     seraDJ: TCheckBox;
-    ExpAllReport: TSpeedButton;
     Label11: TLabel;
     GridDJ: TStringGrid;
     totalDJ: TLabel;
@@ -155,6 +150,39 @@ uses
     nomina: TComboBox;
     NUMREG: TEdit;
     Shape1: TShape;
+    Label22: TLabel;
+    elProyT: TComboBox;
+    Label37: TLabel;
+    elProy: TComboBox;
+    PHSBC: TPanel;
+    genHSBC: TSpeedButton;
+    Label40: TLabel;
+    SpeedButton9: TSpeedButton;
+    cuentaHSBC: TComboBox;
+    Cuentasan: TComboBox;
+    ConfigurarHSBC1: TMenuItem;
+    Label38: TLabel;
+    FechaHSBC: TDateTimePicker;
+    Label39: TLabel;
+    HoraHSBC: TEdit;
+    ReferenciaHSBC: TEdit;
+    Label41: TLabel;
+    SpeedButton8: TSpeedButton;
+    SpeedButton10: TSpeedButton;
+    progr: TProgressBar;
+    Qe: TQuery;
+    QCta: TQuery;
+    Label42: TLabel;
+    CancelC: TCheckBox;
+    CancelR: TCheckBox;
+    GenerarTodosHSBCNuevo1: TMenuItem;
+    SpeedButton11: TSpeedButton;
+    genHSBCtxt: TSpeedButton;
+    GenerartodosHSBCNuevotxt1: TMenuItem;
+    SpeedButton12: TSpeedButton;
+    Leyenda: TLabel;
+    btnSc: TSpeedButton;
+    ExportarReporteCuadre1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -167,9 +195,8 @@ uses
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DGRDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
-    procedure ImprimeRep(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean);
+    procedure ImprimeRep(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
     procedure TickScanRecord(ScanInfo: TEkScanInfo);
-    procedure SpeedButton3Click(Sender: TObject);
     procedure genSanClick(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
     procedure ExportarHSBC(abrir:boolean);
@@ -190,7 +217,6 @@ uses
     procedure ventanaSIT;
     procedure SpeedButton7Click(Sender: TObject);
     procedure SpeedButton6Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure GridNSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
     procedure GenerarReporte1Click(Sender: TObject);
@@ -214,7 +240,7 @@ uses
     procedure abrirCuentas;
     procedure ANIOChange(Sender: TObject);
     procedure colocaAreaClick(Sender: TObject);
-   FUNCTION calculasql(rubro:string;sfdo:string;area:string; banco:string; dj:boolean; Tipo:string):STRING;
+   FUNCTION calculasql(rubro:string;sfdo:string;area:string; banco:string; dj:boolean; Tipo:string; Proy:string):STRING;
     procedure TabOpChange(Sender: TObject);
     procedure sacaReportes;
     procedure sacaReportesT;
@@ -222,7 +248,6 @@ uses
     procedure elsfdoChange(Sender: TObject);
     procedure laareaChange(Sender: TObject);
     procedure elbancoChange(Sender: TObject);
-    procedure ExpAllReportClick(Sender: TObject);
     procedure GridDJDblClick(Sender: TObject);
     procedure BancoCuadChange(Sender: TObject);
     procedure GridBSelectCell(Sender: TObject; ACol, ARow: Integer;
@@ -237,17 +262,38 @@ uses
     procedure GenerarTodasTransferencias1Click(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     FUNCTION calculasql_e(rubro:string;sfdo:string;area:string; banco:string; dj:boolean; Tipo:string; PROY:STRING):STRING;
-
+    procedure elProyChange(Sender: TObject);
+    procedure elBancoTChange(Sender: TObject);
+    procedure antesExportarHSBC;
+    procedure genHSBCClick(Sender: TObject);
+    procedure SpeedButton9Click(Sender: TObject);
+    procedure SpeedButton8Click(Sender: TObject);
+    procedure ReporteExcel(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
+    procedure btnScClick(Sender: TObject);
+    procedure ConfigurarHSBC1Click(Sender: TObject);
+    procedure ExportarHSBCNew(abrir:boolean);
+    procedure GenerarTodosHSBCNuevo1Click(Sender: TObject);
+    procedure SpeedButton11Click(Sender: TObject);
+    procedure exportarHSBCNewTxt(abrir:boolean);
+    procedure genHSBCtxtClick(Sender: TObject);
+    procedure GenerartodosHSBCNuevotxt1Click(Sender: TObject);
+    procedure SpeedButton12Click(Sender: TObject);
+    procedure ReporteExcelxArea(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
+ function DameNombre(accion:string; extension:string; cuentaTran:string):string;
+    procedure SpeedButton10Click(Sender: TObject);
+    procedure ExportaCuadre;
+    function dameCtaBanco(xrubro:string;xsfdo:string;xarea:string;xproy:string;xbanco:string):string;
+    procedure ExportarReporteCuadre1Click(Sender: TObject);
+    procedure ColocaBorde(hoja:TExcelWorksheet;lin:integer;col:integer);
+    procedure FormatoTitulo(hoja:TExcelWorksheet;lin:integer;col:integer);
   private
     { Private declarations }
-    iComponenteX, iComponenteY: Integer;
-    bMoviendo: Boolean;
   public
     { Public declarations }
   end;
 
 var
-  rubrorep,sfdorep,arearep,bancorep:string;
+  proyrep,rubrorep,sfdorep,arearep,bancorep:string;
   djrep:boolean;
   FDetalle: TFDetalle;
   FMain : TFMain ;
@@ -258,6 +304,7 @@ var
    VURES_DESC:STRING;
 fechaGen:string;
 abrirSan:boolean;
+abrirHSBC:BOOLEAN;
 implementation
 
 
@@ -297,6 +344,7 @@ begin
  GRIDB.CELLS[0,0]:='Rubro';
  GRIDB.CELLS[1,0]:='Sfdo';
  GRIDB.CELLS[2,0]:='Área';
+ GRIDB.CELLS[3,0]:='Proy';
  GRIDB.CELLS[3,0]:='Monto';
 
 
@@ -393,6 +441,14 @@ begin
 
         abrirCuentas;
 
+        q.close;
+        q.sql.text:='select count(*) from ptransfernom s where s.tran_banco is not null and s.tran_cuenta is null '+
+                    ' and s.tran_nomina='+#39+NOmina.text+#39;
+        q.open;
+        leyenda.caption:='';
+        if q.Fields[0].AsInteger>0 then
+           leyenda.caption:='Existen pagos de Empleados que van por transferencia y no tienen cuenta de Transferencia';
+
 
 
         {RelPagos.Enabled:=true;
@@ -411,35 +467,44 @@ hacer:boolean;
 begin
   inherited;
   q.close;
-  q.sql.text:='SELECT COUNT(*) FROM PTRANSFERNOM WHERE TRAN_NOMINA='+NOMINA.TEXT;
+  q.sql.text:='SELECT COUNT(*) FROM PCONTCONFIG WHERE CONT_NOMINA='+#39+NOMINA.TEXT+#39;
   Q.open;
-  if q.fields[0].asinteger>0 then
-      if Application.MessageBox('Está nómina ya se encuentra traspada, ¿Desea volver hacer el proceso, se perderán los datos?','Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
-          hacer:=true
-      else
-          hacer:=false
-  else
-      hacer:=true;
 
-  if hacer then
-     begin
-        q.close;
-        if str_(tipo.text,'-')<>'V' then
-              q.sql.text:='CALL LLENATRANSFER('+NOMINA.TEXT+','+#39+STR_(TIPO.text,'-')+#39+')'
-        else
-              q.sql.text:='CALL LLENATRANSFERVIN('+NOMINA.TEXT+')';
-        q.ExecSQL;
-        qcuentas.close;
-        qcuentas.sql.text:='SELECT EMPL, NOMBRE, BANCO, '+
-        'BANCO_D AS BANCOD, CUENTA, URES, TPSTO AS TIPO_PSTO, MONTO, NOMINA, '+
-        'OBS, CANCELADO, NPAGO, RUBRO, SFDO, AREA FROM PVTRANSFERNOM T  WHERE NOMINA='+NOMINA.text+' ORDER BY EMPL';
-        savetofileLog(QCuentas.sql.text);
-        qCuentas.Open;
-        NOMINAChange(nil);
-     end;
+  if q.fields[0].asinteger<=0 then
+      begin
+          q.close;
+          q.sql.text:='SELECT COUNT(*) FROM PTRANSFERNOM WHERE TRAN_NOMINA='+NOMINA.TEXT;
+          Q.open;
+          if q.fields[0].asinteger>0 then
+              if Application.MessageBox('Está nómina ya se encuentra traspada, ¿Desea volver hacer el proceso, se perderán los datos?','Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
+                  hacer:=true
+              else
+                  hacer:=false
+          else
+              hacer:=true;
+
+          if hacer then
+             begin
+                q.close;
+                if str_(tipo.text,'-')<>'V' then
+                      q.sql.text:='CALL LLENATRANSFER('+NOMINA.TEXT+','+#39+STR_(TIPO.text,'-')+#39+')'
+                else
+                      q.sql.text:='CALL LLENATRANSFERVIN('+NOMINA.TEXT+')';
+                q.ExecSQL;
+                qcuentas.close;
+                qcuentas.sql.text:='SELECT EMPL, NOMBRE, BANCO, '+
+                'BANCO_D AS BANCOD, CUENTA, URES, TPSTO AS TIPO_PSTO, MONTO, NOMINA, '+
+                'OBS, CANCELADO, NPAGO, RUBRO, SFDO, AREA FROM PVTRANSFERNOM T  WHERE NOMINA='+NOMINA.text+' ORDER BY EMPL';
+                savetofileLog(QCuentas.sql.text);
+                qCuentas.Open;
+                NOMINAChange(nil);
+             end;
+      end
+  else
+     Showmessage('Ya se encuentra contabilizada esta Nómina por lo tanto no puede ser modificada la Transferencia');
 end;
 
-FUNCTION TFDetalle.calculasql(rubro:string;sfdo:string;area:string; banco:string; dj:boolean; Tipo:string):STRING;
+FUNCTION TFDetalle.calculasql(rubro:string;sfdo:string;area:string; banco:string; dj:boolean; Tipo:string; Proy:string):STRING;
 var
 VBanco:string;
 VesDJ:String;
@@ -476,6 +541,15 @@ begin
   ' AND RUBRO='+#39+rubro+#39+
   ' AND SFDO='+#39+sfdo+#39+
   ' AND AREA='+#39+AREA+#39;
+
+  if proy='%' then
+     cadPrin:=CadPrin+' AND PROY NOT IN (SELECT TRAN_PROYECTO FROM PTRANEXCEPT x WHERE '+
+                                        ' X.TRAN_NOMINA='+#39+NOMINA.text+#39+
+                                        ' AND X.TRAN_RUBRO='+#39+rubro+#39+
+                                        ' AND X.TRAN_SFDO='+#39+sfdo+#39+
+                                        ' AND X.tran_AREA='+#39+AREA+#39+') '
+  else
+     cadPrin:=CadPrin+' AND PROY ='+#39+PROY+#39;
 
   if (tipo='TR') Then cadPrin:=cadPrin+' AND MONTO>0 AND CANCELADO='+#39+'N'+#39;
 
@@ -552,19 +626,19 @@ begin
 if (elrubro.text<>'') and (elsfdo.text<>'') and (laArea.text<>'') and (elBanco.text<>'') then
   begin
       Qrep.close;
-      QRep.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'G');
+      QRep.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'G',ElProy.text);
       savetofilelog(qrep.sql.text);
       qRep.open;
       NOP.Caption:=inttostr(qrep.recordcount);
 
       Q.close;
-      Q.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'C');
+      Q.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'C',ElProy.text);
       savetofilelog(q.sql.text);
       q.open;
       regrep.caption:=q.Fields[0].asstring;
 
       Q.close;
-      Q.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'S');
+      Q.sql.text:=calculasql(elrubro.text,elsfdo.text,laArea.text,str_(elbanco.text,'-'),SeraDJ.checked,'S',ElProy.text);
       savetofilelog(q.sql.text);
       q.open;
       montorep.caption:=formatfloat('#,#0.00',q.Fields[0].asfloat);
@@ -576,7 +650,7 @@ end;
 procedure TFDetalle.sacaReportesT;
 begin
 
-if (elrubrot.text<>'') and (elsfdot.text<>'') and (laAreat.text<>'') and (elBancot.text<>'') then
+if (elrubrot.text<>'') and (elsfdot.text<>'') and (laAreat.text<>'') and (elBancot.text<>'') and (elProyt.Text<>'') then
   begin
       LIMPIAGRID(gridGr);
       gridGr.rowcount:=2;
@@ -587,7 +661,7 @@ if (elrubrot.text<>'') and (elsfdot.text<>'') and (laAreat.text<>'') and (elBanc
       gridgr.Cells[3,0]:='MONTO';
 
       S.close;
-      s.sql.text:=calculasql(elrubrot.text,elsfdot.text,laAreat.text,str_(elbancot.text,'-'),SeraDJt.checked,'TR');
+      s.sql.text:=calculasql(elrubrot.text,elsfdot.text,laAreat.text,str_(elbancot.text,'-'),SeraDJt.checked,'TR',ElProyt.text);
       savetofilelog(s.sql.text);
       s.open;
 
@@ -653,26 +727,30 @@ end;
 
 
 
-procedure TFDetalle.ImprimeRep(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean);
+procedure TFDetalle.ImprimeRep(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
 var
-vis:string;
-venci:string;
 Q:Tquery;
-Subtotal, total, isr:real;
 TipoNom:string;
 esDJ:STRING;
+laNominaes:String;
+cadCancel:string;
 begin
   q := TQuery.Create(Application) ;
   q.DataBaseName := 'Sistema' ;
 
 esdj:='';
 IF seraDJ.Checked then esdj:='DJ';
+
+cadCancel:='';
+if cancelR.Checked then cadCancel:=' AND  CANCELADO='+#39+'N'+#39;
+
+
 if not(fileexists(ExtractFiledir(Paramstr(0))+'\RepTransfer.rtf')) then
   devRTF(q,'PCFILERTF','FILE_FILE','FILE_CLAVE','REPTRANSFER','rtf');
 
   tiponom:=str_(tipo.text,'-');
 
-  rubrorep:=vrubro;sfdoRep:=vsfdo;areaRep:=Varea; bancorep:=vbanco; djRep:=vdj;
+  rubrorep:=vrubro;sfdoRep:=vsfdo;areaRep:=Varea; bancorep:=vbanco; djRep:=vdj;proyRep:=Vproy;
   Tick.ClearVars;
   Tick.CreateVar('FECHA',formatdatetime('dd/mm/yyyy',date));
   Tick.CreateVar('HORA',formatdatetime('HH:nn am/pm',time));
@@ -689,26 +767,29 @@ if not(fileexists(ExtractFiledir(Paramstr(0))+'\RepTransfer.rtf')) then
 
 
   qP.close;
-  qP.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R');
+  qP.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R',vproy);
   savetofilelog('==============='+qP.sql.text);
   qP.open;
 
   det.close;
-  det.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R2')+
-              ' AND URESP='+#39+QP.fieldbyname('URES').asstring+#39+
+  det.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R2',vproy)+
+              ' AND URESP='+#39+QP.fieldbyname('URES').asstring+#39+ cadCancel+
               ' GROUP BY SUBSTR(S.URESP,1,2), SUBSTR(S.URESP,3,5), '+
               ' S.URESP_DESC, S.EMPL, S.NOMBRE,S.CUENTA, S.CANCELADO'+
               ' ORDER BY 1,2';
   savetofilelog(DET.sql.text);
   det.open;
 
+
+  laNominaes:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
   CreateDir('c:\Transferencias\');
-  CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\');
-  CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Reportes\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\'+rubroRep+'\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\'+rubroRep+'\Reportes\');
  // CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Reportes\'+str_(tipo.text,'-')+'_'+nomina.text+'\');
 
   Tick.InFile:=ExtractFiledir(Paramstr(0))+'\RepTransfer.rtf';
-  Tick.OutFile:='c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Reportes\'+vBanco+' '+vArea+' '+vrubro+' '+vsfdo+' '+esDJ+'.rtf';
+  Tick.OutFile:='c:\Transferencias\'+laNominaes+'\'+rubroRep+'\Reportes\'+vBanco+' '+vArea+' '+vrubro+' '+vsfdo+' '+esDJ+'_PROY_('+vproy+')'+'.rtf';
 
   if mostrar then Tick.ExecuteOpen([QP, det],SW_SHOW)
 
@@ -721,12 +802,299 @@ end;
 
 
 
+
+procedure TFDetalle.ReporteExcel(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
+var
+cadCancel:string;
+id:integer;
+laures:string;
+Subtotal, total:real;
+x,y:integer;
+esDJ:STRING;
+elNombre,laNominaes:String;
+ExcelApplication1:TExcelApplication;
+ExcelWorkbook1: TExcelWorkbook;
+ExcelWorksheet1: TExcelWorksheet;
+
+begin
+  esdj:='';
+  IF seraDJ.Checked then esdj:='DJ';
+
+  cadCancel:='';
+  if cancelr.Checked then cadCancel:=' AND CANCELADO='+#39+'N'+#39;
+
+
+  rubrorep:=vrubro;sfdoRep:=vsfdo;areaRep:=Varea; bancorep:=vbanco; djRep:=vdj;proyRep:=Vproy;
+  laNominaes:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+  elNombre:=dameNombre('R','.xlsx','');
+
+  CreateDir('c:\Transferencias\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\Reportes\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\Reportes\'+vbanco+'\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\Reportes\'+vbanco+'\'+rubroRep+'\');
+
+
+  try deletefile('c:\Transferencias\'+laNominaes+'\Reportes\'+vbanco+'\'+rubroRep+'\'+elNombre); except end;
+  CrearFile('c:\Transferencias\'+laNominaes+'\Reportes\'+vbanco+'\'+rubroRep+'\'+elNombre);
+
+  ExcelApplication1:=TExcelApplication.create(nil);
+  ExcelWorkbook1:= TExcelWorkbook.create(nil);
+  ExcelWorksheet1:=TExcelWorksheet.create(nil);
+
+
+  ExcelApplication1.Workbooks.Open('c:\Transferencias\'+laNominaes+'\Reportes\'+vbanco+'\'+rubroRep+'\'+elNombre,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,id);
+
+
+  ExcelWorkbook1.ConnectTo(ExcelApplication1.ActiveWorkbook);
+  ExcelWorksheet1.ConnectTo(ExcelApplication1.ActiveSheet as _Worksheet);
+  excelworksheet1.ConnectTo(excelworkbook1.Sheets.Item[1] as _Worksheet);
+  excelworksheet1.Activate;
+
+  progr.Position:=0;
+
+  qe.close;
+  qe.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'C',vproy);
+  qe.open;
+  progr.Max:=qe.fields[0].asinteger;
+
+  qe.close;
+  qe.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R2',vproy)+
+               cadCancel+
+              ' GROUP BY SUBSTR(S.URESP,1,2), SUBSTR(S.URESP,3,5), '+
+              ' S.URESP_DESC, S.EMPL, S.NOMBRE,S.CUENTA, S.CANCELADO'+
+              ' ORDER BY 1,2';
+  savetofilelog(qe.sql.text);
+  qe.open;
+
+  ExcelWorksheet1.Cells.Item[1,1].Font.Bold:=true;
+  ExcelWorksheet1.Cells.Item[1,1].value:='TRANSFERENCIA '+RNOMINA.TEXT+' BANCO: '+VBANCO+' '+RUBROREP+' '+VSFDO+' '+VAREA;
+  ExcelWorksheet1.Range['A1', 'H1'].MergeCells := true;
+
+  for x:=0 to qe.FieldCount-1 do
+     begin
+        ExcelWorksheet1.Cells.Item[2,x+1].Font.Bold:=true;
+        ExcelWorksheet1.Cells.Item[2,x+1].value:=qe.Fields[x].FullName;
+        ExcelWorksheet1.Cells.Item[2,x+1].Interior.ColorIndex :=41;
+     end;
+
+
+  y:=3;
+  qe.first;
+  subtotal:=0;
+  total:=0;
+  laures:=qe.fields[2].asstring;
+  while not(qe.eof) do
+     begin
+        ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+        ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+        ExcelWorksheet1.Cells.Item[Y,1].numberformat:= '@';
+        ExcelWorksheet1.Cells.Item[Y,2].numberformat:= '@';
+
+        if laures<>qe.fieldbyname('DESCURES').asstring then
+           begin
+
+              ExcelWorksheet1.Cells.Item[Y,7].Font.Bold:=true;
+              ExcelWorksheet1.Cells.Item[y,7].value:='SUBTOTAL ';
+              ExcelWorksheet1.Cells.Item[y,7].Interior.ColorIndex :=41;
+
+              ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+              ExcelWorksheet1.Cells.Item[Y,8].Font.Bold:=true;
+              ExcelWorksheet1.Cells.Item[y,8].Interior.ColorIndex :=41;
+              ExcelWorksheet1.Cells.Item[y,8].value:=formatfloat('#,0.00',SUBTOTAL);
+
+              ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+
+              Y:=Y+1;
+              ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+              ExcelWorksheet1.Cells.Item[Y,1].numberformat:= '@';
+              ExcelWorksheet1.Cells.Item[Y,2].numberformat:= '@';
+              subtotal:=0;
+              laures:=qe.fieldbyname('DESCURES').asstring;
+           end;
+
+        subtotal:=subtotal+qe.fieldbyname('MONTO').asfloat;
+        total:=total+qe.fieldbyname('MONTO').asfloat;
+        for x:=0 to qe.Fields.Count-1  do
+               ExcelWorksheet1.Cells.Item[y,x+1].value:=qe.fields[x].asstring;
+
+        progr.Position:=progr.Position+1;
+        y:=y+1;
+        qe.next;
+
+     end;
+
+    ExcelWorksheet1.Cells.Item[Y,7].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[y,7].value:='SUBTOTAL ';
+    ExcelWorksheet1.Cells.Item[Y,8].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+    ExcelWorksheet1.Cells.Item[y,8].value:=floattostr(SUBTOTAL);
+    ExcelWorksheet1.Cells.Item[Y+1,7].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[y+1,7].value:='TOTAL ';
+     ExcelWorksheet1.Cells.Item[Y+1,8].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[Y+1,8].numberformat:='$#,##0.00';
+    ExcelWorksheet1.Cells.Item[y+1,8].value:=floattostr(total);
+
+
+ExcelWorkbook1.Save;
+ExcelApplication1.Quit;
+ExcelWorksheet1.Disconnect;
+ExcelWorkbook1.Disconnect;
+ExcelApplication1.Disconnect;
+end;
+
+
+
+procedure TFDetalle.ReporteExcelxArea(VRubro:string; Vsfdo:string; Varea:string; Vbanco:String; Vdj:boolean; Mostrar:boolean; vproy:string);
+var
+cadCancel:string;
+id:integer;
+laures:string;
+Subtotal, total:real;
+x,y:integer;
+esDJ:STRING;
+elNombre,laNominaes:String;
+ExcelApplication1:TExcelApplication;
+ExcelWorkbook1: TExcelWorkbook;
+ExcelWorksheet1: TExcelWorksheet;
+
+begin
+  esdj:='';
+  IF seraDJ.Checked then esdj:='DJ';
+
+  cadCancel:='';
+  if cancelr.Checked then cadCancel:=' AND CANCELADO='+#39+'N'+#39;
+
+
+  rubrorep:=vrubro;sfdoRep:=vsfdo;areaRep:=Varea; bancorep:=vbanco; djRep:=vdj;proyRep:=Vproy;
+  laNominaes:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+  elNombre:=dameNombre('R','.xlsx','');
+
+  CreateDir('c:\Transferencias\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\Reportes_'+Varea+'\');
+
+  try deletefile('c:\Transferencias\'+laNominaes+'\Reportes_'+Varea+'\'+elNombre); except end;
+  CrearFile('c:\Transferencias\'+laNominaes+'\Reportes_'+Varea+'\'+elNombre);
+
+  ExcelApplication1:=TExcelApplication.create(nil);
+  ExcelWorkbook1:= TExcelWorkbook.create(nil);
+  ExcelWorksheet1:=TExcelWorksheet.create(nil);
+
+
+  ExcelApplication1.Workbooks.Open('c:\Transferencias\'+laNominaes+'\Reportes_'+Varea+'\'+elNombre,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,id);
+
+
+  ExcelWorkbook1.ConnectTo(ExcelApplication1.ActiveWorkbook);
+  ExcelWorksheet1.ConnectTo(ExcelApplication1.ActiveSheet as _Worksheet);
+  excelworksheet1.ConnectTo(excelworkbook1.Sheets.Item[1] as _Worksheet);
+  excelworksheet1.Activate;
+
+  progr.Position:=0;
+
+  qe.close;
+  qe.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'C',vproy);
+  qe.open;
+  progr.Max:=qe.fields[0].asinteger;
+
+  qe.close;
+  qe.sql.text:=calculasql(vrubro,vsfdo,varea,str_(vbanco,'-'),vDJ,'R2',vproy)+
+               cadCancel+
+              ' GROUP BY SUBSTR(S.URESP,1,2), SUBSTR(S.URESP,3,5), '+
+              ' S.URESP_DESC, S.EMPL, S.NOMBRE,S.CUENTA, S.CANCELADO'+
+              ' ORDER BY 1,2';
+  savetofilelog(qe.sql.text);
+  qe.open;
+
+
+  ExcelWorksheet1.Cells.Item[1,1].Font.Bold:=true;
+  ExcelWorksheet1.Cells.Item[1,1].value:='TRANSFERENCIA '+RNOMINA.TEXT+' BANCO: '+VBANCO+' '+RUBROREP+' '+VSFDO+' '+VAREA;
+  ExcelWorksheet1.Range['A1', 'H1'].MergeCells := true;
+
+  for x:=0 to qe.FieldCount-1 do
+     begin
+        ExcelWorksheet1.Cells.Item[2,x+1].Font.Bold:=true;
+        ExcelWorksheet1.Cells.Item[2,x+1].value:=qe.Fields[x].FullName;
+        ExcelWorksheet1.Cells.Item[2,x+1].Interior.ColorIndex :=41;
+     end;
+
+
+  y:=3;
+  qe.first;
+  subtotal:=0;
+  total:=0;
+  laures:=qe.fields[2].asstring;
+  while not(qe.eof) do
+     begin
+        ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+        ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+        ExcelWorksheet1.Cells.Item[Y,1].numberformat:= '@';
+        ExcelWorksheet1.Cells.Item[Y,2].numberformat:= '@';
+
+        if laures<>qe.fieldbyname('DESCURES').asstring then
+           begin
+
+              ExcelWorksheet1.Cells.Item[Y,7].Font.Bold:=true;
+              ExcelWorksheet1.Cells.Item[y,7].value:='SUBTOTAL ';
+              ExcelWorksheet1.Cells.Item[y,7].Interior.ColorIndex :=41;
+
+              ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+              ExcelWorksheet1.Cells.Item[Y,8].Font.Bold:=true;
+              ExcelWorksheet1.Cells.Item[y,8].Interior.ColorIndex :=41;
+              ExcelWorksheet1.Cells.Item[y,8].value:=formatfloat('#,0.00',SUBTOTAL);
+
+              ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+
+              Y:=Y+1;
+              ExcelWorksheet1.Cells.Item[Y,4].numberformat:= '@';
+              ExcelWorksheet1.Cells.Item[Y,1].numberformat:= '@';
+              ExcelWorksheet1.Cells.Item[Y,2].numberformat:= '@';
+              subtotal:=0;
+              laures:=qe.fieldbyname('DESCURES').asstring;
+           end;
+
+        subtotal:=subtotal+qe.fieldbyname('MONTO').asfloat;
+        total:=total+qe.fieldbyname('MONTO').asfloat;
+        for x:=0 to qe.Fields.Count-1  do
+               ExcelWorksheet1.Cells.Item[y,x+1].value:=qe.fields[x].asstring;
+
+        progr.Position:=progr.Position+1;
+        y:=y+1;
+        qe.next;
+
+     end;
+
+    ExcelWorksheet1.Cells.Item[Y,7].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[y,7].value:='SUBTOTAL ';
+    ExcelWorksheet1.Cells.Item[Y,8].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[Y,8].numberformat:='$#,##0.00';
+    ExcelWorksheet1.Cells.Item[y,8].value:=floattostr(SUBTOTAL);
+    ExcelWorksheet1.Cells.Item[Y+1,7].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[y+1,7].value:='TOTAL ';
+     ExcelWorksheet1.Cells.Item[Y+1,8].Font.Bold:=true;
+    ExcelWorksheet1.Cells.Item[Y+1,8].numberformat:='$#,##0.00';
+    ExcelWorksheet1.Cells.Item[y+1,8].value:=floattostr(total);
+
+
+ExcelWorkbook1.Save;
+ExcelApplication1.Quit;
+ExcelWorksheet1.Disconnect;
+ExcelWorkbook1.Disconnect;
+ExcelApplication1.Disconnect;
+end;
+
 procedure TFDetalle.TickScanRecord(ScanInfo: TEkScanInfo);
 begin
    if scaninfo.Number=1 then
      begin
         det.close;
-        det.sql.text:=calculasql(rubroRep,sfdoRep,areaRep,str_(bancoRep,'-'),djRep,'R2')+
+        det.sql.text:=calculasql(rubroRep,sfdoRep,areaRep,str_(bancoRep,'-'),djRep,'R2',proyrep)+
               ' AND URESP='+#39+QP.fieldbyname('URES').asstring+#39+
               ' GROUP BY SUBSTR(S.URESP,1,2), SUBSTR(S.URESP,3,5), '+
               ' S.URESP_DESC, S.EMPL, S.NOMBRE,S.CUENTA, S.CANCELADO'+
@@ -736,6 +1104,39 @@ begin
      end;
 end;
 
+
+function tfdetalle.DameNombre(accion:string; extension:string; cuentaTran:string):string;
+var
+nombre:string;
+begin
+   if accion='T' then
+      begin
+         if seradjt.Checked then
+            nombre:=secondCad(elBancot.Text,'-')+' '+laareat.Text+' '+elrubrot.Text+' '+elsfdot.Text+' DJ '
+         else
+            nombre:=secondCad(elBancot.Text,'-')+' '+laareat.Text+' '+elrubrot.Text+' '+elsfdot.Text;
+
+         if elProyT.text<>'%' then
+            nombre:=nombre+' '+copy(SecondCad(TIPO.TEXT,'-'),1,3)+' PY'+elProyT.text+extension
+         else
+            nombre:=nombre+' '+copy(SecondCad(TIPO.TEXT,'-'),1,3)+extension;
+      end;
+   if accion='R' then
+      begin
+         if seradj.Checked then
+            nombre:=secondCad(elBanco.Text,'-')+' '+laarea.Text+' '+elrubro.Text+' '+elsfdo.Text+' DJ '
+         else
+            nombre:=secondCad(elBanco.Text,'-')+' '+laarea.Text+' '+elrubro.Text+' '+elsfdo.Text;
+
+         if elProy.text<>'%' then
+            nombre:=nombre+' '+copy(SecondCad(TIPO.TEXT,'-'),1,3)+' PY'+elProy.text+extension
+         else
+            nombre:=nombre+' '+copy(SecondCad(TIPO.TEXT,'-'),1,3)+extension;
+      end;
+  DameNombre:=nombre;
+end;
+
+
 procedure TFDetalle.ExportarHSBC(abrir:boolean);
 var
 id:integer;
@@ -743,24 +1144,31 @@ x,y:integer;
 ExcelApplication1:TExcelApplication;
 ExcelWorkbook1: TExcelWorkbook;
 ExcelWorksheet1: TExcelWorksheet;
+rutaNom:string;
+rutaNombre:string;
 nombre:string;
 grupo:string;
 begin
 
-grupo:=elBancot.Text+' '+laareat.Text+' '+elrubrot.Text+' '+elsfdot.Text;
+rutaNom:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(fechaGen,'/','',[rfReplaceAll]);
+
+rutaNombre:=dameNombre('T','.slk','');
 
 CreateDir('c:\Transferencias\');
-CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(fechaGen,'/','',[rfReplaceAll])+'\');
-CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(fechaGen,'/','',[rfReplaceAll])+'\HSBC\');
-CrearFile('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\HSBC\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.slk');
+CreateDir('c:\Transferencias\'+rutaNom+'\');
+CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\');
+CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC\');
+CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC\'+elrubrot.text+'\');
+CrearFile('c:\Transferencias\'+rutaNom+'\Layaout\HSBC\'+elrubrot.text+'\'+rutaNombre);
+
 
 ExcelApplication1:=TExcelApplication.create(nil);
 ExcelWorkbook1:= TExcelWorkbook.create(nil);;
 ExcelWorksheet1:=TExcelWorksheet.create(nil);;
 
-showmessage('Exportar....'+GRUPO);
+//showmessage('Exportar....'+GRUPO);
 
-ExcelApplication1.Workbooks.Open('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\HSBC\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.slk',
+ExcelApplication1.Workbooks.Open('c:\Transferencias\'+rutaNom+'\Layaout\HSBC\'+elrubrot.text+'\'+rutaNombre,
   emptyParam,emptyParam,emptyParam,emptyParam,
   emptyParam,emptyParam,emptyParam,emptyParam,
   emptyParam,emptyParam,emptyParam,emptyParam,id);
@@ -775,7 +1183,6 @@ ExcelApplication1.Workbooks.Open('C:\Transferencias\'+str_(tipo.text,'-')+'_'+no
   prog.max:=gridgr.rowcount-1;
   for x:=1 to gridgr.rowcount-1 do
      begin
-
         ExcelWorksheet1.Cells.Item[y,1].value:=gridgr.cells[0,y];
         ExcelWorksheet1.Cells.Item[y,2].value:=gridgr.cells[3,y];
         ExcelWorksheet1.Cells.Item[y,3].value:=stringReplace(RNOMINA.text,'/','',[rfReplaceAll]);
@@ -788,22 +1195,178 @@ ExcelApplication1.Workbooks.Open('C:\Transferencias\'+str_(tipo.text,'-')+'_'+no
       ExcelApplication1.Visible[id]:=true;
   prog.Position:=0;
 
- // ExcelApplication1.Save('C:\Transferencias\'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\'+GRUPO.TEXT+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.slk');
+  if not(abrir) then
+     begin
+        ExcelWorkbook1.Save;
+        ExcelApplication1.Quit;
+     end;
+end;
 
+
+
+
+procedure TFDetalle.exportarHSBCNewTxt(abrir:boolean);
+var
+filTran:TstringList;
+nombre:string;
+apepat:string;
+apemat:string;
+x:integer;
+ContFil:integer;
+grupo:string;
+rutaNombre:string; rutaNom:string;
+elConvenioBanco:string;
+LAcuentaBanco:string;
+
+begin
+
+qcta.close;
+qcta.sql.text:='select getCuentaBanco('+#39+elRubrot.text+#39+','+
+#39+elSfdot.text+#39+','+#39+laareat.text+#39+','+#39+elProyT.text+#39+','+
+#39+str_(elbancot.text,'-')+#39+') FROM DUAL ';
+qcta.OPEN;
+elConvenioBanco:=copy(qcta.fields[0].asstring,1,pos('*',qcta.fields[0].asstring));
+LAcuentaBanco:=copy(qcta.fields[0].asstring, pos('*',qcta.fields[0].asstring)+1,length(qcta.fields[0].asstring));
+
+  filtran:=TstringList.create;
+  filtran.Clear;
+  contFil:=1;
+
+
+
+  filtran.Add('MXPRLFF'+colocaespacios(LAcuentaBanco,10)+
+              colocaceros(stringReplace(totalgr.caption,'.','',[rfReplaceAll]),14)+
+              colocaceros(inttostr(gridgr.rowcount-1),7)+
+              formatdatetime('DDMMYYYY',fechahsbc.date)+
+              colocaespacios(copy(horahsbc.text,1,5),5)+
+              colocaespacios(copy(referenciahsbc.text,1,34),34));
+
+  contFil:=ContFil+1;
+         for x:=1 to gridgr.rowcount-1 do
+           begin
+
+             nombre:= stringReplace(gridgr.Cells[2,x],'Ñ','N',[rfReplaceAll]);
+             nombre:= stringReplace(NOMBRE,'.','',[rfReplaceAll]);
+
+             filtran.Add(colocaceros(copy(gridgr.cells[0,contFil-1],1,10),10)+
+                         colocaceros(stringReplace(gridgr.cells[3,contFil-1],'.','',[rfReplaceAll]),14)+
+                         colocaespacios(COPY(stringReplace(RNOMINA.text,'/','',[rfReplaceAll]),1,34),34)+
+                         colocaespacios(COPY(nombre,1,35),35));
+
+              contFil:=ContFil+1;
+           end;
+
+
+      rutaNom:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(fechaGen,'/','',[rfReplaceAll]);
+      rutaNombre:=dameNombre('T','.txt',LAcuentaBanco);
+
+      CreateDir('c:\Transferencias\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_TXT\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_TXT\'+elrubrot.text+'\');
+      CrearFile('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_TXT\'+elrubrot.text+'\'+rutaNombre);
+
+      filtran.SaveToFile('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_TXT\'+elrubrot.text+'\'+rutaNombre);
+
+       if abrir then
+          ShellExecute(handle, 'open', PChar('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_TXT\'+elrubrot.text+'\'+rutaNombre), nil, nil, SW_show);
+       PSAN.visible:=false;
+end;
+
+
+procedure TFDetalle.ExportarHSBCNew(abrir:boolean);
+var
+id:integer;
+x,y:integer;
+ExcelApplication1:TExcelApplication;
+ExcelWorkbook1: TExcelWorkbook;
+ExcelWorksheet1: TExcelWorksheet;
+rutaNom:string;
+rutaNombre:string;
+nombre:string;
+grupo:string;
+elConvenioBanco:string;
+LAcuentaBanco:string;
+begin
+
+qcta.close;
+qcta.sql.text:='select getCuentaBanco('+#39+elRubrot.text+#39+','+
+#39+elSfdot.text+#39+','+#39+laareat.text+#39+','+#39+elProyT.text+#39+','+
+#39+STR_(elbancot.text,'-')+#39+') FROM DUAL ';
+qcta.OPEN;
+elConvenioBanco:=copy(qcta.fields[0].asstring,1,pos('*',qcta.fields[0].asstring));
+LAcuentaBanco:=copy(qcta.fields[0].asstring, pos('*',qcta.fields[0].asstring)+1,length(qcta.fields[0].asstring));
+
+
+
+ rutaNom:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(fechaGen,'/','',[rfReplaceAll]);
+ rutaNombre:=dameNombre('T','.csv',LAcuentaBanco);
+
+      CreateDir('c:\Transferencias\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_NEW\');
+      CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_NEW\'+elrubrot.text+'\');
+      CrearFile('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_NEW\'+elrubrot.text+'\'+rutaNombre);
+
+
+
+
+ExcelApplication1:=TExcelApplication.create(nil);
+ExcelWorkbook1:= TExcelWorkbook.create(nil);;
+ExcelWorksheet1:=TExcelWorksheet.create(nil);;
+
+//showmessage('Exportar....'+GRUPO);
+
+ExcelApplication1.Workbooks.Open('c:\Transferencias\'+rutaNom+'\Layaout\HSBC_NEW\'+elrubrot.text+'\'+rutaNombre,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,id);
+
+  ExcelWorkbook1.ConnectTo(ExcelApplication1.ActiveWorkbook);
+  ExcelWorksheet1.ConnectTo(ExcelApplication1.ActiveSheet as _Worksheet);
+  excelworksheet1.ConnectTo(excelworkbook1.Sheets.Item[1] as _Worksheet);
+  excelworksheet1.Activate;
+
+
+  ExcelWorksheet1.Cells.Item[1,1].value:='MXPRLF';
+  ExcelWorksheet1.Cells.Item[1,2].value:='F';
+  ExcelWorksheet1.Cells.Item[1,3].value:=LAcuentaBanco;
+   ExcelWorksheet1.Cells.Item[1,4].value:=totalgr.Caption;
+  ExcelWorksheet1.Cells.Item[1,5].value:=inttostr(gridgr.rowcount-1);
+  ExcelWorksheet1.Cells.Item[1,6].value:=formatdatetime('DDMMYYYY',fechahsbc.date);
+   ExcelWorksheet1.Cells.Item[1,7].value:=horahsbc.text;
+    ExcelWorksheet1.Cells.Item[1,8].value:=referenciahsbc.text;
+
+  y:=2;
+  PROG.Min:=0;
+  prog.max:=gridgr.rowcount-1;
+  for x:=1 to gridgr.rowcount-1 do
+     begin
+
+        ExcelWorksheet1.Cells.Item[y,1].value:=gridgr.cells[0,y-1];
+        ExcelWorksheet1.Cells.Item[y,2].value:=gridgr.cells[3,y-1];
+        ExcelWorksheet1.Cells.Item[y,3].value:=COPY(stringReplace(RNOMINA.text,'/','',[rfReplaceAll]),1,34);
+        nombre:= stringReplace(gridgr.Cells[2,x],'Ñ','N',[rfReplaceAll]);
+        nombre:= stringReplace(NOMBRE,'.','',[rfReplaceAll]);
+        ExcelWorksheet1.Cells.Item[y,4].value:=COPY(nombre,1,35);
+        y:=y+1;
+        prog.Position:=prog.Position+1;
+     end;
+      ExcelApplication1.Visible[id]:=true;
+  prog.Position:=0;
 
   if not(abrir) then
      begin
-        //ExcelApplication1.Save;
 
         ExcelWorkbook1.Save;
         ExcelApplication1.Quit;
-        //ExcelApplication1.quit;
-     end;
-//ShellExecute(handle, 'open', PChar('C:\Transferencias\'+stringReplace(inicia.text,'/','',[rfReplaceAll])+'\'+GRUPO.TEXT+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.slk'), nil, nil, SW_show);
 
-// ExcelWorksheet1.Disconnect;
-// ExcelWorkbook1.Disconnect;
-// ExcelApplication1.Disconnect;
+     end;
+ ExcelWorksheet1.Disconnect;
+ ExcelWorkbook1.Disconnect;
+ ExcelApplication1.Disconnect;
 end;
 
 
@@ -817,9 +1380,21 @@ corte:integer;
 hasta:integer;
 cont:integer;
 grupo:string;
+rutaNombre:String;
+rutaNom:string;
+elConvenioBanco:string;   LAcuentaBanco:string;
+
 begin
 
-        grupo:=elBancot.Text+' '+laareat.Text+' '+elrubrot.Text+' '+elsfdot.Text;
+{qcta.close;
+qcta.sql.text:='select getCuentaBanco('+#39+elRubrot.text+#39+','+
+#39+elSfdot.text+#39+','+#39+laareat.text+#39+','+#39+elProyT.text+#39+','+
+#39+STR_(elbancot.text,'-')+#39+') FROM DUAL ';
+qcta.OPEN;
+elConvenioBanco:=copy(qcta.fields[0].asstring,1,pos('*',qcta.fields[0].asstring));
+LAcuentaBanco:=copy(qcta.fields[0].asstring, pos('*',qcta.fields[0].asstring)+1,length(qcta.fields[0].asstring));      }
+
+
         filtran:=TstringList.create;
         filtran.Clear;
         corte:=1;
@@ -844,13 +1419,19 @@ begin
                     cont:=cont+1;
                  end; //para
 
+
+             rutaNom:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+             rutaNombre:=dameNombre('T','.txt',LAcuentaBanco);
+
              CreateDir('c:\Transferencias\');
-             CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\');
-             CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Bancomer\');
-             filtran.SaveToFile('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Bancomer\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'('+inttostr(empieza)+'_'+inttostr(HASTA)+')'+'.TXT');
+             CreateDir('c:\Transferencias\'+rutaNom+'\');
+             CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\');
+             CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\Bancomer\');
+             CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\Bancomer\'+elrubrot.text+'\');
+             filtran.SaveToFile('C:\Transferencias\'+rutaNom+'\Layaout\Bancomer\'+elrubrot.text+'\'+rutaNombre);
 
              if abrir then
-             ShellExecute(handle, 'open', PChar('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Bancomer\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'('+inttostr(empieza)+'_'+inttostr(HASTA)+')'+'.TXT'), nil, nil, SW_show);
+             ShellExecute(handle, 'open', PChar('C:\Transferencias\'+rutaNom+'\Layaout\Bancomer\'+elrubrot.text+'\'+rutaNombre), nil, nil, SW_show);
              empieza:=hasta+1;
              corte:=corte+1;
              filtran.clear;
@@ -868,7 +1449,6 @@ apepat:string;
 apemat:string;
 x:integer;
 ContFil:integer;
-bancost:string;
 nombFile:String;
 grupo:string;
 begin
@@ -876,7 +1456,7 @@ begin
   filtran:=TstringList.create;
   filtran.Clear;
   contFil:=1;
-  nombFile:=copy(GRUPO,1,21)+'X'+stringReplace(nomfec.TEXT,'/','',[rfReplaceAll])+anio.text;
+  nombFile:=copy(GRUPO,1,21)+'X'+stringReplace(nomfec.TEXT,'/','',[rfReplaceAll])+anio.text+'_PROY_('+elProyT.text+')';
   NOMBFILE:=stringReplace(nombfile,' ','X',[rfReplaceAll]);
   filtran.Add('H'+
                colocaceros(ConvenioSIT.text,9)+
@@ -985,40 +1565,19 @@ begin
 
 end;
 
+procedure tfdetalle.antesExportarHSBC;
+begin
+         PHSBC.Visible:=true;
+         FECHAHSBC.DATE:=Date;
+         REFERENCIAHSBC.TEXT:=COPY('PAGO DE '+stringReplace(RNOMINA.text,'/','',[rfReplaceAll]),1,34);
+end;
+
+
 procedure tfdetalle.exportarSantander;
 begin
          psan.Visible:=true;
          fecha1.date:=date;
          fecha2.date:=date;
-         q.close;
-         q.sql.text:='SELECT TRAN_CUENTA FROM PTRANBANCOS WHERE TRAN_CLAVE='+#39+'03'+#39;
-         q.OPEN;
-         Cuentasan.Text:=q.FIELDS[0].ASSTRING;
-end;
-
-procedure TFDetalle.SpeedButton3Click(Sender: TObject);
-var
-bancost:string;
-begin
-
-  bancost:=STR_(elbancot.text,'-');
-
-   //Para archivo de 01 - HSBC
-  if bancost='01' then
-       ExportarHSBC(true);
-
-  //Para archivo de 02 - Bancomer
-  if bancost='02' then
-     exportarBancomer(true);
-
- //Para archivo de 03 - Santander
-  if bancoST='03' then
-     begin
-       exportarSantander;
-       abrirSan:=true;
-       gensan.Enabled:=true;
-     end;
-
 
 end;
 
@@ -1030,16 +1589,28 @@ apepat:string;
 apemat:string;
 x:integer;
 ContFil:integer;
-bancost:string;
 grupo:string;
+rutaNombre:string; rutaNom:string;
+elConvenioBanco:string;
+LAcuentaBanco:string;
+
 begin
-  grupo:=elBancot.Text+' '+laarea.Text+' '+elrubrot.Text+' '+elsfdo.Text;
+
+qcta.close;
+qcta.sql.text:='select getCuentaBanco('+#39+elRubrot.text+#39+','+
+#39+elSfdot.text+#39+','+#39+laareat.text+#39+','+#39+elProyT.text+#39+','+
+#39+str_(elbancot.text,'-')+#39+') FROM DUAL ';
+qcta.OPEN;
+elConvenioBanco:=copy(qcta.fields[0].asstring,1,pos('*',qcta.fields[0].asstring));
+LAcuentaBanco:=copy(qcta.fields[0].asstring, pos('*',qcta.fields[0].asstring)+1,length(qcta.fields[0].asstring));
+
+
   filtran:=TstringList.create;
   filtran.Clear;
   contFil:=1;
   filtran.Add('1'+colocaceros(inttostr(contFil),5)+'E'+
                formatdatetime('mmddyyyy',fecha1.date)+
-              colocaespacios(cuentasan.text,16)+
+              colocaespacios(LAcuentaBanco,16)+
               formatdatetime('mmddyyyy',fecha2.date));
   contFil:=ContFil+1;
          for x:=1 to gridgr.rowcount-1 do
@@ -1059,7 +1630,7 @@ begin
 
              filtran.Add('2'+colocaceros(inttostr(contFil),5)+
                           colocaceros(copy(gridgr.cells[1,x],1,7),7)+
-                          colocaespacios(apemat,30)+
+                          colocaespacios(apepat,30)+
                           colocaespacios(apemat,20)+
                           colocaespacios(nombre,30)+
                           colocaespacios(gridgr.cells[0,x],16)+
@@ -1071,13 +1642,20 @@ begin
                    colocaceros(inttostr(contFil-2),5)+
                    colocaceros(stringReplace(totalgr.caption,'.','',[rfReplaceAll]),18));
 
+       rutaNom:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+       rutaNombre:= dameNombre('T','.txt',LAcuentaBanco);
+
+
+
        CreateDir('c:\Transferencias\');
-       CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\');
-       CreateDir('c:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Santander\');
-       filtran.SaveToFile('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Santander\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.TXT');
+       CreateDir('c:\Transferencias\'+rutaNom+'\');
+       CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\');
+       CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\Santander\');
+       CreateDir('c:\Transferencias\'+rutaNom+'\Layaout\Santander\'+elrubrot.text+'\');
+       filtran.SaveToFile('c:\Transferencias\'+rutaNom+'\Layaout\Santander\'+elrubrot.text+'\'+rutaNombre);
 
        if abrirSan then
-          ShellExecute(handle, 'open', PChar('C:\Transferencias\'+str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll])+'\Santander\'+GRUPO+'_'+stringReplace(RNOMINA.TEXT,'/','',[rfReplaceAll])+'.TXT'), nil, nil, SW_show);
+          ShellExecute(handle, 'open', PChar('c:\Transferencias\'+rutaNom+'\Layaout\Santander\'+elrubrot.text+'\'+rutaNombre), nil, nil, SW_show);
        PSAN.visible:=false;
 end;
 
@@ -1091,8 +1669,7 @@ end;
 
 
 procedure TFDetalle.BuscaNominas;
-var
-   TPNOMINAS:String;
+
 begin
    q.close;
    q.sql.text:='';
@@ -1178,12 +1755,15 @@ procedure TFDetalle.bsantanderClick(Sender: TObject);
 begin
   inherited;
 exportaRsantander;
+
 end;
 
 procedure TFDetalle.bhsbcClick(Sender: TObject);
 begin
   inherited;
-exportaRHSBC(true);
+
+  exportarHSBC(true);;
+
 
 end;
 
@@ -1206,20 +1786,6 @@ begin
   psit.Visible:=false;
 end;
 
-procedure TFDetalle.Button1Click(Sender: TObject);
-begin
-  inherited;
- GRIDGR.rowcount:=6;
-
- Gridgr.cells[3,1]:='0.01';
- Gridgr.cells[3,2]:='0.01';
- Gridgr.cells[3,3]:='0.01';
- Gridgr.cells[3,4]:='0.01';
- Gridgr.cells[3,5]:='0.01';
- totalGR.caption:=formatfloat('#0.00',sumacolGrid(gridGr,3));
-
-end;
-
 procedure TFDetalle.GridNSelectCell(Sender: TObject; ACol, ARow: Integer;
   var CanSelect: Boolean);
 begin
@@ -1236,7 +1802,6 @@ end;
 
 procedure TFDetalle.colocaProyClick(Sender: TObject);
 var
-cad:string;
 otroParam,VPPROYNOM:string;
 begin
   inherited;
@@ -1291,44 +1856,80 @@ x:integer;
 caddj:string;
 begin
   inherited;
+
+seraDJT.Checked:=false;
 for x:=1 to 2 do
    begin
       if x=1 then cadDJ:=' AND S.EMPL NOT LIKE '+#39+'DJ%'+#39 ;
-      if x=2 then begin cadDJ:=' AND S.EMPL LIKE '+#39+'DJ%'+#39; seraDJ.Checked:=TRUE; end;
+      if x=2 then begin cadDJ:=' AND S.EMPL LIKE '+#39+'DJ%'+#39; seraDJT.Checked:=TRUE; end;
 
       Q.close;
-      q.sql.text:='select count(*) from (select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
+      q.sql.text:='SELECT COUNT(*) FROM (select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
       ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
-      ' decode(t.tran_descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.tran_descrip)'+
-      '  from pvtransfernom s, ptranbancos t'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
       ' where s.NOMINA='+#39+nomina.text+#39+
-      cadDJ+
-      ' and s.BANCO=t.tran_clave(+)  and s.banco='+#39+banco+#39+')' ;
-      q.open;
+      caddj+
+      ' and s.BANCO=t.clave(+)'+
+      ' and s.banco='+#39+STR_(banco,'-')+#39+
+       ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and a.banco='+#39+STR_(banco,'-')+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco)';
+      Q.open;
+      
       barra.Position:=0;
       barra.Max:=q.fields[0].asinteger;
 
       Q.close;
       q.sql.text:='select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
       ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
-      ' decode(t.tran_descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.tran_descrip)'+
-      '  from pvtransfernom s, ptranbancos t'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
       ' where s.NOMINA='+#39+nomina.text+#39+
       caddj+
-      ' and s.BANCO=t.tran_clave(+)'+
-      ' and s.banco='+#39+banco+#39;
+      ' and s.BANCO=t.clave(+)'+
+      ' and s.banco='+#39+STR_(banco,'-')+#39+
+       ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and a.banco='+#39+STR_(banco,'-')+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco';
+      
       savetofilelog(q.sql.text);
       q.open;
+
+
       while not(q.eof) do
          begin
             elrubrot.text:=q.fields[0].asstring;
             elsfdot.text:=q.fields[1].asstring;
             laareat.text:=q.fields[2].asstring;
             elbancot.text:=q.fields[3].asstring+'-'+q.fields[4].asstring;
+            elproyt.text:=q.fields[5].asstring;
+
             sacaReportest;
             
             if banco='01' then
-               ExportarHSBC(false);
+              begin
+                 abrirHSBC:=FALSE;
+                 ExportarHSBC(false);
+              end;
+
+            if banco='01-NEW' then
+              begin
+                 abrirHSBC:=FALSE;
+                 ExportarHSBCNEW(false);
+              end;
+
+            if banco='01-NEWTXT' then
+              begin
+                 abrirHSBC:=FALSE;
+                 ExportarHSBCNEWtxt(false);
+              end;
 
            //Para archivo de 02 - Bancomer
            if banco='02' then
@@ -1394,40 +1995,82 @@ begin
 end;
 
 procedure TFDetalle.ColocarHSBC1Click(Sender: TObject);
+var
+laCnta:string;
 begin
   inherited;
+  Q.close;
+  q.sql.text:='SELECT A.CTAB_CUENTA FROM PCTABANCO A WHERE A.CTAB_EMPL='+
+               #39+Qcuentas.fieldbyname('EMPL').asstring+#39+
+               ' AND A.CTAB_BANCO='+#39+'01'+#39;
+  Q.open;
+  laCnta:=Q.fields[0].asstring;
+
+
   q.close;
   q.sql.text:='UPDATE PTRANSFERNOM SET TRAN_BANCO='+#39+'01'+#39+
   ', TRAN_BANCOD='+#39+'HSBC'+#39+
+  ', TRAN_CUENTA='+#39+laCnta+#39+
   ' WHERE TRAN_EMPL='+#39+Qcuentas.fieldbyname('EMPL').asstring+#39+
   ' AND TRAN_NPAGO='+#39+Qcuentas.fieldbyname('NPAGO').asstring+#39;
   Q.execsql;
+
+  Showmessage('Se asigno Banco 01-HSBC Cuenta: '+laCnta);
+
   Qcuentas.close;
   qcuentas.open;
 end;
 
 procedure TFDetalle.ColocarBancomer1Click(Sender: TObject);
+var
+laCnta:string;
 begin
   inherited;
+  Q.close;
+  q.sql.text:='SELECT A.CTAB_CUENTA FROM PCTABANCO A WHERE A.CTAB_EMPL='+
+               #39+Qcuentas.fieldbyname('EMPL').asstring+#39+
+               ' AND A.CTAB_BANCO='+#39+'02'+#39;
+  Q.open;
+  laCnta:=Q.fields[0].asstring;
+
+
   q.close;
   q.sql.text:='UPDATE PTRANSFERNOM SET TRAN_BANCO='+#39+'02'+#39+
   ', TRAN_BANCOD='+#39+'BANCOMER'+#39+
+  ', TRAN_CUENTA='+#39+laCnta+#39+
   ' WHERE TRAN_EMPL='+#39+Qcuentas.fieldbyname('EMPL').asstring+#39+
   ' AND TRAN_NPAGO='+#39+Qcuentas.fieldbyname('NPAGO').asstring+#39;
   Q.execsql;
+  Showmessage('Se asigno Banco 02-BANCOMER Cuenta: '+laCnta);
+
   Qcuentas.close;
   qcuentas.open;
+
 end;
 
 procedure TFDetalle.ColocarSantander1Click(Sender: TObject);
+var
+laCnta:string;
 begin
   inherited;
+Q.close;
+  q.sql.text:='SELECT A.CTAB_CUENTA FROM PCTABANCO A WHERE A.CTAB_EMPL='+
+               #39+Qcuentas.fieldbyname('EMPL').asstring+#39+
+               ' AND A.CTAB_BANCO='+#39+'03'+#39;
+  Q.open;
+  laCnta:=Q.fields[0].asstring;
+
+
   q.close;
   q.sql.text:='UPDATE PTRANSFERNOM SET TRAN_BANCO='+#39+'03'+#39+
   ', TRAN_BANCOD='+#39+'SANTANDER'+#39+
+  ', TRAN_CUENTA='+#39+laCnta+#39+
   ' WHERE TRAN_EMPL='+#39+Qcuentas.fieldbyname('EMPL').asstring+#39+
   ' AND TRAN_NPAGO='+#39+Qcuentas.fieldbyname('NPAGO').asstring+#39;
   Q.execsql;
+
+  Showmessage('Se asigno Banco 03-Santander Cuenta: '+laCnta);
+
   Qcuentas.close;
   qcuentas.open;
 end;
@@ -1679,8 +2322,8 @@ procedure TFDetalle.laareaChange(Sender: TObject);
 begin
   inherited;
       q.close;
-      q.sql.text:='SELECT DISTINCT(A.BANCO), B.tran_descrip  from pvtransfernom a, ptranbancos B WHERE '+
-      ' A.BANCO=B.tran_clave AND NOMINA='+#39+Nomina.text+#39+
+      q.sql.text:='SELECT DISTINCT(A.BANCO), B.descrip  from pvtransfernom a, PCONTBANCTRANS B WHERE '+
+      ' A.BANCO=B.clave AND NOMINA='+#39+Nomina.text+#39+
       ' AND RUBRO='+#39+elRUBRO.TEXT+#39+
       ' AND SFDO='+#39+elSfdo.text+#39+
       ' AND AREA='+#39+laArea.text+#39;
@@ -1700,52 +2343,23 @@ end;
 procedure TFDetalle.elbancoChange(Sender: TObject);
 begin
   inherited;
-sacaReportes;
-end;
-
-procedure TFDetalle.ExpAllReportClick(Sender: TObject);
-var
-x:integer;
-caddj:string;
-begin
-  inherited;
-for x:=1 to 2 do
-   begin
-      if x=1 then cadDJ:=' AND S.EMPL NOT LIKE '+#39+'DJ%'+#39 ;
-      if x=2 then begin cadDJ:=' AND S.EMPL LIKE '+#39+'DJ%'+#39; seraDJ.Checked:=TRUE; end;
-
-      Q.close;
-      q.sql.text:='select count(*) from (select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
-      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
-      ' decode(t.tran_descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.tran_descrip)'+
-      '  from pvtransfernom s, ptranbancos t'+
-      ' where s.NOMINA='+#39+nomina.text+#39+
-      cadDJ+
-      ' and s.BANCO=t.tran_clave(+))' ;
-      q.open;
-      barra.Position:=0;
-      barra.Max:=q.fields[0].asinteger;
-
-      Q.close;
-      q.sql.text:='select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
-      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
-      ' decode(t.tran_descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.tran_descrip)'+
-      '  from pvtransfernom s, ptranbancos t'+
-      ' where s.NOMINA='+#39+nomina.text+#39+
-      caddj+
-      ' and s.BANCO=t.tran_clave(+)' ;
-      q.open;
+      q.close;
+      q.sql.text:='SELECT TRAN_PROYECTO  from PTRANEXCEPT a WHERE '+
+      ' A.TRAN_BANCO='+#39+str_(elBanco.text,'-')+#39+' AND TRAN_NOMINA='+#39+Nomina.text+#39+
+      ' AND TRAN_RUBRO='+#39+elRUBRO.TEXT+#39+
+      ' AND TRAN_SFDO='+#39+elSfdo.text+#39+
+      ' AND TRAN_AREA='+#39+laArea.text+#39;
+      savetofilelog(q.sql.text);
+      Q.open;
+      elProy.Clear;
+      elProy.Items.Add('%');
       while not(q.eof) do
-         begin
-            elrubro.text:=q.fields[0].asstring;
-            elsfdo.text:=q.fields[1].asstring;
-            laarea.text:=q.fields[2].asstring;
-            elbanco.text:=q.fields[3].asstring+'-'+q.fields[4].asstring;
-            ImprimeRep(elrubro.text,elsfdo.text,laArea.text,elbanco.text,seradj.Checked,false);
-            q.next;
-            barra.Position:=barra.Position+1;
-         end;
-    end;
+        begin
+           ELpROY.Items.Add(q.fields[0].asstring);
+           q.next;
+        end;
+
+sacaReportes;
 end;
 
 procedure TFDetalle.GridDJDblClick(Sender: TObject);
@@ -1758,16 +2372,28 @@ procedure TFDetalle.BancoCuadChange(Sender: TObject);
 var
 x:integer;
 cadDJ:string;
+CadCancel:string;
+cadProy:string;
 begin
   inherited;
 
   if esDJcUAD.Checked THEN CadDJ:=' AND EMPL  LIKE '+#39+'DJ%'+#39
   else   CadDJ:=' AND EMPL NOT LIKE '+#39+'DJ%'+#39;
 
+  cadCancel:='';
+  if cancelc.Checked THEN CadCancel:=' AND CANCELADO='+#39+'N'+#39;
+
+
   q.close;
-  q.sql.text:='SELECT DISTINCT(RUBRO),SFDO,AREA '+
+  q.sql.text:='SELECT DISTINCT(RUBRO),SFDO,AREA,'+#39+'%'+#39+
   'FROM PVTRANSFERNOM WHERE NOMINA='+#39+nomina.text+#39+' AND  DECODE(BANCO,NULL,'+#39+'99'+#39+',BANCO)='+
-  #39+str_(bancoCuad.text,'-')+#39;
+  #39+str_(bancoCuad.text,'-')+#39+
+  ' union '+
+  ' SELECT DISTINCT(RUBRO),SFDO,AREA, b.tran_proyecto '+
+  ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+' AND  DECODE(BANCO,NULL,'+#39+'99'+#39+',BANCO)='+
+  #39+str_(bancoCuad.text,'-')+#39+
+  ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco';
+  savetofilelog(q.sql.text);
   q.open;
   limpiagrid(gridb);
   gridb.rowcount:=2;
@@ -1776,6 +2402,7 @@ begin
        gridb.cells[0,gridb.rowcount-1]:=q.fields[0].asstring;
        gridb.cells[1,gridb.rowcount-1]:=q.fields[1].asstring;
        gridb.cells[2,gridb.rowcount-1]:=q.fields[2].asstring;
+       gridb.cells[3,gridb.rowcount-1]:=q.fields[3].asstring;
        gridb.rowcount:=gridb.rowcount+1;
        q.next;
     end;
@@ -1784,19 +2411,31 @@ begin
   barra.max:=gridB.rowcount-1;
   for x:=1 to gridB.rowcount-1 do
      begin
+        cadProy:='';
+        if gridb.cells[3,x]='%' then
+           cadProy:=' AND PROY NOT IN (SELECT TRAN_PROYECTO FROM PTRANEXCEPT x WHERE '+
+                                        ' X.TRAN_NOMINA='+#39+NOMINA.text+#39+
+                                        ' AND X.TRAN_RUBRO='+#39+GRIDb.CELLS[0,X]+#39+
+                                        ' AND X.TRAN_SFDO='+#39+GRIDb.CELLS[1,X]+#39+
+                                        ' AND X.TRAN_AREA='+#39+GRIDb.CELLS[2,X]+#39+') '
+        else
+           cadProy:=' AND PROY='+#39+GRIDb.CELLS[3,X]+#39;
+
         q.close;
         q.sql.text:='SELECT SUM(MONTO) FROM PVTRANSFERNOM WHERE '+
         'NOMINA='+#39+NOMINA.TEXT+#39+
         ' AND RUBRO='+#39+GRIDb.CELLS[0,X]+#39+
         ' AND SFDO='+#39+GRIDb.CELLS[1,X]+#39+
         ' AND AREA='+#39+GRIDb.CELLS[2,X]+#39+
+        cadProy+
         ' AND DECODE(BANCO,null,'+#39+'99'+#39+',banco)='+#39+STR_(bancoCuad.text,'-')+#39+
-        CADDJ;
+        CADDJ+' '+cadCancel;
+        savetofilelog(q.sql.text);
         Q.open;
-        gridB.cells[3,x]:=formatfloat('#,#0.00',q.Fields[0].asfloat);
+        gridB.cells[4,x]:=formatfloat('#,#0.00',q.Fields[0].asfloat);
         barra.Position:=barra.Position+1;
      end;
-  totalrep.caption:=formatfloat('#,#0.00',sumacolgrid(gridB,3));
+  totalrep.caption:=formatfloat('#,#0.00',sumacolgrid(gridB,4));
   barra.Position:=0;
 end;
 
@@ -1812,7 +2451,7 @@ end;
 procedure TFDetalle.ImprimirReporte1Click(Sender: TObject);
 begin
   inherited;
-ImprimeRep(gridb.cells[0,ling],gridb.cells[1,ling],gridb.cells[2,ling],bancoCuad.text,esDJCuad.Checked,true);
+     ImprimeRep(gridb.cells[0,ling],gridb.cells[1,ling],gridb.cells[2,ling],bancoCuad.text,esDJCuad.Checked,true,gridb.cells[3,ling]);
 end;
 
 procedure TFDetalle.ImprimirTodoslosReportes1Click(Sender: TObject);
@@ -1824,7 +2463,7 @@ begin
   barra.max:=gridB.RowCount;
 for x:=1 to gridB.RowCount-1 do
    begin
-      ImprimeRep(gridb.cells[0,x],gridb.cells[1,x],gridb.cells[2,x],bancoCuad.text,esDJCuad.Checked,false);
+      ImprimeRep(gridb.cells[0,x],gridb.cells[1,x],gridb.cells[2,x],bancoCuad.text,esDJCuad.Checked,false,gridb.cells[3,ling]);
       barra.Position:=barra.position+1;
    end;
 barra.Position:=0;
@@ -1870,8 +2509,8 @@ procedure TFDetalle.laAreaTChange(Sender: TObject);
 begin
   inherited;
       q.close;
-      q.sql.text:='SELECT DISTINCT(A.BANCO), B.tran_descrip  from pvtransfernom a, ptranbancos B WHERE '+
-      ' A.BANCO=B.tran_clave AND NOMINA='+#39+Nomina.text+#39+
+      q.sql.text:='SELECT DISTINCT(A.BANCO), B.descrip  from pvtransfernom a, PCONTBANCTRANS B WHERE '+
+      ' A.BANCO=B.clave AND NOMINA='+#39+Nomina.text+#39+
       ' AND RUBRO='+#39+elRUBROt.TEXT+#39+
       ' AND SFDO='+#39+elSfdot.text+#39+
       ' AND AREA='+#39+laAreat.text+#39;
@@ -1905,6 +2544,595 @@ procedure TFDetalle.SpeedButton4Click(Sender: TObject);
 begin
   inherited;
 sacaReportest;
+end;
+
+procedure TFDetalle.elProyChange(Sender: TObject);
+begin
+  inherited;
+sacaReportes;
+end;
+
+procedure TFDetalle.elBancoTChange(Sender: TObject);
+begin
+  inherited;
+      q.close;
+      q.sql.text:='SELECT TRAN_PROYECTO  from PTRANEXCEPT a WHERE '+
+      ' A.TRAN_BANCO='+#39+str_(elBancot.text,'-')+#39+' AND TRAN_NOMINA='+#39+Nomina.text+#39+
+      ' AND TRAN_RUBRO='+#39+elRUBROt.TEXT+#39+
+      ' AND TRAN_SFDO='+#39+elSfdot.text+#39+
+      ' AND TRAN_AREA='+#39+laAreat.text+#39;
+      savetofilelog(q.sql.text);
+      Q.open;
+      elProyt.Clear;
+      elProyt.Items.Add('%');
+      while not(q.eof) do
+        begin
+           ELpROYt.Items.Add(q.fields[0].asstring);
+           q.next;
+        end;
+
+
+end;
+
+procedure TFDetalle.genHSBCClick(Sender: TObject);
+begin
+  inherited;
+  exportaRHSBCNew(true);
+  phsbc.Visible:=false;
+end;
+
+procedure TFDetalle.SpeedButton9Click(Sender: TObject);
+begin
+  inherited;
+PHSBC.Visible:=FALSE;
+end;
+
+procedure TFDetalle.SpeedButton8Click(Sender: TObject);
+var
+x:integer;
+caddj:string;
+cadCancel:string;
+
+begin
+  inherited;
+  seraDJ.Checked:=FALSE;
+
+  cadCancel:='';
+  if cancelr.Checked then cadCancel:=' AND S.CANCELADO='+#39+'N'+#39;
+
+
+for x:=1 to 2 do
+   begin
+      if x=1 then cadDJ:=' AND S.EMPL NOT LIKE '+#39+'DJ%'+#39 ;
+      if x=2 then begin cadDJ:=' AND S.EMPL LIKE '+#39+'DJ%'+#39; seraDJ.Checked:=TRUE; end;
+
+      Q.close;
+      q.sql.text:='select count(*) from (select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
+      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+' AS PROY'+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
+      ' where s.NOMINA='+#39+nomina.text+#39+
+      cadDJ+cadCancel+
+      ' and s.BANCO=t.clave(+)'+
+      ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco)' ;
+      savetofilelog(q.sql.text);
+      q.open;
+      barra.Position:=0;
+      barra.Max:=q.fields[0].asinteger;
+
+      Q.close;
+      q.sql.text:='select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
+      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+' AS PROY'+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
+      ' where s.NOMINA='+#39+nomina.text+#39+
+      caddj+ cadCancel+
+      ' and s.BANCO=t.clave(+)'+
+      ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco';
+      SAVETOFILElog(Q.sql.text);
+      q.open;
+      while not(q.eof) do
+         begin
+            elrubro.text:=q.fields[0].asstring;
+            elsfdo.text:=q.fields[1].asstring;
+            laarea.text:=q.fields[2].asstring;
+            elbanco.text:=q.fields[3].asstring+'-'+q.fields[4].asstring;
+            ELPROY.text:=q.fields[5].asstring;
+
+            ReporteExcel(elrubro.text,elsfdo.text,laArea.text,elbanco.text,seradj.Checked,false,elproy.text);
+            q.next;
+            barra.Position:=barra.Position+1;
+         end;
+    end;
+end;
+
+
+procedure TFDetalle.btnScClick(Sender: TObject);
+begin
+  inherited;
+       qcuentas.close;
+        qcuentas.sql.text:='SELECT EMPL, NOMBRE, BANCO, '+
+        'BANCO_D AS BANCOD, CUENTA, URES, TPSTO AS TIPO_PSTO, MONTO, NOMINA, '+
+        'OBS, CANCELADO, NPAGO, RUBRO, SFDO, AREA, PROY FROM PVTRANSFERNOM T  WHERE NOMINA='+NOMINA.text+
+        ' AND CUENTA IS NULL  AND BANCO IS NOT NULL ORDER BY EMPL';
+        savetofileLog(QCuentas.sql.text);
+        qCuentas.Open;
+end;
+
+procedure TFDetalle.ConfigurarHSBC1Click(Sender: TObject);
+begin
+  inherited;
+
+   antesExportarHSBC;
+   genHSBC.Enabled:=FALSE;
+   genhsbctxt.Enabled:=FALSE;
+end;
+
+procedure TFDetalle.GenerarTodosHSBCNuevo1Click(Sender: TObject);
+begin
+  inherited;
+if (referenciahsbc.Text<>'') then
+    GenerarLayaout('01-NEW')
+else
+   showmessage('No se ha conigurado los datos para transferencia HSBC');
+end;
+
+procedure TFDetalle.SpeedButton11Click(Sender: TObject);
+begin
+  inherited;
+  antesExportarHSBC;
+
+end;
+
+procedure TFDetalle.genHSBCtxtClick(Sender: TObject);
+begin
+  inherited;
+  exportarHSBCNewTxt(true);
+ phsbc.Visible:=false;
+
+end;
+
+procedure TFDetalle.GenerartodosHSBCNuevotxt1Click(Sender: TObject);
+begin
+  inherited;
+if (referenciahsbc.Text<>'') then
+   GenerarLayaout('01-NEWTXT')
+else
+   showmessage('No se ha configurado los datos para transferencia HSBC');
+end;
+
+procedure TFDetalle.SpeedButton12Click(Sender: TObject);
+var
+x:integer;
+caddj:string;
+cadCancel:string;
+lanominaes:string;
+
+begin
+  inherited;
+ seraDJ.Checked:=FALSE;
+
+  cadCancel:='';
+  if cancelr.Checked then cadCancel:=' AND S.CANCELADO='+#39+'N'+#39;
+
+  laNominaes:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+
+for x:=1 to 2 do
+   begin
+      if x=1 then cadDJ:=' AND S.EMPL NOT LIKE '+#39+'DJ%'+#39 ;
+      if x=2 then begin cadDJ:=' AND S.EMPL LIKE '+#39+'DJ%'+#39; seraDJ.Checked:=TRUE; end;
+
+      Q.close;
+      q.sql.text:='select count(*) from (select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
+      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+' AS PROY'+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
+      ' where s.NOMINA='+#39+nomina.text+#39+
+      cadDJ+cadCancel+
+      ' and s.BANCO=t.clave(+)'+
+      ' and s.area='+#39+laarea.text+#39+
+      ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco'+
+      ' and b.tran_area='+#39+laarea.text+#39+')';
+      savetofilelog(q.sql.text);
+
+      q.open;
+      barra.Position:=0;
+      barra.Max:=q.fields[0].asinteger;
+
+      Q.close;
+      q.sql.text:='select distinct(s.rubro) AS RUBRO,s.sfdo, s.area,'+
+      ' decode(s.BANCO,null,'+#39+'99'+#39+',s.banco) AS BANCO,'+
+      ' decode(t.descrip,null,'+#39+'CHEQUE EFECTIVO'+#39+',t.descrip),'+
+      #39+'%'+#39+' AS PROY'+
+      '  from pvtransfernom s, PCONTBANCTRANS t'+
+      ' where s.NOMINA='+#39+nomina.text+#39+
+      caddj+ cadCancel+
+      ' and s.BANCO=t.clave(+)'+
+      ' and s.area='+#39+laarea.text+#39+
+      ' UNION '+
+      ' SELECT DISTINCT(RUBRO),SFDO,AREA, BANCO, A.BANCO_D, B.TRAN_PROYECTO'+
+      ' FROM PVTRANSFERNOM a, PTRANEXCEPT B WHERE NOMINA='+#39+nomina.text+#39+
+      ' and A.NOMINA||a.RUBRO||a.SFDO||a.AREA||a.BANCO =B.TRAN_NOMINA||b.tran_rubro||b.tran_sfdo||b.tran_area||b.tran_banco'+
+      ' and b.tran_area='+#39+laarea.text+#39;
+      SAVETOFILElog(Q.sql.text);
+      q.open;
+      while not(q.eof) do
+         begin
+            elrubro.text:=q.fields[0].asstring;
+            elsfdo.text:=q.fields[1].asstring;
+            laarea.text:=q.fields[2].asstring;
+            elbanco.text:=q.fields[3].asstring+'-'+q.fields[4].asstring;
+            ELPROY.text:=q.fields[5].asstring;
+
+            ReporteExcelxArea(elrubro.text,elsfdo.text,laArea.text,elbanco.text,seradj.Checked,false,elproy.text);
+            q.next;
+            barra.Position:=barra.Position+1;
+         end;
+    end;
+end;
+
+
+procedure TFDetalle.SpeedButton10Click(Sender: TObject);
+begin
+  inherited;
+   ReporteExcel(elrubro.text,elsfdo.text,laArea.text,elbanco.text,seradj.Checked,false,elproy.text);
+   Showmessage('El reporte se exporto visualizarlo en e directorio de Transferencias');
+end;
+
+
+function TFDEtalle.dameCtaBanco(xrubro:string;xsfdo:string;xarea:string;xproy:string;xbanco:string):string;
+var
+NameProc:string;
+begin
+      nameProc:='getCuentaBanco';
+      if (xbanco='02') OR (xbanco='99')  then nameProc:='getCuentaBancoSinMsg';
+
+        qcta.close;
+        qcta.sql.text:='select '+nameProc+'('+#39+xrubro+#39+','+
+        #39+xsfdo+#39+','+#39+xarea+#39+','+#39+xproy+#39+','+
+        #39+xbanco+#39+') FROM DUAL ';
+        qcta.OPEN;
+
+        //elConvenioBanco:=copy(qcta.fields[0].asstring,1,pos('*',qcta.fields[0].asstring));
+        dameCtaBanco:=copy(qcta.fields[0].asstring, pos('*',qcta.fields[0].asstring)+1,length(qcta.fields[0].asstring));
+
+end;
+
+
+procedure TFdetalle.FormatoTitulo(hoja:TExcelWorksheet;lin:integer;col:integer);
+begin
+  hoja.Cells.Item[lin,col].Borders[xlTop].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlLeft].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlRight].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlBottom].weight := xlThin;
+  Hoja.Cells.Item[lin,col].HorizontalAlignment:=-4108;
+  Hoja.Cells.Item[lin,col].Font.Bold:=true;
+  Hoja.Cells.Item[lin,col].Interior.ColorIndex :=35;
+end;
+
+procedure TFdetalle.ColocaBorde(hoja:TExcelWorksheet;lin:integer;col:integer);
+begin
+  hoja.Cells.Item[lin,col].Borders[xlTop].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlLeft].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlRight].weight := xlThin;
+  hoja.Cells.Item[lin,col].Borders[xlBottom].weight := xlThin;
+end;
+
+procedure TFDetalle.ExportaCuadre;
+var
+cadCancel:string;
+id:integer;
+laures:string;
+Subtotal, total:real;
+x,lin:integer;
+lacta:string;
+elNombre,LAcuentaBanco,laNominaes:String;
+ExcelApplication1:TExcelApplication;
+ExcelWorkbook1: TExcelWorkbook;
+ExcelWorksheet1: TExcelWorksheet;
+begin
+
+
+  laNominaes:=str_(tipo.text,'-')+'_'+nomina.text+'_'+stringReplace(FechaGen,'/','',[rfReplaceAll]);
+
+  CreateDir('c:\Transferencias\');
+  CreateDir('c:\Transferencias\'+laNominaes+'\');
+
+  try deletefile('c:\Transferencias\'+laNominaes+'\Cuadre'+bancoCuad.Text+'.xlsx'); except end;
+  CrearFile('c:\Transferencias\'+laNominaes+'\Cuadre'+bancoCuad.Text+'.xlsx');
+
+  ExcelApplication1:=TExcelApplication.create(nil);
+  ExcelWorkbook1:= TExcelWorkbook.create(nil);
+  ExcelWorksheet1:=TExcelWorksheet.create(nil);
+
+
+  ExcelApplication1.Workbooks.Open('c:\Transferencias\'+laNominaes+'\Cuadre'+bancoCuad.Text+'.xlsx',
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,
+  emptyParam,emptyParam,emptyParam,emptyParam,id);
+
+  ExcelWorkbook1.ConnectTo(ExcelApplication1.ActiveWorkbook);
+  ExcelWorksheet1.ConnectTo(ExcelApplication1.ActiveSheet as _Worksheet);
+  excelworksheet1.ConnectTo(excelworkbook1.Sheets.Item[1] as _Worksheet);
+  excelworksheet1.Activate;
+
+  barra.Max:=gridb.rowcount-1;
+  barra.Position:=0;
+
+  //EL TITULO DE EXCEL
+
+
+  ExcelWorksheet1.Range['A1', 'F1'].MergeCells := true;
+  FormatoTitulo(ExcelWorksheet1,1,1);
+  ExcelWorksheet1.Cells.Item[1,1].value:='REPORTE '+bancoCuad.Text;
+
+
+
+  lin:=2;
+  //SUBTITULO DEL REPORTE
+
+  ExcelWorksheet1.Range['A2', 'F2'].MergeCells := true;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='NOMINA '+RNOMINA.TEXT;
+
+
+  lin:=lin+1;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='Nombre_Reporte';
+
+  FormatoTitulo(ExcelWorksheet1,lin,2);
+  ExcelWorksheet1.Cells.Item[lin,2].value:='Tipo_Puesto';
+
+  FormatoTitulo(ExcelWorksheet1,lin,3);
+  ExcelWorksheet1.Cells.Item[lin,3].value:='Sfdo';
+
+  FormatoTitulo(ExcelWorksheet1,lin,4);
+  ExcelWorksheet1.Cells.Item[lin,4].value:='Area';
+
+  FormatoTitulo(ExcelWorksheet1,lin,5);
+  ExcelWorksheet1.Cells.Item[lin,5].value:='Cuenta';
+
+  FormatoTitulo(ExcelWorksheet1,lin,6);
+  ExcelWorksheet1.Cells.Item[lin,6].value:='Monto';
+  lin:=lin+1;
+
+ //Exportamos todos los rubros
+  subtotal:=0;
+  for x:=1 to gridb.rowcount-1 do
+     begin
+        if (gridb.cells[0,x]<>'BECARIOS') and  (gridb.cells[0,x]<>'PYJ SINDICALIZADO') and (gridb.cells[0,x]<>'BECARIOS NG')
+            and (gridb.cells[0,x]<>'PYJ DOCENTE') and (gridb.cells[0,x]<>'PYJ CONFIANZA') AND (gridb.cells[0,x]<>'ESDEPED BECARIOS')
+          then
+           begin
+                elrubrot.text:=gridb.cells[0,x];
+                elsfdot.text:=gridb.cells[1,x];
+                laareat.text:=gridb.cells[2,x];
+                elbancot.text:=bancoCuad.Text;
+                elproyt.text:=gridb.cells[3,x];
+
+                LAcuentaBanco:=dameCtaBanco(elrubrot.text,elsfdot.text,laareat.text,elproyt.text,str_(elbancot.text,'-'));
+
+                elNombre:=dameNombre('T','.txt',LAcuentaBanco);
+
+                colocaBorde(ExcelWorksheet1,lin,1);
+                ExcelWorksheet1.Cells.Item[lin,1].value:=elNombre;
+
+                colocaBorde(ExcelWorksheet1,lin,2);
+                ExcelWorksheet1.Cells.Item[lin,2].value:=elrubrot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,3);
+                ExcelWorksheet1.Cells.Item[lin,3].value:=elsfdot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,4);
+                ExcelWorksheet1.Cells.Item[lin,4].value:=laAreat.text;
+
+                colocaBorde(ExcelWorksheet1,lin,5);
+                ExcelWorksheet1.Cells.Item[lin,5].value:=LAcuentaBanco;
+
+                colocaBorde(ExcelWorksheet1,lin,6);
+                ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+                ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+                ExcelWorksheet1.Cells.Item[lin,6].value:=gridb.cells[4,x];
+                subtotal:=subtotal+ strtofloat(stringreplace(gridb.cells[4,x],',','',[rfReplaceAll]));
+                lin:=lin+1;
+                 barra.Position:=barra.position+1;
+          end;
+     end;
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,5].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,5].value:='Total';
+
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+     ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,6].value:=floattostr(subtotal);
+
+
+     //=====================Exportamos rubros Becarios ============================
+     lin:=lin+3;
+
+  ExcelWorksheet1.Range['A'+inttostr(lin), 'F'+inttostr(lin)].MergeCells := true;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='BECARIOS';
+
+
+  lin:=lin+1;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='Nombre_Reporte';
+
+  FormatoTitulo(ExcelWorksheet1,lin,2);
+  ExcelWorksheet1.Cells.Item[lin,2].value:='Tipo_Puesto';
+
+  FormatoTitulo(ExcelWorksheet1,lin,3);
+  ExcelWorksheet1.Cells.Item[lin,3].value:='Sfdo';
+
+  FormatoTitulo(ExcelWorksheet1,lin,4);
+  ExcelWorksheet1.Cells.Item[lin,4].value:='Area';
+
+  FormatoTitulo(ExcelWorksheet1,lin,5);
+  ExcelWorksheet1.Cells.Item[lin,5].value:='Cuenta';
+
+  FormatoTitulo(ExcelWorksheet1,lin,6);
+  ExcelWorksheet1.Cells.Item[lin,6].value:='Monto';
+  lin:=lin+1;
+
+ //Exportamos todos los rubros
+  subtotal:=0;
+  for x:=1 to gridb.rowcount-1 do
+     begin
+        if (gridb.cells[0,x]='BECARIOS') or (gridb.cells[0,x]='BECARIOS NG') or (gridb.cells[0,x]='ESDEPED BECARIOS') then
+           begin
+                elrubrot.text:=gridb.cells[0,x];
+                elsfdot.text:=gridb.cells[1,x];
+                laareat.text:=gridb.cells[2,x];
+                elbancot.text:=bancoCuad.Text;
+                elproyt.text:=gridb.cells[3,x];
+
+                LAcuentaBanco:=dameCtaBanco(elrubrot.text,elsfdot.text,laareat.text,elproyt.text,str_(elbancot.text,'-'));
+
+                elNombre:=dameNombre('T','.txt',LAcuentaBanco);
+
+                colocaBorde(ExcelWorksheet1,lin,1);
+                ExcelWorksheet1.Cells.Item[lin,1].value:=elNombre;
+
+                colocaBorde(ExcelWorksheet1,lin,2);
+                ExcelWorksheet1.Cells.Item[lin,2].value:=elrubrot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,3);
+                ExcelWorksheet1.Cells.Item[lin,3].value:=elsfdot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,4);
+                ExcelWorksheet1.Cells.Item[lin,4].value:=laAreat.text;
+
+                colocaBorde(ExcelWorksheet1,lin,5);
+                ExcelWorksheet1.Cells.Item[lin,5].value:=LAcuentaBanco;
+
+                colocaBorde(ExcelWorksheet1,lin,6);
+                ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+                ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+                ExcelWorksheet1.Cells.Item[lin,6].value:=gridb.cells[4,x];
+                subtotal:=subtotal+ strtofloat(stringreplace(gridb.cells[4,x],',','',[rfReplaceAll]));
+                lin:=lin+1;
+                 barra.Position:=barra.position+1;
+          end;
+     end;
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,5].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,5].value:='Total';
+
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+     ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,6].value:=floattostr(subtotal);
+
+
+
+  //=====================Exportamos rubros jubilados ============================
+     lin:=lin+3;
+
+  ExcelWorksheet1.Range['A'+inttostr(lin), 'F'+inttostr(lin)].MergeCells := true;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='JUBILADOS Y PENSIONADOS';
+
+
+  lin:=lin+1;
+  FormatoTitulo(ExcelWorksheet1,lin,1);
+  ExcelWorksheet1.Cells.Item[lin,1].value:='Nombre_Reporte';
+
+  FormatoTitulo(ExcelWorksheet1,lin,2);
+  ExcelWorksheet1.Cells.Item[lin,2].value:='Tipo_Puesto';
+
+  FormatoTitulo(ExcelWorksheet1,lin,3);
+  ExcelWorksheet1.Cells.Item[lin,3].value:='Sfdo';
+
+  FormatoTitulo(ExcelWorksheet1,lin,4);
+  ExcelWorksheet1.Cells.Item[lin,4].value:='Area';
+
+  FormatoTitulo(ExcelWorksheet1,lin,5);
+  ExcelWorksheet1.Cells.Item[lin,5].value:='Cuenta';
+
+  FormatoTitulo(ExcelWorksheet1,lin,6);
+  ExcelWorksheet1.Cells.Item[lin,6].value:='Monto';
+  lin:=lin+1;
+
+ //Exportamos todos los rubros
+  subtotal:=0;
+  for x:=1 to gridb.rowcount-1 do
+     begin
+        if (gridb.cells[0,x]='PYJ SINDICALIZADO') or (gridb.cells[0,x]='PYJ CONFIANZA') or (gridb.cells[0,x]='PYJ DOCENTE') then
+           begin
+                elrubrot.text:=gridb.cells[0,x];
+                elsfdot.text:=gridb.cells[1,x];
+                laareat.text:=gridb.cells[2,x];
+                elbancot.text:=bancoCuad.Text;
+                elproyt.text:=gridb.cells[3,x];
+
+                LAcuentaBanco:=dameCtaBanco(elrubrot.text,elsfdot.text,laareat.text,elproyt.text,str_(elbancot.text,'-'));
+
+                elNombre:=dameNombre('T','.txt',LAcuentaBanco);
+
+                colocaBorde(ExcelWorksheet1,lin,1);
+                ExcelWorksheet1.Cells.Item[lin,1].value:=elNombre;
+
+                colocaBorde(ExcelWorksheet1,lin,2);
+                ExcelWorksheet1.Cells.Item[lin,2].value:=elrubrot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,3);
+                ExcelWorksheet1.Cells.Item[lin,3].value:=elsfdot.text;
+
+                colocaBorde(ExcelWorksheet1,lin,4);
+                ExcelWorksheet1.Cells.Item[lin,4].value:=laAreat.text;
+
+                colocaBorde(ExcelWorksheet1,lin,5);
+                ExcelWorksheet1.Cells.Item[lin,5].value:=LAcuentaBanco;
+
+                colocaBorde(ExcelWorksheet1,lin,6);
+                ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+                ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+                ExcelWorksheet1.Cells.Item[lin,6].value:=gridb.cells[4,x];
+                subtotal:=subtotal+ strtofloat(stringreplace(gridb.cells[4,x],',','',[rfReplaceAll]));
+                lin:=lin+1;
+                 barra.Position:=barra.position+1;
+          end;
+     end;
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,5].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,5].value:='Total';
+
+     ExcelWorksheet1.Cells.Item[lin,6].Interior.ColorIndex :=37;
+     ExcelWorksheet1.Cells.Item[lin,6].numberformat:='$#,##0.00';
+     ExcelWorksheet1.Cells.Item[lin,6].Font.Bold:=true;
+     ExcelWorksheet1.Cells.Item[lin,6].value:=floattostr(subtotal);
+
+
+     ExcelWorkbook1.Save;
+     ExcelApplication1.Quit;
+     ExcelWorksheet1.Disconnect;
+     ExcelWorkbook1.Disconnect;
+     ExcelApplication1.Disconnect;
+     ShellExecute(handle, 'open', PChar('c:\Transferencias\'+laNominaes+'\Cuadre'+bancoCuad.Text+'.xlsx'), nil, nil, SW_show);
+
+
+  
+end;
+
+
+procedure TFDetalle.ExportarReporteCuadre1Click(Sender: TObject);
+begin
+  inherited;
+ExportaCuadre;
 end;
 
 End.

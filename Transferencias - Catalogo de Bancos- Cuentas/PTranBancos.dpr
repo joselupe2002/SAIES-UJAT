@@ -36,7 +36,7 @@ begin
  BQuery.DataBaseName := 'Sistema' ;
  bQuery.DataSource := xmodulo.DataSource1 ;
  bQuery.Sql.Add ('Delete From PTRANBANCOS') ;
- bQuery.Sql.Add ('Where TRAN_CLAVE= :TRAN_CLAVE') ;
+ bQuery.Sql.Add ('Where TRAN_NUMREG= :TRAN_NUMREG') ;
 
  try
   BQuery.ExecSql ;

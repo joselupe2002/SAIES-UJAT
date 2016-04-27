@@ -35,8 +35,8 @@ begin
  BQuery := TQuery.Create(Application) ;
  BQuery.DataBaseName := 'Sistema' ;
  bQuery.DataSource := xmodulo.DataSource1 ;
- bQuery.Sql.Add ('Delete From SCATMOTIVO') ;
- bQuery.Sql.Add ('Where CATM_CLAVE= :CATM_CLAVE') ;
+ bQuery.Sql.Add ('Delete From SCATCURSOS') ;
+ bQuery.Sql.Add ('Where CATC_CLAVE= :CATC_CLAVE') ;
 
  try
   BQuery.ExecSql ;

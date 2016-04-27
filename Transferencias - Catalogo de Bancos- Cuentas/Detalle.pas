@@ -16,14 +16,30 @@ uses
 
   TFDetalle = class(TPFDetalle)
     Label9: TLabel;
-    CLAVE: TDBEdit;
     Label4: TLabel;
-    DESCRIP: TDBEdit;
     CUENTA: TDBEdit;
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    CONVENIO: TDBEdit;
+    RUBRO: TDBComboBox;
+    Label5: TLabel;
+    NUMREG: TDBEdit;
+    BANCO: TDBComboBox;
+    SFDO: TDBComboBox;
+    Q: TQuery;
+    AREA: TDBComboBox;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    PROY: TDBComboBox;
+    Shape1: TShape;
     procedure FormCreate(Sender: TObject);
     procedure GrabaInsert ; override ;
     procedure GrabaUpdate ; override ;
+    procedure RUBROChange(Sender: TObject);
+    procedure AREAChange(Sender: TObject);
+    procedure SFDOChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,28 +60,6 @@ implementation
 {$R *.DFM}
 
 
-procedure LimpiafileLog(s:string);
-begin
-
-end;
-
-
- {===============================================================================
- Graba una cadena al archivo LOG que se encuentra en la carpeta File
- ===============================================================================}
-procedure savetofileLog(s:string);
-begin
-
-end;
-
-
- {===============================================================================
- Devuelve la parte izquierda separada por "separador" 01-huimanguillo Res=01
- ===============================================================================}
-function str_(cad:string;separador:string):string;
-begin
-
-end;
 
 
  {===============================================================================
@@ -112,14 +106,44 @@ procedure TFDetalle.FormCreate(Sender: TObject);
 begin
 // Data := TdmDatos.Create(FDetalle) ;
  inherited;
- Height := 200;
- Width :=  554 ;
+ Height := 274;
+ Width :=  590 ;
+ Q.CLOSE;
+ q.sql.text:='SELECT DISTINCT(A.TRAN_RUBRO) FROM PTRANSFERNOM A ORDER BY 1';
+ Q.open;
+ rubro.ITEMS.Clear;
+ while not (q.eof) do
+   begin
+      rubro.Items.Add(q.fields[0].asstring);
+      q.next;
+   end;
+ Rubro.items.add('%-Cuenta Default');
+
+ Q.CLOSE;
+ q.sql.text:='SELECT DISTINCT(CLAVE||'#39+'-'+#39+'||DESCRIP) FROM PTRANSFERNOM B, PCONTBANCTRANS A WHERE A.CLAVE IS NOT NULL '+
+ ' AND CLAVE=B.TRAN_BANCO '+
+ ' ORDER BY 1';
+  savetofilelog(q.sql.text);
+ Q.open;
+ BANCO.ITEMS.Clear;
+ while not (q.eof) do
+   begin
+      BANCO.Items.Add(q.fields[0].asstring);
+      q.next;
+   end;
+  BANCO.Items.ADD('%-Todos');
+
+
+ 
+
+ 
+
 end;
 
 procedure TFDetalle.GrabaInsert ;
 begin
  qInsert.ExecSql ;
- CLAVE.SETFOCUS;
+ RUBRO.SETFOCUS;
 end ;
 
 procedure TFDetalle.GrabaUpdate ;
@@ -128,5 +152,65 @@ begin
 end ;
 
 
+
+procedure TFDetalle.RUBROChange(Sender: TObject);
+begin
+  inherited;
+ Q.CLOSE;
+ q.sql.text:='SELECT DISTINCT(B.TRAN_SFDO) FROM PTRANSFERNOM B where b.TRAN_RUBRO LIKE '+#39+STR_(RUBRO.TEXT,'-')+#39+' ORDER BY 1';
+ Q.open;
+ SFDO.ITEMS.Clear;
+ while not (q.eof) do
+   begin
+      SFDO.Items.Add(q.fields[0].asstring);
+      q.next;
+   end;
+ SFDO.Items.ADD('%-Todos');
+end;
+
+procedure TFDetalle.AREAChange(Sender: TObject);
+begin
+  inherited;
+Q.CLOSE;
+ q.sql.text:='SELECT DISTINCT(TRAN_PROY) FROM PTRANSFERNOM B WHERE  '+
+ ' B.TRAN_RUBRO LIKE '+#39+STR_(RUBRO.TEXT,'-')+#39+
+ ' AND B.TRAN_SFDO LIKE '+#39+STR_(SFDO.TEXT,'-')+#39+
+ ' AND B.TRAN_AREA LIKE '+#39+STR_(AREA.TEXT,'-')+#39+
+ ' AND B.TRAN_BANCO LIKE '+#39+STR_(BANCO.TEXT,'-')+#39+
+ ' AND TO_CHAR(B.TRAN_FECHA ,'+#39+'YYYY'+#39+')='+#39+formatdatetime('YYYY',NOW)+#39+
+ ' ORDER BY 1';
+ SAVETOFILELOG(Q.sql.text);
+ Q.open;
+ PROY.ITEMS.Clear;
+ while not (q.eof) do
+   begin
+      PROY.Items.Add(q.fields[0].asstring);
+      q.next;
+   end;
+  PROY.Items.ADD('%-Todos');
+
+
+ 
+end;
+
+procedure TFDetalle.SFDOChange(Sender: TObject);
+begin
+  inherited;
+ Q.CLOSE;
+ q.sql.text:='SELECT DISTINCT(B.TRAN_AREA) FROM PTRANSFERNOM B '+
+ ' WHERE TRAN_RUBRO LIKE '+#39+STR_(RUBRO.TEXT,'-')+#39+
+ ' AND TRAN_SFDO LIKE'+#39+STR_(SFDO.TEXT,'-')+#39+
+ ' AND TRAN_AREA IS NOT NULL '+
+ ' ORDER BY 1';
+ savetofilelog(q.sql.text);
+ Q.open;
+ AREA.ITEMS.Clear;
+ while not (q.eof) do
+   begin
+      AREA.Items.Add(q.fields[0].asstring);
+      q.next;
+   end;
+ AREA.Items.ADD('%-Todos');
+end;
 
 end.
