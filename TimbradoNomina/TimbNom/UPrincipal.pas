@@ -1,0 +1,410 @@
+unit UPrincipal;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus,contnrs, StdCtrls, ExtCtrls,dbtables, db,
+  ToolWin, ComCtrls, buttons, ImgList, WinInet, ExtActns;
+
+
+type
+  TInicio_Proc = procedure(App, Scr: integer); StdCall;
+  TFin_Proc    = procedure; StdCall;
+  TCrear_Proc  = function: Integer; StdCall;
+
+  TFPrincipal = class(TForm)
+    Menu: TMainMenu;
+    tiempo: TTimer;
+    XSalir1: TMenuItem;
+    TimMenu: TTimer;
+    Acercade1: TMenuItem;
+    Salir1: TMenuItem;
+    RestaurarVentana1: TMenuItem;
+    N1: TMenuItem;
+    ile1: TMenuItem;
+    Cascade1: TMenuItem;
+    ActualizarCatlogos1: TMenuItem;
+    bp: TProgressBar;
+    lInfoDescarga: TLabel;
+    PACERCA: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label4: TLabel;
+    Panel1: TPanel;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Nomina1: TMenuItem;
+    CambiarPassword1: TMenuItem;
+    GenerarXML1: TMenuItem;
+    N1GenerarXML1: TMenuItem;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormShow(Sender: TObject);
+    procedure tiempoTimer(Sender: TObject);
+    Procedure KeyMDI_Create(Sender:TObject;KeyMDIChill:String);
+    procedure FormDestroy(Sender: TObject);
+    procedure ColocaSpeedB(nombre:string;capt:string);
+    procedure ToolButton3Click(Sender: TObject);
+    procedure Salir1Click(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ile1Click(Sender: TObject);
+    procedure Cascade1Click(Sender: TObject);
+   procedure descargarURL (const direccionURL, ficheroLocal : string);
+    procedure Image1Click(Sender: TObject);
+    procedure Acercade1Click(Sender: TObject);
+    procedure ImportardatosExcel1Click(Sender: TObject);
+    procedure ConfigurarConexinContpaq1Click(Sender: TObject);
+    procedure CambiarPassword1Click(Sender: TObject);
+    procedure ExportaraContpaq1Click(Sender: TObject);
+    procedure RecalcularISR1Click(Sender: TObject);
+    procedure CatalogodeConceptos1Click(Sender: TObject);
+    procedure C1Click(Sender: TObject);
+    procedure GenerarXML1Click(Sender: TObject);
+    procedure N1GenerarXML1Click(Sender: TObject);
+  private
+    { Private declarations }
+    ALib       : THandle;
+    InicioMDI  : TInicio_Proc;
+    FinMDI     : TFin_Proc;
+    CreateMDI  : TCrear_Proc;
+
+      procedure URL_OnDownloadProgress
+        (Sender: TDownLoadURL;
+         Progress, ProgressMax: Cardinal;
+         StatusCode: TURLDownloadStatus;
+         StatusText: String; var Cancel: Boolean) ;
+         
+  public
+    { Public declarations }
+  end;
+
+  type
+  Tcompartido = record
+     Cadena:String[100];
+     SQL:AnsiString;
+  end;
+  Pcompartido=^Tcompartido;
+
+var
+  FPrincipal: TFPrincipal;
+  Compartido: Pcompartido;
+  FicheroM: Thandle;
+
+implementation
+
+uses Uentrada;
+
+{$R *.DFM}
+
+var
+   handle:Thandle;
+
+
+function descargarFichero
+    (const urlDescarga, ficheroLocal : String): boolean;
+const
+  BufferSize = 1024;
+var
+  hSession, hURL: HInternet;
+  Buffer: array[1..BufferSize] of Byte;
+  BufferLen: DWORD;
+  f: File;
+  sAppName: string;
+begin
+ sAppName := ExtractFileName(Application.ExeName) ;
+ hSession := InternetOpen(PChar(sAppName),
+     INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0) ;
+ try
+  hURL := InternetOpenURL(hSession,
+      PChar(urlDescarga), nil, 0, 0, 0) ;
+  try
+   AssignFile(f, ficheroLocal) ;
+   Rewrite(f,1) ;
+   repeat
+    InternetReadFile(hURL, @Buffer,
+        SizeOf(Buffer), BufferLen) ;
+    BlockWrite(f, Buffer, BufferLen)
+   until BufferLen = 0;
+   CloseFile(f) ;
+   result := True;
+  finally
+   InternetCloseHandle(hURL)
+  end
+ finally
+  InternetCloseHandle(hSession)
+ end
+end;
+
+procedure TFPrincipal.URL_OnDownloadProgress;
+begin
+   lInfoDescarga.visible:=true;
+   bp.Visible:=true;
+
+   lInfoDescarga.Caption := 'Descargando Actualizaciones... '
+       + FormatFloat('#,###', Progress / 1024) +
+       ' kb de ' + FormatFloat('#,### kb',
+       ProgressMax / 1024);
+   lInfoDescarga.Refresh;
+
+
+   bp.Max:= ProgressMax;
+   bp.Position:= Progress;
+   application.ProcessMessages;
+
+end;
+
+procedure TFPrincipal.descargarURL (
+    const direccionURL, ficheroLocal : string);
+begin
+  if direccionURL <> '' then
+  begin
+    with TDownloadURL.Create(self) do
+    try
+      URL := direccionURL;
+      FileName := ficheroLocal;
+      OnDownloadProgress := URL_OnDownloadProgress;
+      ExecuteTarget(nil);
+      bp.visible:=false;
+      lInfoDescarga.visible:=false;
+    finally
+      Free;
+    end;
+  end;
+end;
+
+
+Procedure TFPrincipal.KeyMDI_Create(Sender:TObject;KeyMDIChill:String);
+Begin
+  ALib := LoadLibrary(PChar(KeyMDIChill));
+  Try
+    @InicioMDI := GetProcAddress(ALib, PChar('InicioMDI'));
+    @FinMDI := GetProcAddress(ALib, PChar('FinMDI'));
+    @CreateMDI  := GetProcAddress(ALib, PChar('CreateMDI'));
+    InicioMDI(integer(Application), integer(Screen));
+  Except
+    FreeLibrary(ALib);
+  End;
+End;
+
+
+procedure ejecutarfuncion(const nombredll, nombrefuncion:string);
+type
+   Tproc = function(A: TApplication;u:string;c:string):Tform;
+var
+
+   Proc: Tproc;
+begin
+   handle:=loadlibrary(pchar(nombredll));
+   if handle=0 then
+      raise Exception.create('DLL No encontrada: '+nombredll);
+   try
+      Proc:=getProcAddress(Handle,Pchar(NombreFuncion));
+      if @proc = nil then
+          raise Exception.Create ('Funcion no encontrada');
+        Proc(application,entrada.log.text,entrada.cla.Text);
+   except freeLibrary(handle); end;
+end;
+
+
+procedure TFPrincipal.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+application.terminate;
+end;
+
+
+function  getVersion(Fil:string):string;
+var
+    Size, Size2: DWord;
+    Pt, Pt2: Pointer;
+begin
+     Size := GetFileVersionInfoSize(PChar (fil), Size2);
+     if Size > 0 then
+     begin
+       GetMem (Pt, Size);
+       try
+          GetFileVersionInfo (PChar (fil), 0, Size, Pt);
+          VerQueryValue (Pt, '\', Pt2, Size2);
+          with TVSFixedFileInfo (Pt2^) do
+          begin
+            Result:= IntToStr (HiWord (dwFileVersionMS)) + '.' +
+                     IntToStr (LoWord (dwFileVersionMS)) + '.' +
+                     IntToStr (HiWord (dwFileVersionLS)) + '.' +
+                     IntToStr (LoWord (dwFileVersionLS));
+         end;
+       finally
+         FreeMem (Pt);
+       end;
+    end;
+end;
+
+
+
+
+//Coloca en la barra ToolBar los SpeedButton
+procedure TFprincipal.ColocaSpeedB(nombre:string;capt:string);
+
+begin
+
+end;
+
+//Arma menus
+procedure TFPrincipal.FormShow(Sender: TObject);
+begin
+height:=1;width:=1;
+end;
+
+procedure TFPrincipal.tiempoTimer(Sender: TObject);
+begin
+tiempo.enabled:=false;
+entrada.showmodal;
+end;
+
+procedure TFPrincipal.FormDestroy(Sender: TObject);
+begin
+ try
+ UnMapViewofFile(compartido);
+ CloseHandle(FicheroM);
+ FinMDI;
+ FreeLibrary(ALib);
+ except end;
+end;
+
+
+procedure TFPrincipal.ToolButton3Click(Sender: TObject);
+begin
+application.Terminate;
+end;
+
+procedure TFPrincipal.Salir1Click(Sender: TObject);
+begin
+application.Terminate;
+end;
+
+procedure TFPrincipal.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+If ((GetKeyState(VK_CONTROL) AND 128)=128 ) and ((GetKeyState(122) AND 128)=128 ) THEN
+    application.Terminate;
+end;
+
+procedure TFPrincipal.ile1Click(Sender: TObject);
+begin
+tile;
+
+end;
+
+procedure TFPrincipal.Cascade1Click(Sender: TObject);
+begin
+Cascade;
+end;
+
+procedure TFPrincipal.Image1Click(Sender: TObject);
+begin
+PACERCA.Visible:=FALSE;
+
+end;
+
+{===============================================================================
+ Acomoda un objeto ya sea panel en el centro de un ANCHO Y ALTO dato
+ ===============================================================================}
+procedure AcomodaPanelXY(ancho:integer;alto:integer;Obj:Twincontrol;ValTop:Integer);
+begin
+   obj.Top:=(alto div 2) - (obj.Height div 2)+ValTop;
+   obj.left:=(ancho div 2) - (obj.width div 2);
+end;
+
+{===============================================================================
+ Acomoda un objeto ya sea panel en el centro de un contenedor Forma
+ ===============================================================================}
+procedure AcomodaPanel(Contenedor:Twincontrol;Obj:Twincontrol;ValTop:Integer);
+begin
+   obj.Top:=(contenedor.Height div 2) - (obj.Height div 2)+ValTop;
+   obj.left:=(contenedor.width div 2) - (obj.width div 2);
+end;
+
+procedure TFPrincipal.Acercade1Click(Sender: TObject);
+begin
+pacerca.Visible:=true;
+acomodaPanel(Fprincipal,pacerca,0);
+end;
+
+procedure TFPrincipal.ImportardatosExcel1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'PubVal.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.ConfigurarConexinContpaq1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'ConexCQ.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.CambiarPassword1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'CambioPass.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.ExportaraContpaq1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'ExportCQ.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.RecalcularISR1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'RecalculoISR.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.CatalogodeConceptos1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'CatConc.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.C1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'Vincul.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.GenerarXML1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'ConexCQ.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+procedure TFPrincipal.N1GenerarXML1Click(Sender: TObject);
+var
+Xform    : TForm;
+begin
+   KeyMDI_Create(Sender,'CrearXML.dll');
+   XForm := TForm(CreateMDI);
+end;
+
+end.

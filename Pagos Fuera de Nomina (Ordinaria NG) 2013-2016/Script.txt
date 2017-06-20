@@ -1,0 +1,213 @@
+CONNECT SHAKE/SHAKE@SAIES_LAP;
+
+INSERT INTO SMODULOS(MODU_MODULO, MODU_PRED, MODU_DESCRIP, MODU_APLICACION,MODU_DETALLE,
+ MODU_MANTEN, MODU_REPORTE, MODU_VERSION, MODU_SCRIPT, MODU_INSERTA, MODU_EDITA, MODU_BORRA)
+ VALUES('PVMOVFUENOM','PNOMIS','Pagos Fuera Nomina',0,'S','S','S','3.0.0.0','Ppsd_001','S','S','S');
+
+
+COMMIT;
+
+
+
+
+-- Create table
+create table PMOVFUENOM
+(
+  MOVF_SEQ    NUMBER(10) not null,
+  MOVF_NOMB   NUMBER(10),
+  MOVF_PSTO   VARCHAR2(10),
+  MOVF_CATEGP VARCHAR2(10),
+  MOVF_FINI   DATE,
+  MOVF_FFIN   DATE,
+  MOVF_TEXTO  VARCHAR2(200),
+  MOVF_USU    VARCHAR2(30) default USER,
+  MOVF_FEC    DATE default SYSDATE,
+  MOVF_HORAS  NUMBER(2) default 0,
+  MOVF_NOMINA NUMBER(10)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 320K
+    minextents 1
+    maxextents unlimited
+  );
+-- Add comments to the table 
+comment on table PMOVFUENOM
+  is 'Tabla de Pagos Fueras de Nomina
+Pagos de Sueldo';
+-- Add comments to the columns 
+comment on column PMOVFUENOM.MOVF_SEQ
+  is 'Consecutivo
+Consecutivo
+';
+comment on column PMOVFUENOM.MOVF_NOMB
+  is 'Nombramiento
+Nombramiento
+';
+comment on column PMOVFUENOM.MOVF_CATEGP
+  is 'Categoría
+Categoría
+';
+comment on column PMOVFUENOM.MOVF_FINI
+  is 'Inicio
+Fecha de Inicio del Contrato
+';
+comment on column PMOVFUENOM.MOVF_FFIN
+  is 'Fin
+Fecha de Término del Contrato
+';
+comment on column PMOVFUENOM.MOVF_TEXTO
+  is 'Texto
+Texto
+';
+comment on column PMOVFUENOM.MOVF_USU
+  is 'Usuario
+Usuario
+';
+comment on column PMOVFUENOM.MOVF_FEC
+  is 'Fecha
+Fecha
+';
+comment on column PMOVFUENOM.MOVF_HORAS
+  is 'Horas
+Horas
+';
+comment on column PMOVFUENOM.MOVF_NOMINA
+  is 'Nomina
+Nomina
+';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table PMOVFUENOM
+  add constraint PK$PMOVFUENOM$SEQ primary key (MOVF_SEQ)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 128K
+    minextents 1
+    maxextents unlimited
+  );
+alter table PMOVFUENOM
+  add constraint FK$PMOVFUENOM$NOMB foreign key (MOVF_NOMB)
+  references PNOMBRAM (NOMB_NOMB);
+alter table PMOVFUENOM
+  add constraint FK$PMOVFUENOM$PSTO_CATEGP foreign key (MOVF_PSTO, MOVF_CATEGP)
+  references PCPUESTOS (CPUE_PSTO, CPUE_CATEG);
+-- Create/Recreate check constraints 
+alter table PMOVFUENOM
+  add constraint NN$PMOVFUENOM$CATEGP
+  check (MOVF_CATEGP IS NOT NULL);
+alter table PMOVFUENOM
+  add constraint NN$PMOVFUENOM$FFIN
+  check (MOVF_FFIN IS NOT NULL);
+alter table PMOVFUENOM
+  add constraint NN$PMOVFUENOM$FINI
+  check (MOVF_FINI IS NOT NULL);
+alter table PMOVFUENOM
+  add constraint NN$PMOVFUENOM$PSTO
+  check (MOVF_PSTO IS NOT NULL);
+-- Grant/Revoke object privileges 
+grant select, insert, update, delete, alter on PMOVFUENOM to GOSHAKE;
+
+
+CREATE OR REPLACE VIEW PVMOVFUENOM AS
+SELECT
+  MOVF_SEQ AS VMOV_SEQ,
+  PERS_PERSONA AS VMOV_EMPL,
+  SUBSTR(PERS_NOMBRE||' '||PERS_APEPAT||' '||PERS_APEMAT,1,50) As VMOV_NOMBRE,
+  NOMB_NOMB AS VMOV_NOMBS,
+  MOVF_PSTO AS VMOV_PSTO,
+  MOVF_CATEGP AS VMOV_CATEG,
+  MOVF_HORAS AS VMOV_HORAS,
+  MOVF_FINI AS VMOV_FINI,
+  MOVF_FFIN AS VMOV_FFIN,
+  MOVF_TEXTO AS VMOV_TEXTO,
+  MOVF_NOMINA AS VMOV_NOMINA,
+  MOVF_USU AS VMOV_USU,
+  MOVF_FEC AS VMOV_FEC
+FROM FPERSONAS, PMOVFUENOM, PNOMBRAM, PPUESTOS, PCPUESTOS, PNOMINAS
+WHERE PNOMBRAM.NOMB_EMPL = FPERSONAS.PERS_PERSONA
+AND PMOVFUENOM.MOVF_NOMB = PNOMBRAM.NOMB_NOMB
+AND PPUESTOS.PUES_PSTO = PMOVFUENOM.MOVF_PSTO
+AND PCPUESTOS.CPUE_PSTO = PMOVFUENOM.MOVF_PSTO
+AND PCPUESTOS.CPUE_CATEG = PMOVFUENOM.MOVF_CATEGP
+AND PNOMINAS.NOMI_NOMINA(+) = PMOVFUENOM.MOVF_NOMINA;
+
+
+
+CREATE PUBLIC SYNONYM PVMOVFUENOM FOR PERSONAL.PVMOVFUENOM;
+
+COMMENT ON TABLE PERSONAL.PVMOVFUENOM IS 'Vista de Pago de Sueldos
+Pago de Sueldos' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_SEQ IS 'Consecutivo
+Consecutivo
+00
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_Empl IS 'Empl
+Nombre del Empleado
+01
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_NOMBRE IS 'Nombre
+Nombre del Empleado
+02
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_NOMBS IS 'Nombramiento
+Nombramiento
+03
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_PSTO IS 'Psto
+Puesto
+04
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_CATEG IS 'Categoría
+Categoría
+05
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_HORAS IS 'Horas
+Horas
+06
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_FINI IS 'Inicio
+Fecha de Inicio
+07
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_FFIN IS 'Fin
+Fecha de Término
+08
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_TEXTO IS 'Texto
+Texto
+' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_NOMINA IS 'Nomina
+Nomina de aplicación
+09
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_USU IS 'Usuario
+Usuario que capturó el movimiento
+10
+*S' ;
+
+COMMENT ON COLUMN PERSONAL.PVMOVFUENOM.VMOV_FEC IS 'Fecha
+Fecha de Captura
+11
+*S' ;
+

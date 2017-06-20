@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd" version="3.2" serie="C" folio="2000" fecha="2017-02-13T06:32:07" sello="bg65z3J+6pja+ql2BXl8UArMe+Bjx5jJ3koSmHohJi1ssubwWfBKu2ZWJWfYD2s7MS0FjWWzX5r6Z/xThS+LopuT7Gf9l8x1946lxV+f/GorA3+S9WXFrmNRHKMypQd4LtD8QcsoxxH5YYw2lk44KJgLOniKcEhTNpY8f9dh8j4=" formaDePago="Pago en una sola exhibición" noCertificado="20001000000200001428" certificado="MIIEYTCCA0mgAwIBAgIUMjAwMDEwMDAwMDAyMDAwMDE0MjgwDQYJKoZIhvcNAQEFBQAwggFcMRowGAYDVQQDDBFBLkMuIDIgZGUgcHJ1ZWJhczEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMSkwJwYJKoZIhvcNAQkBFhphc2lzbmV0QHBydWViYXMuc2F0LmdvYi5teDEmMCQGA1UECQwdQXYuIEhpZGFsZ28gNzcsIENvbC4gR3VlcnJlcm8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQRGlzdHJpdG8gRmVkZXJhbDESMBAGA1UEBwwJQ295b2Fjw6FuMTQwMgYJKoZIhvcNAQkCDCVSZXNwb25zYWJsZTogQXJhY2VsaSBHYW5kYXJhIEJhdXRpc3RhMB4XDTEzMDUwNzE2MDEyOVoXDTE3MDUwNzE2MDEyOVowgdsxKTAnBgNVBAMTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSkwJwYDVQQpEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEChMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxJTAjBgNVBC0THEFBQTAxMDEwMUFBQSAvIEhFR1Q3NjEwMDM0UzIxHjAcBgNVBAUTFSAvIEhFR1Q3NjEwMDNNREZOU1IwODERMA8GA1UECxMIcHJvZHVjdG8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKS/beUVy6E3aODaNuLd2S3PXaQre0tGxmYTeUxa55x2t/7919ttgOpKF6hPF5KvlYh4ztqQqP4yEV+HjH7yy/2d/+e7t+J61jTrbdLqT3WD0+s5fCL6JOrF4hqy//EGdfvYftdGRNrZH+dAjWWml2S/hrN9aUxraS5qqO1b7btlAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBBQUAA4IBAQACPXAWZX2DuKiZVv35RS1WFKgT2ubUO9C+byfZapV6ZzYNOiA4KmpkqHU/bkZHqKjR+R59hoYhVdn+ClUIliZf2ChHh8s0a0vBRNJ3IHfA1akWdzocYZLXjz3m0Er31BY+uS3qWUtPsONGVDyZL6IUBBUlFoecQhP9AO39er8zIbeU2b0MMBJxCt4vbDKFvT9i3V0Puoo+kmmkf15D2rBGR+drd8H8Yg8TDGFKf2zKmRsgT7nIeou6WpfYp570WIvLJQY+fsMp334D05Up5ykYSAxUGa30RdUzA4rxN5hT+W9whWVGD88TD33Nw55uNRUcRO3ZUVHmdWRG+GjhlfsD" subTotal="3624.02" descuento="859.51" Moneda="MXN" total="2764.51" metodoDePago="NA" tipoDeComprobante="egreso" LugarExpedicion="86040" xmlns:nomina12="http://www.sat.gob.mx/nomina12">
+  <cfdi:Emisor nombre="Su compañia" rfc="AAA010101AAA">
+    <cfdi:RegimenFiscal Regimen="603"/>
+  </cfdi:Emisor>
+  <cfdi:Receptor nombre="PEREZ SUAREZ JORGE" rfc="PESJ670204J6A"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto cantidad="1" unidad="ACT" descripcion="Pago de nómina" valorUnitario="3624.02" importe="3624.02"/>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos/>
+  <cfdi:Complemento>
+    <nomina12:Nomina Version="1.2" TipoNomina="O" FechaPago="2017-02-13" FechaInicialPago="2017-01-01" FechaFinalPago="2017-01-16" NumDiasPagados="15.000" TotalPercepciones="3624.02" TotalDeducciones="859.51" TotalOtrosPagos="200.00">
+      <nomina12:Emisor RegistroPatronal="12345678901" RfcPatronOrigen="AAA010101AAA">
+        <nomina12:EntidadSNCF OrigenRecurso="IP"/>
+      </nomina12:Emisor>
+      <nomina12:Receptor Curp="PESJ670204HTCRRR08" NumSeguridadSocial="77986700746" FechaInicioRelLaboral="2000-09-01" Antigüedad="P1W" TipoContrato="01" Sindicalizado="Sí" TipoJornada="03" TipoRegimen="02" NumEmpleado="1968" Departamento="Contabilidad" Puesto="Auxiliar Contable" RiesgoPuesto="1" PeriodicidadPago="05" Banco="021" CuentaBancaria="2147483640" SalarioBaseCotApor="300.00" SalarioDiarioIntegrado="335.00" ClaveEntFed="TAB"/>
+      <nomina12:Percepciones TotalSueldos="9100.00" TotalGravado="9100.00" TotalExento="0.00">
+        <nomina12:Percepcion TipoPercepcion="001" Clave="100" Concepto="Sueldo" ImporteExento="0.00" ImporteGravado="9000.00"/>
+        <nomina12:Percepcion TipoPercepcion="010" Clave="110" Concepto="Puntualidad" ImporteExento="0.00" ImporteGravado="100.00"/>
+      </nomina12:Percepciones>
+      <nomina12:Deducciones TotalOtrasDeducciones="100.00" TotalImpuestosRetenidos="150.00">
+        <nomina12:Deduccion TipoDeduccion="001" Clave="201" Concepto="IMSS" Importe="100.00"/>
+        <nomina12:Deduccion TipoDeduccion="002" Clave="202" Concepto="ISR" Importe="150.00"/>
+      </nomina12:Deducciones>
+      <nomina12:OtrosPagos>
+        <nomina12:OtroPago TipoOtroPago="003" Clave="300" Concepto="Viáticos" Importe="100.00"/>
+        <nomina12:OtroPago TipoOtroPago="003" Clave="300" Concepto="Viáticos" Importe="100.00"/>
+      </nomina12:OtrosPagos>
+      <nomina12:Incapacidades>
+        <nomina12:Incapacidad DiasIncapacidad="1" TipoIncapacidad="03" ImporteMonetario="300.00"/>
+        <nomina12:Incapacidad DiasIncapacidad="1" TipoIncapacidad="03" ImporteMonetario="300.00"/>
+      </nomina12:Incapacidades>
+    </nomina12:Nomina>
+  </cfdi:Complemento>
+</cfdi:Comprobante>
