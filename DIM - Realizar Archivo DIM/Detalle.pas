@@ -925,7 +925,9 @@ begin
   //Checar si es sindicalizado
   cont:=1;
   q.close;
-  q.SQL.text:='SELECT * FROM PDIMFINAL where ENVIAR='+#39+'S'+#39+' order by  tpsto, cveures, apepat, apemat, nombre';
+  q.SQL.text:='SELECT * FROM PDIMFINAL where ENVIAR='+#39+'S'+#39+
+  //' AND TPSTO IN ('+#39+'Z'+#39+','+#39+'ZA'+#39+')'+
+  ' order by  tpsto, cveures, apepat, apemat, nombre';
   SHOWMESSAGE(Q.sql.text);
   Q.open;
 
@@ -1074,7 +1076,7 @@ begin
                        Q.fieldbyname('TOTAL_INGRESOS_E').asstring+'|'+    //115. Suma del ingreso exento por sueldo
                        Q.fieldbyname('ISR_RETENIDO').asstring+'|'+    //116. Impuesto retenido durante el ejercicio
                        '|'+                     //117.  Impuesto retenido por otro patrón
-                       {Q.fieldbyname('ISR_CAUSADO').asstring+}'|'+                     //118.  Saldo a favor
+                       Q.fieldbyname('ISR_CAUSADO').asstring+'|'+                     //118.  Saldo a favor
                        '|'+                     //119.  Saldo a favor del ejercicio anterior
                        '|'+                     //120.  Suma de las cantidades credito al salario
                        '|'+                     //121.  Credito al salario entregado en efectivo

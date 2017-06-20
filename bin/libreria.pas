@@ -4,7 +4,15 @@ interface
 
 uses Sysutils, Classes, Dialogs, Controls, StdCtrls, DBTables, DB, error, EKRTF,
 Forms, ExtCtrls, Grids, DBCGrids, OleServer, Excel97, Comobj,ClipBrd,
-ComCtrls;
+ComCtrls,DBCtrls,Messages, graphics, windows;
+
+type
+
+TDBEdit = class(DBCtrls.TDBEdit)
+  Private
+    procedure Entrada(var M: TMessage); message CM_ENTER;
+    procedure Salida(var M: TMessage); message CM_EXIT;
+  end;
 
 
 
@@ -45,9 +53,47 @@ function Xls_To_StringGrid(AGrid: TStringGrid; AXLSFile: string): Boolean;
 Function SumaColGridOfCero(g:TstringGrid;Col:Integer):real;
 procedure copiarDBGridP(q:Tquery; max:integer; barra:TprogressBar);
 procedure copiarGridP(g:TstringGrid;barra:TProgressBar);
+Function SumaColGridCond(g:TstringGrid;Col:Integer; condicion:string; colCond:integer):real;
+Function SumaColGridDesdeLinea(g:TstringGrid;Col:Integer;inicia:integer):real;
 
 implementation
 
+Const
+ColorEnt=clwhite;
+ColorSal=$00DAFEE2;
+FontEnt =[fsbold];
+FontSal =[fsbold];
+FColEnt = clNavy;
+FColSal = clBlack;
+
+
+{===============================================================================
+ Cambia de color a los TEdit al momento de colocar el focus en el componente
+ ===============================================================================}
+procedure TDBEdit.Entrada(var M: TMessage);
+begin
+  inherited;
+  if (color<>$00DFDFDF) and not(readonly) then
+     begin
+       Color := ColorEnt;
+       font.Style:=fontEnt;
+       font.Color:=FColEnt;
+     end;
+end;
+
+{===============================================================================
+ Cambia de color a los TEdit al momento de dejar el focus en el componente
+ ===============================================================================}
+procedure TDBEdit.Salida(var M: TMessage);
+begin
+  inherited;
+  if (color<>$00DFDFDF) and not(readonly) then
+     begin
+       Color:=ColorSal;
+       font.Style:=fontSal;
+       font.Color:=FColSal;
+     end;
+end;
 
 
 procedure copiarDBGridP(q:Tquery; max:integer; barra:TprogressBar);
@@ -239,7 +285,44 @@ begin
          sum:=sum+val;
       end;
 SumaColGrid:=sum;
+end;
 
+
+
+
+{===============================================================================
+Suma la columna de un StringGrid desde una linea dada
+ ===============================================================================}
+Function SumaColGridDesdeLinea(g:TstringGrid;Col:Integer;inicia:integer):real;
+var x:integer;
+sum:real;
+val:real;
+begin
+   sum:=0;
+   for x:=inicia to g.rowcount-1 do
+      begin
+         try val:=strtofloatTes(g.cells[col,x]) except val:=0; end;
+         sum:=sum+val;
+      end;
+SumaColGridDesdeLinea:=sum;
+end;
+
+
+Function SumaColGridCond(g:TstringGrid;Col:Integer; condicion:string; colCond:integer):real;
+var x:integer;
+sum:real;
+val:real;
+begin
+   sum:=0;
+   for x:=1 to g.rowcount-1 do
+      begin
+         if  g.cells[colCond,x]=condicion then
+             begin
+                 try val:=strtofloatTes(g.cells[col,x]) except val:=0; end;
+                 sum:=sum+val;
+             end;
+      end;
+SumaColGridCond:=sum;
 end;
 
 
@@ -255,7 +338,6 @@ begin
          sum:=sum+val;
       end;
 SumaColGridofCero:=sum;
-
 end;
 
 {===============================================================================
@@ -309,7 +391,7 @@ ExcelApplication1:TExcelApplication;
 ExcelWorkbook1: TExcelWorkbook;
 ExcelWorksheet1: TExcelWorksheet;
 begin
-try deletefile(extractfiledir(paramstr(0))+'\File.xlsx'); except end;
+try deletefile(pchar(extractfiledir(paramstr(0))+'\File.xlsx')); except end;
 crearFile(extractfiledir(paramstr(0))+'\File.xlsx');
 
 ExcelApplication1:=TExcelApplication.create(nil);
@@ -363,7 +445,7 @@ ExcelApplication1:TExcelApplication;
 ExcelWorkbook1: TExcelWorkbook;
 ExcelWorksheet1: TExcelWorksheet;
 begin
-try deletefile(extractfiledir(paramstr(0))+'\File.xlsx'); except end;
+try deletefile(pchar(extractfiledir(paramstr(0))+'\File.xlsx')); except end;
 crearFile(extractfiledir(paramstr(0))+'\File.xlsx');
 ExcelApplication1:=TExcelApplication.create(nil);
 ExcelWorkbook1:= TExcelWorkbook.create(nil);;
@@ -486,7 +568,7 @@ ExcelApplication1:TExcelApplication;
 ExcelWorkbook1: TExcelWorkbook;
 ExcelWorksheet1: TExcelWorksheet;
 begin
-try deletefile(extractfiledir(paramstr(0))+'\File.xls'); except end;
+try deletefile(pchar(extractfiledir(paramstr(0))+'\File.xls')); except end;
 crearFile(extractfiledir(paramstr(0))+'\File.xls');
 ExcelApplication1:=TExcelApplication.create(nil);
 ExcelWorkbook1:= TExcelWorkbook.create(nil);;

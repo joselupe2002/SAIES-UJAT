@@ -111,6 +111,7 @@ tppagos, tpdpagos:string;
 begin
   inherited;
   IF  TNOMINA.Text='O' THEN begin  tppagos:='PPAGOS'; TPDPAGOS:='PDPAGOS'  end;
+  IF  TNOMINA.Text='C' THEN begin  tppagos:='PPAGOS'; TPDPAGOS:='PDPAGOS'  end;
   IF  TNOMINA.Text='H' THEN begin  tppagos:='PHPAGOS'; TPDPAGOS:='PHDPAGOS'  end;
   IF  TNOMINA.Text='N' THEN begin  tppagos:='PNPAGOS'; TPDPAGOS:='PNDPAGOS'  end;
 

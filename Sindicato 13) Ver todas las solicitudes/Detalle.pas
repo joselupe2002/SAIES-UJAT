@@ -90,6 +90,9 @@ uses
     Label24: TLabel;
     Shape6: TShape;
     Label25: TLabel;
+    GuardarProp: TBitBtn;
+    aux: TQuery;
+    SpeedButton1: TSpeedButton;
     procedure FechaKeyPress(Sender: TObject; var Key: Char);
     procedure Inivar ; OVERRIDE;
     procedure PuestoChange(Sender: TObject);
@@ -139,6 +142,8 @@ procedure getDescripGrid;
     procedure Lista2SelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
     procedure VPSTOKeyPress(Sender: TObject; var Key: Char);
+    procedure GuardarPropClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -242,6 +247,26 @@ begin
          GRID.cells[11,ling]:=q.fieldbyname('TIPO').asstring;
       end;
 
+  if NewCol=10 then
+      begin
+         Q.close;
+         q.sql.text:='SELECT * FROM SVNOMBRAM WHERE '+
+         ' NOMB='+#39+GRID.cells[newcol,ling]+#39;
+         SAVETOFILELOG(Q.SQL.TEXT);
+         Q.open;
+         GRID.cells[7,ling]:=q.fieldbyname('PUESTO').asstring;
+         GRID.cells[8,ling]:=q.fieldbyname('INICIA').asstring;
+         GRID.cells[9,ling]:=q.fieldbyname('TERMINA').asstring;
+         GRID.cells[11,ling]:=q.fieldbyname('EVENTUALIDAD').asstring;
+         GRID.cells[12,ling]:=q.fieldbyname('TIPO').asstring;
+         GRID.cells[13,ling]:=q.fieldbyname('NOMBRE').asstring;
+         GRID.cells[14,ling]:=q.fieldbyname('CATEG').asstring;
+         GRID.cells[15,ling]:=q.fieldbyname('URES').asstring;
+         GRID.cells[16,ling]:=q.fieldbyname('PROG').asstring;
+         GRID.cells[17,ling]:=q.fieldbyname('SFDO').asstring;
+         GRID.cells[18,ling]:=q.fieldbyname('TURNO').asstring;
+      end;
+
   TABU:=FALSE;
 end;
 
@@ -329,6 +354,13 @@ begin
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString;
        TStringGrid(VControl).cells[colg+1,Ling]:=QVal.Fields[1].AsString+' '+QVal.Fields[2].AsString+' '+QVal.Fields[3].AsString;
     end;
+
+     if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  AND (colg=10) then
+    begin
+       TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString;
+       getDescripGrid;
+    end;
+
 
     if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  AND (colg=18) then
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString;
@@ -421,6 +453,20 @@ if (result= 'GRID') and (colg=5) and (linG>0) and (linG<>grid.rowcount-1)  then
   VSql.add('ORDER BY PUESTO');
  end;
 
+ if (result= 'GRID') and (colg=10) and (linG>0) and (linG<>grid.rowcount-1)  then
+ begin
+  VSql.add('SELECT ');
+  VSql.add('NOMB AS NOMB,');
+  VSql.add('EMPL AS EMPL,');
+  VSql.add('NOMBRE AS NOMBRE,');
+  VSql.add('PUESTO AS PUESTO,');
+  VSql.add('URES AS URES,');
+  VSql.add('INICIA AS INICIA,');
+  VSql.add('TERMINA AS TERMINA');
+  VSql.add('FROM SVNOMBRAM');
+
+ end;
+
 if (result= 'GRID') and ((colg=6) OR (COLG=7)) and (linG>0) and (linG<>grid.rowcount-1)  then
  begin
   VSql.add('SELECT ');
@@ -477,8 +523,15 @@ NUMSOL.TEXT:=FModulo.Query1.FieldByName('VSOL_SOLICITUD').ASSTRING;
 NUMDET.TEXT:=FModulo.Query1.FieldByName('VSOL_NUMDET').ASSTRING;
 NUMREG.TEXT:=FModulo.Query1.FieldByName('VSOL_NUMERO').ASSTRING;
 turno.Text:=FModulo.Query1.FieldByName('VSOL_TURNO').ASSTRING;
-PROG.TEXT:='5103';
-SFDO.TEXT:='1101';
+
+aux.Close;
+aux.sql.text:='SELECT DATG_SFDO_EV, DATG_PROG_EV FROM pdatgen';
+aux.open;
+
+
+SFDO.TEXT:=aux.fields[0].asstring;
+PROG.TEXT:=aux.fields[1].asstring;
+
 CATEG.Text:='A';
 
 LISTA.Cells[0,0]:='Quitar';
@@ -879,11 +932,11 @@ end;
 procedure TFDetalle.GRIDKeyPress(Sender: TObject; var Key: Char);
 begin
   inherited;
-  if (colg=7) OR (colg=8) or (colg=2) and (colg=3) then
+  if (colg=2) and (colg=3) then
      key:=Kfecha(KEY);
-  if colg=2 then
+  if (colg=2) or (colg=7) OR (colg=8) or (colg=9) or (colg>=11) then
      key:=#0;
-  IF (KEY=#13) and ((colg=1) OR (colg=6)) then
+  IF (KEY=#13) and ((colg=1) OR (colg=6) or (colg=10)) then
      getDescripGrid;
   IF (linG=(sender as TstringGrid).rowcount-1)  THEN
      KEY:=#0;
@@ -909,7 +962,7 @@ IF (COLG=0) AND  (KEY=9) AND (linG=(sender as TstringGrid).rowcount-1) THEN
  if (key=45) and (modo<>1)  then //F2 ...Agregar
      agClick(nil);
 
-IF ((colg-1=0) OR (colg-1=6) ) AND (KEY=9) then
+IF ((colg-1=1) OR (colg-1=6) or (colg-1=10) ) AND (KEY=9) then
     begin
        tabu:=true; getDescripGrid;
    end;
@@ -992,6 +1045,8 @@ IF MODO<>1 THEN
                 borra_row(GRID,linG);
          if  (GRID.rowcount=2) then
                 limpia_linea(GRID,2);
+
+         
       end;
 
 end;
@@ -1000,67 +1055,33 @@ procedure TFDetalle.BitBtn2Click(Sender: TObject);
 VAR X:INTEGER;
 begin
   inherited;
-  q.close;
-  q.sql.text:='UPDATE SSOLICITUDES SET SOLI_CORRIDO='+#39+'S'+#39+
-  ', SOLI_FECASIG=SYSDATE '+
-  ', SOLI_USERASIG=USER '+
+        GuardarPropClick(nil);
+        q.close;
+        q.sql.text:='UPDATE SSOLICITUDES SET SOLI_CORRIDO='+#39+'S'+#39+
+        ', SOLI_FECASIG=SYSDATE '+
+        ', SOLI_USERASIG=USER '+
+        ' WHERE SOLI_NUMERO='+#39+NumReg.text+#39;
+        savetofilelog(q.sql.text);
+        q.execsql;
 
-  ' WHERE SOLI_NUMERO='+#39+NumReg.text+#39;
-  savetofilelog(q.sql.text);
-  q.execsql;
+        q.close;
+        q.sql.text:='UPDATE  STEMPORAL SET ENVIADO='+#39+'S'+#39+
+        ' WHERE NUMDET='+#39+NumReg.text+#39;
+        savetofilelog(q.sql.text);
+        q.execsql;
 
-  q.close;
-  q.sql.text:='UPDATE  STEMPORAL SET ENVIADO='+#39+'S'+#39+
-  ' WHERE NUMDET='+#39+NumReg.text+#39;
-  savetofilelog(q.sql.text);
-  q.execsql;
 
-  Q.close;
-  q.sql.text:='DELETE FROM SPROPUESTAS S WHERE PROP_numdet='+#39+NUMREG.TEXT+#39;
-  savetofilelog(q.sql.text);
-  q.execsql;
 
-  for x:=1 to grid.ROWCount-2 do
-    begin
-       q.close;
-       q.sql.text:='INSERT INTO SPROPUESTAS '+
-       '(PROP_ORDEN,PROP_EMPL,PROP_INICIA,PROP_TERMINA, PROP_NOMBRE, PROP_PUESTO, '+
-       'PROP_ESCALAFON,PROP_NUMSOL, PROP_NUMDET,PROP_ENVIADO, '+
-       'PROP_PUESTOANT,PROP_INIANT,PROP_FINANT, PROP_NOMBRAM, PROP_EVENTUALIDAD,'+
-       'PROP_TIPO, PROP_NUMREG, PROP_SUSNOMBRE, PROP_SUSCATEG, '+
-       'PROP_URES, PROP_SFDO, PROP_PROG,PROP_TURNO) VALUES ('+
-        #39+GRID.CElls[0,x]+#39+','+
-       #39+GRID.CElls[1,x]+#39+','+
-       #39+GRID.CElls[3,x]+#39+','+
-       #39+GRID.CElls[4,x]+#39+','+
-       #39+GRID.CElls[2,x]+#39+','+
-       #39+GRID.CElls[6,x]+#39+','+
-       #39+GRID.CElls[5,x]+#39+','+
-       #39+NUMSOL.Text+#39+','+
-       #39+NUMDET.Text+#39+','+
-       #39+'S'+#39+','+
-       #39+GRID.CElls[7,x]+#39+','+
-       #39+GRID.CElls[8,x]+#39+','+
-       #39+GRID.CElls[9,x]+#39+','+
-       #39+GRID.CElls[10,x]+#39+','+
-       #39+GRID.CElls[11,x]+#39+','+
-       #39+GRID.CElls[12,x]+#39+','+
-       #39+NUMREG.Text+#39+','+
-       #39+GRID.CElls[13,x]+#39+','+
-       #39+GRID.CElls[14,x]+#39+','+
-       #39+GRID.CElls[15,x]+#39+','+
-       #39+GRID.CElls[16,x]+#39+','+
-       #39+GRID.CElls[17,x]+#39+','+
-       #39+GRID.CElls[18,x]+#39+')';
+        q.close;
+        q.sql.text:='UPDATE  SPROPUESTAS SET PROP_ENVIAR='+#39+'S'+#39+
+        ' WHERE PROP_NUMREG='+#39+NumReg.text+#39;
+        savetofilelog(q.sql.text);
+        q.execsql;
 
-       savetofilelog(q.sql.text);
+        Showmessage('Las propuestas fueron enviadas a Recursos Humanos');
+        CLOSE;
+        fmodulo.Refrescar1Click(nil);
 
-       Q.execsql;
-
-    end;
-
-  CLOSE;
-  fmodulo.Refrescar1Click(nil);
 end;
 
 procedure TFDetalle.GRIDNPDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -1287,6 +1308,63 @@ begin
       end;
 
     END;
+end;
+
+procedure TFDetalle.GuardarPropClick(Sender: TObject);
+VAR
+X:INTEGER;
+begin
+  inherited;
+ Q.close;
+  q.sql.text:='DELETE FROM SPROPUESTAS S WHERE PROP_numreg='+#39+NUMREG.TEXT+#39;
+  savetofilelog(q.sql.text);
+  q.execsql;
+
+  for x:=1 to grid.ROWCount-2 do
+    begin
+       q.close;
+       q.sql.text:='INSERT INTO SPROPUESTAS '+
+       '(PROP_ORDEN,PROP_EMPL,PROP_INICIA,PROP_TERMINA, PROP_NOMBRE, PROP_PUESTO, '+
+       'PROP_ESCALAFON,PROP_NUMSOL, PROP_NUMDET,PROP_ENVIADO, '+
+       'PROP_PUESTOANT,PROP_INIANT,PROP_FINANT, PROP_NOMBRAM, PROP_EVENTUALIDAD,'+
+       'PROP_TIPO, PROP_NUMREG, PROP_SUSNOMBRE, PROP_SUSCATEG, '+
+       'PROP_URES, PROP_SFDO, PROP_PROG,PROP_TURNO) VALUES ('+
+        #39+GRID.CElls[0,x]+#39+','+
+       #39+GRID.CElls[1,x]+#39+','+
+       #39+GRID.CElls[3,x]+#39+','+
+       #39+GRID.CElls[4,x]+#39+','+
+       #39+GRID.CElls[2,x]+#39+','+
+       #39+GRID.CElls[6,x]+#39+','+
+       #39+GRID.CElls[5,x]+#39+','+
+       #39+NUMSOL.Text+#39+','+
+       #39+NUMDET.Text+#39+','+
+       #39+'S'+#39+','+
+       #39+GRID.CElls[7,x]+#39+','+
+       #39+GRID.CElls[8,x]+#39+','+
+       #39+GRID.CElls[9,x]+#39+','+
+       #39+GRID.CElls[10,x]+#39+','+
+       #39+GRID.CElls[11,x]+#39+','+
+       #39+GRID.CElls[12,x]+#39+','+
+       #39+NUMREG.Text+#39+','+
+       #39+GRID.CElls[13,x]+#39+','+
+       #39+GRID.CElls[14,x]+#39+','+
+       #39+GRID.CElls[15,x]+#39+','+
+       #39+GRID.CElls[16,x]+#39+','+
+       #39+GRID.CElls[17,x]+#39+','+
+       #39+GRID.CElls[18,x]+#39+')';
+       savetofilelog(q.sql.text);
+       Q.execsql;
+    end;
+  Showmessage('Los empleados propuestos se han guardado correctamente');
+
+end;
+
+procedure TFDetalle.SpeedButton1Click(Sender: TObject);
+begin
+  inherited;
+  tabsheet1.TabVisible:=true;
+  tabsheet4.TabVisible:=true;
+  tabsheet5.TabVisible:=true;
 end;
 
 end.

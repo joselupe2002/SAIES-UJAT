@@ -15,28 +15,26 @@ uses
       end;
 
   TFDetalle = class(TPFDetalle)
-    PagCon: TPageControl;
-    TabDatos: TTabSheet;
+    Label17: TLabel;
+    Label19: TLabel;
+    q: TQuery;
+    QPrin: TQuery;
     Label2: TLabel;
     Label4: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label1: TLabel;
+    agPres: TSpeedButton;
+    SpeedButton1: TSpeedButton;
+    m: TLabel;
+    EOBSRH: TLabel;
     Numero: TDBEdit;
     URES: TDBEdit;
     LVSOL_URES: TEdit;
-    Label11: TLabel;
     Fecha: TDBEdit;
-    Label12: TLabel;
     OBS: TDBMemo;
-    Label17: TLabel;
-    Label19: TLabel;
-    Label1: TLabel;
     GRID: TStringGrid;
-    agPres: TSpeedButton;
-    SpeedButton1: TSpeedButton;
     DESCRIP: TDBEdit;
-    q: TQuery;
-    m: TLabel;
-    QPrin: TQuery;
-    EOBSRH: TLabel;
     OBSRH: TDBMemo;
     procedure FormCreate(Sender: TObject);
     procedure GrabaInsert ; override ;
@@ -154,10 +152,14 @@ while not(QPrin.eof) do
      colg:=5; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
      grid.cells[6,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_DIAFIN').asstring;
      colg:=6; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
+
+     grid.cells[grid.colCount,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORARIO').asstring;
      grid.cells[7,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORAINI').asstring;
+     colg:=7; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
+
      grid.cells[8,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORAFIN').asstring;
      grid.cells[9,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_TURNO').asstring;
-     colg:=9; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
+
 
      grid.cells[10,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_MOTIVO').asstring;
      colg:=10; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
@@ -215,12 +217,21 @@ begin
          GRID.cells[6,ling]:=q.fieldbyname('DIAS_CLAVE').asstring+'-'+q.fieldbyname('DIAS_DESCRIP').asstring;
       end;
 
-   if NewCol=9 then
+   //Horario que inicia se elige el turno
+   if NewCol=7 then
       begin
          Q.CLOSE;
-         Q.sql.text:='SELECT * FROM PTURNO S WHERE TURN_CVETURNO='+#39+str_(GRID.cells[newcol,ling],'-')+#39;
+         Q.sql.text:='SELECT * FROM PEVHORARIOS S WHERE EVHO_CLAVE='+#39+str_(GRID.cells[GRID.ColCount,ling],'-')+#39;
          q.OPEN;
-         GRID.cells[9,ling]:=q.fieldbyname('TURN_CVETURNO').asstring+'-'+q.fieldbyname('TURN_DESCRIP').asstring;
+         GRID.cells[7,ling]:=q.fieldbyname('EVHO_INICIA').asstring;
+         GRID.cells[8,ling]:=q.fieldbyname('EVHO_TERMINA').asstring;
+         GRID.cells[9,ling]:=q.fieldbyname('EVHO_TURNO').asstring;
+
+         Q.close;
+         q.sql.text:='SELECT * FROM PTURNO WHERE TURN_CVETURNO='+#39+GRID.cells[9,ling]+#39;
+         Q.OPEN;
+         GRID.cells[9,ling]:=GRID.cells[9,ling]+'-'+q.fieldbyname('TURN_DESCRIP').asstring;
+
       end;
 
   if NewCol=10 then
@@ -269,27 +280,32 @@ begin
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString+'-'+QVal.Fields[1].AsString;
        TStringGrid(VControl).cells[1,Ling]:=QVal.Fields[5].AsString+'-'+QVal.Fields[6].AsString;
        TStringGrid(VControl).cells[2,Ling]:='1';
+       colg:=0; TABU:=FALSE; getdescripGrid;
     end;
 
 
   if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  and (colg=1) then
     begin
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString+'-'+QVal.Fields[1].AsString;
+       colg:=1; TABU:=FALSE; getdescripGrid;
     end;
 
   if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  and ((colg=5) or (colg=6)) then
     begin
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString+'-'+QVal.Fields[1].AsString;
+       TABU:=FALSE; getdescripGrid;
     end;
 
-  if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  and (colg=9) then
+  if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  and (colg=7) then
     begin
-       TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString+'-'+QVal.Fields[1].AsString;
+       TStringGrid(VControl).cells[TStringGrid(VControl).colcount,Ling]:=QVal.Fields[0].AsString;
+       colg:=7; TABU:=FALSE; getdescripGrid;
     end;
 
   if (VControl is TStringGrid)  and (vcontrol.Name='GRID')  and (colg=10) then
     begin
        TStringGrid(VControl).cells[colg,Ling]:=QVal.Fields[0].AsString+'-'+QVal.Fields[1].AsString;
+       colg:=10; TABU:=FALSE; getdescripGrid;
     end;
 
 
@@ -325,7 +341,7 @@ for x:=1 to grid.rowcount-2 do
             Q.close;
             q.sql.text:='INSERT INTO PSOLEVENDET (SOLE_numero,SOLE_SOLICITUD,sole_nomb,'+
             'Sole_psto,SOLE_CANT,sole_ini,sole_fin,SOLE_DIAINI, SOLE_DIAFIN, sole_motivo, '+
-            'SOLE_HORAINI, SOLE_HORAFIN, SOLE_TURNO) values ('+
+            'SOLE_HORAINI, SOLE_HORAFIN, SOLE_TURNO, SOLE_HORARIO) values ('+
             'PSQSOLEVENDET.nextval'+','+
             #39+NUMERO.TEXT+#39+','+
             #39+str_(grid.cells[0,x],'-')+#39+','+
@@ -338,7 +354,8 @@ for x:=1 to grid.rowcount-2 do
             #39+str_(grid.cells[10,x],'-')+#39+','+
             #39+grid.cells[7,x]+#39+','+
             #39+grid.cells[8,x]+#39+','+
-            #39+STR_(grid.cells[9,x],'-')+#39+')';
+            #39+STR_(grid.cells[9,x],'-')+#39+','+
+            #39+STR_(grid.cells[GRID.COLCOUNT,x],'-')+#39+')';
             q.EXECSQL;
          end;
    end;
@@ -381,12 +398,15 @@ if (result= 'GRID') and (colg=1) and (linG>0) and (linG<>grid.rowcount-1)  then
   SAVETOFILELOG(VSQL.TEXT);
  end;
 
-  if (result= 'GRID') and (colg=9) and (linG>0) and (linG<>grid.rowcount-1) then
+ if (result= 'GRID') and (colg=7) and (linG>0) and (linG<>grid.rowcount-1) then
  begin
   VSql.add('SELECT ');
-  VSql.add('TURN_CVETURNO AS CLAVE,');
-  VSql.add('TURN_DESCRIP AS DESCRIPCION ');
-  VSql.add('FROM PTURNO');
+  VSql.add('EVHO_CLAVE AS CLAVE,');
+  VSql.add('EVHO_DESCRIP AS DESCRIPCION,');
+  VSql.add('EVHO_INICIA AS INICIA,');
+  VSql.add('EVHO_TERMINA AS TERMINA,');
+  VSql.add('EVHO_TURNO AS TURNO');
+  VSql.add('FROM PEVHORARIOS');
   SAVETOFILELOG(VSQL.TEXT);
  end;
 
@@ -421,10 +441,9 @@ end;
 
 procedure TFDetalle.FormCreate(Sender: TObject);
 begin
-// Data := TdmDatos.Create(FDetalle) ;
  inherited;
  TABU:=FALSE;
- Height := 666 ;
+ Height := 529 ;
  Width :=  851 ;
 
  IF MODO=3 then
@@ -512,7 +531,7 @@ end;
 procedure TFDetalle.agPresClick(Sender: TObject);
 begin
   inherited;
-IF MODO<>1 THEN   GRID.Rowcount:=Grid.rowcount+1;
+IF MODO<>1 THEN  GRID.Rowcount:=Grid.rowcount+1; 
 end;
 
 procedure TFDetalle.SpeedButton1Click(Sender: TObject);
@@ -545,10 +564,10 @@ if (key=46) AND  (linG<>(sender as TstringGrid).rowcount-1) and (modo<>1) then
 IF (COLG=0) AND  (KEY=9) AND (linG=(sender as TstringGrid).rowcount-1) THEN
      begin agPresClick(nil);   end;
 
- if (key=45) and (modo<>1)  then //F2 ...Agregar
+ if ((key=45) and (modo<>1))  then //F2 ...Agregar
      agPresClick(nil);
 
-IF ((colg-1=0) OR (colg-1=1) OR (colg-1=5) OR (colg-1=6) OR (colg-1=9) OR (colg-1=10) ) AND (KEY=9) then
+IF ((colg-1=0) OR (colg-1=1) OR (colg-1=5) OR (colg-1=6) OR (colg-1=7) OR (colg-1=10) ) AND (KEY=9) then
     begin
        tabu:=true; getDescripGrid;
    end;
@@ -567,11 +586,11 @@ begin
      key:=Knumero(KEY);
   if (colg=3) OR (colg=4) then
      key:=Kfecha(KEY);
-  if (colg=7) OR (colg=8) then
-     key:=KHora(KEY);
+  if (colg=8) OR (colg=9) then
+     key:=#0;
   IF COLG=11 THEN
      key:=#0;
-  IF (KEY=#13) and ((colg=0) OR (colg=1) OR (colg=5) OR (colg=6) or (colg=9)or (colg=10)) then
+  IF (KEY=#13) and ((colg=0) OR (colg=1) OR (colg=5) OR (colg=6) or (colg=7)  or (colg=10)) then
      getDescripGrid;
   IF (linG=(sender as TstringGrid).rowcount-1)  THEN
      KEY:=#0;

@@ -61,7 +61,7 @@ AutoIncBuild=0
 MajorVer=3
 MinorVer=0
 Release=0
-Build=8
+Build=9
 Debug=0
 PreRelease=0
 Special=1
@@ -72,7 +72,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=GSR
 FileDescription=Cancelación de Pago
-FileVersion=3.0.0.8
+FileVersion=3.0.0.9
 InternalName=PvCanPa
 LegalCopyright=Copyright © Gabriel Sujias Ricárdez - UJAT
 LegalTrademarks=Shake 2.4

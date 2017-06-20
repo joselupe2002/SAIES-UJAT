@@ -17,6 +17,10 @@ uses
   Dialogs,
   Windows,
   Classes,
+   DBGrids,
+  DBCGrids,
+  Grids,
+  graphics,
   DBTables,
   Modulo,
   libreria,
@@ -26,7 +30,19 @@ uses
   PDetalle in '..\bin\PDetalle.pas' {PFDetalle},
   Detalle in 'Detalle.pas' {FDetalle};
 
+  type
+  TDummy = class
+  public
+    procedure miDraw(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  end;
+
+
 {$R *.RES}
+
+ var
+  laForma:TDummy;
+  elQuery:Tquery;
 
 procedure Borra(xmodulo : TFModulo) ;
  var BQuery : TQuery ;
@@ -154,6 +170,41 @@ q.DataBaseName := 'Sistema' ;
   xmodulo.Refrescar1Click(nil);
 end;
 
+
+function actPan(xmodulo: TFmodulo) : TForm;
+var
+q:Tquery;
+begin
+  elquery:=xmodulo.Query1;
+  laForma:=TDummy.create;
+  XModulo.DBGrid1.TitleFont.Name:='Arial';
+  XModulo.DBGrid1.TitleFont.Style:=[fsBold];
+  xmodulo.DBGrid1.OnDrawColumnCell:=laforma.midraw;
+  Xmodulo.DBGrid1.repaint;
+end;
+
+
+procedure TDummy.MiDraw(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+try
+
+  if  elQuery.FieldByName('VSOL_ENVIADASIN').asstring='N' then
+      (sender as TDBGrid).canvas.Brush.Color:=CLWHITE;
+
+   if  elQuery.FieldByName('VSOL_ENVIADASIN').asstring='S' then
+      (sender as TDBGrid).canvas.Brush.Color:=$00DAFEEF;
+
+(sender as TDBGrid).Canvas.Font.Color:=clblack;
+(sender as TDBGrid).canvas.Font.Name:='Arial';
+(sender as TDBGrid).Canvas.FillRect(Rect);
+(sender as TDBGrid).DefaultDrawColumnCell(Rect,DataCol,Column,State);
+
+except end;
+
+end;
+
+
 function Rechazar(xmodulo: TFmodulo) : TForm;
 var
 q:Tquery;
@@ -162,6 +213,8 @@ begin
 xmodulo.LMensaje := False ;
 q := TQuery.Create(Application) ;
 q.DataBaseName := 'Sistema' ;
+IF xmodulo.Query1.FieldByName('VSOL_ENVIADASIN').AsString='N' THEN
+   begin
        if (Application.MessageBox('Seguro que desea Rechazar la solicitud a Sindicato', 'Confirmar', MB_ICONQUESTION+ MB_YESNO)= IDYES) then
           begin
                    q.close;
@@ -170,7 +223,10 @@ q.DataBaseName := 'Sistema' ;
                    ' Where SOLE_NUMERO= '+xmodulo.Query1.FieldByName('VSOL_NUMERO').AsString;
                    Q.ExecSQL;
           end;
-  xmodulo.Refrescar1Click(nil);
+       xmodulo.Refrescar1Click(nil);
+   end
+else
+  Showmessage('No se puede rechazar una solicitud que ya se envio a Sindicato');
 end;
 
 
@@ -191,7 +247,7 @@ end ;
 
 
 
-exports Detalle, Autorizar, Rechazar, impRep;
+exports Detalle, Autorizar, Rechazar, impRep, actpan;
 
 begin
 

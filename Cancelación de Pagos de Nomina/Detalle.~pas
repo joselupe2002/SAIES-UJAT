@@ -379,7 +379,7 @@ if Application.MessageBox('Seguro que desea Cancelar el Pago','Confirmar',
                    q.execsql;
 
                    Showmessage('El pago se ha cancelado');
-                   Aceptar1Click(nil);
+                   close;
              end;
          end;
 
@@ -388,6 +388,7 @@ end;
 procedure TFDetalle.Button1Click(Sender: TObject);
 begin
   inherited;
+        polreal:=true;
         qpol.close;
         qpol.sql.text:='SELECT * FROM FPOLIZAS WHERE POLI_DESCRIP LIKE '+#39+'%('+pago.text+')%'+#39;
         QPOL.open;

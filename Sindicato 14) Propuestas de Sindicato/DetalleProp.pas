@@ -66,7 +66,6 @@ uses
     NumReg: TEdit;
     Label20: TLabel;
     m: TLabel;
-    BitBtn2: TBitBtn;
     MenAplic: TPopupMenu;
     SuspenderNombramiento1: TMenuItem;
     CrearLicenciaaNombramiento1: TMenuItem;
@@ -125,6 +124,8 @@ uses
     Label36: TLabel;
     PSTO: TEdit;
     RPSTO: TEdit;
+    aux: TQuery;
+    CargarEven: TSpeedButton;
     procedure FechaKeyPress(Sender: TObject; var Key: Char);
     procedure Inivar ; OVERRIDE;
     procedure BitBtn1Click(Sender: TObject);
@@ -143,7 +144,7 @@ uses
     procedure GRIDSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
 procedure getDescripGrid;
-    procedure BitBtn2Click(Sender: TObject);
+    procedure CargarEvenClick(Sender: TObject);
     procedure SuspenderNombramiento1Click(Sender: TObject);
     procedure CrearLicenciaaNombramiento1Click(Sender: TObject);
     procedure TIPOLICChange(Sender: TObject);
@@ -355,8 +356,14 @@ NUMSOL.TEXT:=FModulo.Query1.FieldByName('VSOL_SOLICITUD').ASSTRING;
 NUMDET.TEXT:=FModulo.Query1.FieldByName('VSOL_NUMDET').ASSTRING;
 NUMREG.TEXT:=FModulo.Query1.FieldByName('VSOL_NUMERO').ASSTRING;
 
-PROG.TEXT:='5103';
-SFDO.TEXT:='1101';
+aux.Close;
+aux.sql.text:='SELECT DATG_SFDO_EV, DATG_PROG_EV FROM pdatgen';
+aux.open;
+
+
+SFDO.TEXT:=aux.fields[0].asstring;
+PROG.TEXT:=aux.fields[1].asstring;
+
 CATEG.Text:='A';
 
 
@@ -382,9 +389,10 @@ grid.Cells[18,0]:='Turno';
 grid.Cells[19,0]:='Creada';
 grid.Cells[20,0]:='Nomb_Creado';
 grid.Cells[21,0]:='Even_Creado';
+grid.Cells[22,0]:='Lic_Creado';
 
 
-BitBtn2Click(NIL);
+cargarEvenClick(NIL);
 end ;
 
 procedure TFDetalleProp.FechaKeyPress(Sender: TObject; var Key: Char);
@@ -399,37 +407,59 @@ cgoce:string;
 nlicen:integer;
 begin
   inherited;
-   if (rtipolic.text<>'') then
-       begin
-          q.close;
-          q.sql.text:='SELECT PSQLICENCIA.NEXTVAL FROM DUAL ';
-          Q.open;
-          nlicen:=q.fields[0].asinteger;
 
-          Cgoce:='N';
-          if goce.Checked then cgoce:='S';
+       if (rtipolic.text<>'') then
+           begin
+              q.close;
+              q.sql.text:='SELECT PSQLICENCIA.NEXTVAL FROM DUAL ';
+              Q.open;
+              nlicen:=q.fields[0].asinteger;
 
-          q.close;
-          q.sql.text:='INSERT INTO PLICENCIA (lice_lice,lice_tlicen,lice_nomb,'+
-          'lice_goce,lice_ini,lice_fin,lice_texto,lice_inir,lice_finr)'+
-          ' VALUES ('+inttostr(nlicen)+','+
-          #39+tipolic.text+#39+','+
-          #39+grid.cells[10,ling]+#39+','+
-          #39+CGOCE+#39+','+
-          #39+grid.cells[3,ling]+#39+','+
-          #39+grid.cells[4,ling]+#39+','+
-          #39+descrip.text+#39+','+
-          #39+grid.cells[3,ling]+#39+','+
-          #39+grid.cells[4,ling]+#39+')';
-          savetofilelog(q.sql.text);
-          Q.execsql;
-          showmessage('Se creo la Licencia No. '+inttostr(nlicen)+' Para el Nombramiento No.'+ grid.cells[10,ling]+ ' Se ha suspendido');
-          PLICEN.VISIBLE:=FALSE;
-          TIPOLIC.CLEAR;
-          DESCRIP.Clear;
-     end
-   else
-   showmessage('No se ha llenado la información completa');
+              Cgoce:='N';
+              if goce.Checked then cgoce:='S';
+
+              q.close;
+              q.sql.text:='INSERT INTO PLICENCIA (lice_lice,lice_tlicen,lice_nomb,'+
+              'lice_goce,lice_ini,lice_fin,lice_texto,lice_inir,lice_finr)'+
+              ' VALUES ('+inttostr(nlicen)+','+
+              #39+tipolic.text+#39+','+
+              #39+grid.cells[10,ling]+#39+','+
+              #39+CGOCE+#39+','+
+              #39+grid.cells[3,ling]+#39+','+
+              #39+grid.cells[4,ling]+#39+','+
+              #39+descrip.text+#39+','+
+              #39+grid.cells[3,ling]+#39+','+
+              #39+grid.cells[4,ling]+#39+')';
+              savetofilelog(q.sql.text);
+              Q.execsql;
+
+              q.close;
+              q.sql.text:='INSERT INTO SLICCREADAS (LICC_NOMBRAMIENTO, LICC_LICENCIA, LICC_NUMSOL, LICC_NUMREG, LICC_NUMDET, LICC_ORDEN)'+
+              ' VALUES ('+
+              #39+grid.cells[10,ling]+#39+','+
+              #39+inttostr(nlicen)+#39+','+
+              #39+numsol.text+#39+','+
+              #39+numreg.text+#39+','+
+              #39+numdet.text+#39+','+
+              #39+grid.cells[0,ling]+#39+')';
+              q.EXECSQL;
+
+              Q.close;
+              q.sql.text:='UPDATE SPROPUESTAS S SET S.PROP_REALIZADA='+#39+'S'+#39+','+
+              ' PROP_LICCRE='+#39+inttostr(nlicen)+#39+
+              ' WHERE S.PROP_ORDEN='+#39+grid.cells[0,Ling]+#39;
+              SAVETOFILELOG(Q.sql.text);
+              Q.execsql;
+
+              showmessage('Se creo la Licencia No. '+inttostr(nlicen)+' Para el Nombramiento No.'+ grid.cells[10,ling]+ ' Se ha suspendido');
+              cargarEvenClick(nil);
+              PLICEN.VISIBLE:=FALSE;
+              TIPOLIC.CLEAR;
+              DESCRIP.Clear;
+         end
+       else
+           showmessage('No se ha llenado la información completa');
+ 
 end;
 
 procedure TFDetalleProp.FormCreate(Sender: TObject);
@@ -602,13 +632,14 @@ IF ACOL=21 THEN
 
 end;
 
-procedure TFDetalleProp.BitBtn2Click(Sender: TObject);
+procedure TFDetalleProp.CargarEvenClick(Sender: TObject);
 
 begin
  Q.CLOSE;
   Q.sql.text:='select * from spropuestas  where prop_numsol='+#39+numsol.text+#39+
   ' and prop_numdet='+#39+numdet.text+#39+
   ' and prop_numreg='+#39+numreg.text+#39+
+  ' and prop_enviar='+#39+'S'+#39+
   ' ORDER BY PROP_ORDEN';
   SAVETOFILELOG(Q.sql.text);
   q.Open;
@@ -638,6 +669,7 @@ begin
         grid.cells[19,grid.rowcount-1]:=q.fieldbyname('PROP_REALIZADA').asstring;
         grid.cells[20,grid.rowcount-1]:=q.fieldbyname('PROP_NOMBCRE').asstring;
         grid.cells[21,grid.rowcount-1]:=q.fieldbyname('PROP_EVENCRE').asstring;
+        grid.cells[22,grid.rowcount-1]:=q.fieldbyname('PROP_LICCRE').asstring;
 
         q.next;
         GRID.ROWCOUNT:=GRID.ROWCOUNT+1;
@@ -667,16 +699,26 @@ var
 nlicen:integer;
 begin
   inherited;
-if Application.MessageBox(pchar('Seguro que desea Crear una Licencia para el nombramiento No. '+grid.cells[10,ling]),'Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
+Q.close;
+q.sql.text:='SELECT COUNT(*) FROM SLICCREADAS WHERE LICC_NOMBRAMIENTO='+#39+grid.cells[10,ling]+#39+
+' AND LICC_ORDEN='+grid.cells[0,ling];
+savetofilelog(q.sql.text);
+Q.open;
+IF Q.Fields[0].asinteger=0 then
    begin
-      if grid.cells[10,ling]<>'' then
-        begin
-           PLICEN.VISIBLE:=true;
-           plicen.SetFocus;
-        end
-      else
-        Showmessage('No hay nombramiento que suspender');
-   end;
+      if Application.MessageBox(pchar('Seguro que desea Crear una Licencia para el nombramiento No. '+grid.cells[10,ling]),'Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
+         begin
+            if grid.cells[10,ling]<>'' then
+              begin
+                 PLICEN.VISIBLE:=true;
+                 plicen.SetFocus;
+              end
+            else
+              Showmessage('No hay nombramiento que suspender');
+         end;
+     end
+else
+   ShowMessage('Ya se ha creado la Licencia para este Nombramiento');
 end;
 
 procedure TFDetalleProp.TIPOLICChange(Sender: TObject);
@@ -800,11 +842,12 @@ if q.fields[0].asinteger=0 then
               q.sql.text:='UPDATE SPROPUESTAS S SET S.PROP_REALIZADA='+#39+'S'+#39+','+
               ' PROP_NOMBCRE='+#39+NOMBRAM.Text+#39+','+
               ' PROP_EVENCRE='+#39+inttostr(nev)+#39+
+
               ' WHERE S.PROP_ORDEN='+#39+grid.cells[0,Ling]+#39;
               SAVETOFILELOG(Q.sql.text);
               Q.execsql;
 
-              BitBtn2Click(NIL);
+              cargarEvenClick(NIL);
               grid.cells[19,Ling]:='S';
               grid.cells[20,Ling]:=NOMBRAM.text;
               grid.cells[21,Ling]:=inttostr(nev);
@@ -905,12 +948,13 @@ IF (Q.FIELDS[0].ASINTEGER=0) then
          nPLAZA:=q.fields[0].asinteger;
 
          Q.CLOSE;
-         Q.SQL.TEXT:='INSERT INTO PPLAZAS (plaz_plaza, plaz_tplaza, plaz_ures,'+
+         Q.SQL.TEXT:='INSERT INTO PPLAZAS (plaz_plaza, plaz_tplaza, plaz_ures,PLAZ_SFDO,'+
                      'plaz_psto,plaz_ini,plaz_fin,plaz_status,plaz_usu,'+
                      'plaz_fec,plaz_promep,plaz_area,plaz_cveturno ) VALUES ('+
                      #39+INTTOSTR(NPLAZA)+#39+','+
                      #39+'I'+#39+','+
                      #39+grid.cells[15,Ling]+#39+','+
+                     #39+grid.cells[17,Ling]+#39+','+
                      #39+grid.cells[6,Ling]+#39+','+
                      #39+iniev.text+#39+','+
                      #39+finev.text+#39+','+
@@ -926,9 +970,9 @@ IF (Q.FIELDS[0].ASINTEGER=0) then
          q.sql.text:='INSERT INTO PPLAZPROG (plaz_plaza,plaz_sfdo,plaz_ures,plaz_prog,'+
                      'plaz_porc) VALUES ('+
                      #39+inttostr(nplaza)+#39+','+
-                     #39+'1101'+#39+','+
+                     #39+grid.cells[17,Ling]+#39+','+
                      #39+grid.cells[15,Ling]+#39+','+
-                     #39+'5103'+#39+','+
+                     #39+grid.cells[16,Ling]+#39+','+
                      #39+'100'+#39+')';
          SAVETOFILELOG(Q.SQL.TEXT);
          q.execsql;

@@ -10,6 +10,7 @@ library PVSolEven;
   with your DLL. To avoid using BORLNDMM.DLL, pass string information
   using PChar or ShortString parameters. }
 
+
 uses
   Sharemem,
   SysUtils,
@@ -30,8 +31,25 @@ uses
   PDetalle in '..\bin\PDetalle.pas' {PFDetalle},
   Detalle in 'Detalle.pas' {FDetalle};
 
+
+
+
+
+  type
+  TDummy = class
+  public
+    procedure miDraw(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  end;
+
+
+
+
 {$R *.RES}
 
+  var
+  laForma:TDummy;
+  elQuery:Tquery;
 
 
 
@@ -115,6 +133,46 @@ end;
 
 
 
+function actPan(xmodulo: TFmodulo) : TForm;
+var
+q:Tquery;
+begin
+  elquery:=xmodulo.Query1;
+  laForma:=TDummy.create;
+  XModulo.DBGrid1.TitleFont.Name:='Arial';
+  XModulo.DBGrid1.TitleFont.Style:=[fsBold];
+  xmodulo.DBGrid1.OnDrawColumnCell:=laforma.midraw;
+  Xmodulo.DBGrid1.repaint;
+end;
+
+
+procedure TDummy.MiDraw(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+try
+  if  (elQuery.FieldByName('VSOL_ENVIADA').asstring='S')  then
+      (sender as TDBGrid).canvas.Brush.Color:=$00F1EDCD;
+
+  if  elQuery.FieldByName('VSOL_ENVIADA').asstring='N' then
+      (sender as TDBGrid).canvas.Brush.Color:=CLWHITE;
+
+  if  elQuery.FieldByName('VSOL_RECHAZADARH').asstring='S' then
+      (sender as TDBGrid).canvas.Brush.Color:=$00E6EAFF;
+
+   if  elQuery.FieldByName('VSOL_ENVIADASIN').asstring='S' then
+      (sender as TDBGrid).canvas.Brush.Color:=$00DAFEEF;
+
+
+
+(sender as TDBGrid).Canvas.Font.Color:=clblack;
+(sender as TDBGrid).canvas.Font.Name:='Arial';
+(sender as TDBGrid).Canvas.FillRect(Rect);
+(sender as TDBGrid).DefaultDrawColumnCell(Rect,DataCol,Column,State);
+
+except end;
+
+end;
+
 
 function Autorizar(xmodulo: TFmodulo) : TForm;
 var
@@ -122,6 +180,7 @@ q:Tquery;
 aux:Tquery;
 begin
 xmodulo.LMensaje := False ;
+
 q := TQuery.Create(Application) ;
 q.DataBaseName := 'Sistema' ;
  if xmodulo.Query1.FieldByName('VSOL_ENVIADA').AsString ='N' then
@@ -137,17 +196,15 @@ q.DataBaseName := 'Sistema' ;
                    ' SOLE_RECHAZADARH='+#39+'N'+#39+
                    ' Where SOLE_NUMERO= '+xmodulo.Query1.FieldByName('VSOL_NUMERO').AsString;
                    Q.ExecSQL;
+                   xmodulo.Refrescar1Click(nil);
                 end
              else
                 showmessage(q.fields[0].asstring);
           end;
 
-  XMODULO.Refrescar1.Click;
-  XMODULO.DBGrid1.TitleFont.Name:='Arial';
-  XMODULO.DBGrid1.TitleFont.Style:=[fsbold];
-  Xmodulo.DBGrid1.Font.Name:='Arial';
-end;
 
+
+end;
 
 
 function Detalle(xmodulo : TFModulo) : TForm ;
@@ -181,7 +238,7 @@ end ;
 
 
 
-exports Detalle, Autorizar, impRep;
+exports Detalle, Autorizar, impRep, actPan;
 
 begin
 

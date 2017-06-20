@@ -111,6 +111,7 @@ tppagos, tpdpagos:string;
 begin
   inherited;
   IF  TNOMINA.Text='O' THEN begin  tppagos:='PPAGOS'; TPDPAGOS:='PDPAGOS'  end;
+  IF  TNOMINA.Text='C' THEN begin  tppagos:='PPAGOS'; TPDPAGOS:='PDPAGOS'  end;
   IF  TNOMINA.Text='H' THEN begin  tppagos:='PHPAGOS'; TPDPAGOS:='PHDPAGOS'  end;
   IF  TNOMINA.Text='N' THEN begin  tppagos:='PNPAGOS'; TPDPAGOS:='PNDPAGOS'  end;
 
@@ -331,7 +332,7 @@ end;
 procedure TFDetalle.SpeedButton2Click(Sender: TObject);
 begin
   inherited;
-if Application.MessageBox('Seguro que desea Cancelar el Pago Fuera de Nomina','Confirmar',
+if Application.MessageBox('Seguro que desea Cancelar el Pago ','Confirmar',
          MB_ICONQUESTION+ MB_YESNO)= IDYES then
          begin
              q.Close;

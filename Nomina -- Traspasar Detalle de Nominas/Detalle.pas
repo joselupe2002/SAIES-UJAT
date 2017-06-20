@@ -115,6 +115,13 @@ uses
     et: TLabel;
     ver: TCheckBox;
     Label15: TLabel;
+    incluir: TCheckBox;
+    nomincluir: TEdit;
+    SpeedButton11: TSpeedButton;
+    SpeedButton12: TSpeedButton;
+    Shape3: TShape;
+    Shape4: TShape;
+    Label16: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -158,6 +165,8 @@ uses
     procedure CalculaMontosNom;
     procedure Contab2Click(Sender: TObject);
     procedure ExportarXLSBi(Q:TQuery;s:Tquery;t:Tquery);
+    procedure SpeedButton11Click(Sender: TObject);
+    procedure SpeedButton12Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -576,8 +585,14 @@ begin
 end;
 
 procedure TFDetalle.DispoClick(Sender: TObject);
+var
+estasNominas:string;
 begin
   inherited;
+  if incluir.checked then
+     estasNominas:=nomina.text+','+nomincluir.text
+  else
+     estasNominas:=nomina.text;
 
   if nomina.text<>'' then
      begin
@@ -593,7 +608,7 @@ begin
                ' and d.dapr_mes='+chr(39)+copy(nomfec.text,4,2)+chr(39)+
                ' and d.dapr_sfdo=a.cont_sfdo and d.dapr_prog=a.cont_prog and d.dapr_ures=a.cont_ures '+
                ' and d.dapr_proy=a.cont_proy and d.dapr_scta=a.cont_scta and d.dapr_momento='+chr(39)+'824'+chr(39)+') as TIENE '+
-               ' FROM PCONTPERCEP A WHERE A.CONT_NOMINA='+nomina.text+
+               ' FROM PCONTPERCEP A WHERE A.CONT_NOMINA in ('+estasNominas+')'+
                ' and a.cont_tipo='+chr(39)+'P'+chr(39)+
                ' and a.cont_tiponom='+chr(39)+str_(lanomina.text,'-')+chr(39)+
         'GROUP BY  A.CONT_SFDO, A.CONT_URES, A.CONT_PROG, A.CONT_CNTA, A.CONT_SCTA, A.CONT_TMOVI, A.CONT_PROY)';
@@ -655,9 +670,9 @@ begin
            q.sql.text:='CALL PcontDevAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'P'+#39+')';
            Q.execsql;
 
-           q.close;
+           {q.close;
            q.sql.text:='CALL pcontejeAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'P'+#39+')';
-           Q.execsql;   
+           Q.execsql;  } 
 
 
            q.close;
@@ -1424,6 +1439,147 @@ begin
                            ' WHERE NOMI_NOMINA='+NOMINA.TEXT;
                Q.execsql;
                }
+            end
+         else
+            Showmessage('La nomina '+nomina.text+' no se ha corrido el preview');
+
+      end;
+
+end;
+
+procedure TFDetalle.SpeedButton11Click(Sender: TObject);
+var
+VPNOMINA:string;
+begin
+  inherited;
+  VPNOMINA:='PNOMINAS';
+  IF STR_(lanomina.text,'-')='N' Then VPNOMINA:='PNNOMINAS';
+  IF STR_(lanomina.text,'-')='H' Then VPNOMINA:='PHNOMINAS';
+  IF STR_(lanomina.text,'-')='V' Then VPNOMINA:='PINOMINAS';
+
+   if Application.MessageBox('¿Seguro que desea calcular el Preview de Contabilización de la nómina?','Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
+      begin
+         q.close;
+         q.sql.text:='SELECT COUNT(*) FROM PCONTCONFIG WHERE CONT_NOMINA='+NOMINA.TEXT;
+         Q.open;
+         if q.fields[0].asinteger<=0 then
+            begin
+               q.close;
+               q.sql.text:='INSERT INTO pcontconfig (CONT_NOMINA,CONT_FECHADEV,CONT_FECHAEJE) VALUES ('+
+               #39+NOMINA.TEXT+#39+','+
+               #39+DATETOSTR(DEV.DATE)+#39+','+
+               #39+DATETOSTR(EJE.DATE)+#39+')';
+               Q.execsql;
+            end
+         else
+            begin
+               q.close;
+               q.sql.text:='UPDATE pcontconfig SET CONT_FECHADEV='#39+DATETOSTR(DEV.DATE)+#39+','+
+               'CONT_FECHAEJE='#39+DATETOSTR(EJE.DATE)+#39+
+               ' WHERE CONT_NOMINA='+#39+NOMINA.TEXT+#39;
+               Q.execsql;
+            end;
+
+
+
+           //Se contabiliza el previes
+           q.close;
+           q.sql.text:='CALL PcontJubilados('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'P'+#39+')';
+           Q.execsql;
+
+           q.close;
+           q.sql.text:='select count(*) from (SELECT x.detm_tmov FROM PCONTFDETMOVI X, PCONTFPOLIZAS Y  WHERE X.DETM_POLID  in ( '+
+           'select a.poln_polid from PcontPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           'AND X.DETM_POLID=Y.POLI_POLID'+
+           ' group by  X.DETM_TMOV, X.DETM_CNTA , X.DETM_SCTA order by X.DETM_CNTA)';
+           savetofileLog(q.sql.text);
+           q.Open;
+
+           s.close;
+           s.sql.text:='SELECT count(*) FROM PCONTAFDOCXPAG S WHERE S.DOCX_POLID IN '+
+           '(select a.poln_polid from PCONTPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           'order by  s.docx_DESCRIP';
+           savetofileLog(s.sql.text);
+           s.open;
+
+           qop.close;
+           qop.SQL.text:='select count(*) from pcontfdetmovi r, pcontfpolizas n where r.detm_polid=n.poli_polid'+
+           ' and r.detm_polid in (select a.poln_polid from PcontPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           ' and r.detm_cnta like '+#39+'5%'+#39+' GROUP BY POLI_TEXTO, DETM_CNTA,DETM_SCTA order by POLI_TEXTO, '+
+           ' DETM_CNTA,DETM_SCTA';
+           savetofileLog(qop.sql.text);
+           Qop.open;
+
+           et.visible:=true;
+           et.caption:='Generando Reportes';
+           et.Update;
+           barra.visible:=true;
+           barra.Max:=q.fields[0].asinteger+s.fields[0].asinteger+qop.fields[0].asinteger;
+
+
+           q.close;
+           q.sql.text:='SELECT  X.DETM_TMOV AS TMOV, X.DETM_CNTA AS CNTA, X.DETM_SCTA '+
+           'AS SCTA,  sum(X.DETM_MONTO) AS MONTO FROM PCONTFDETMOVI X, PCONTFPOLIZAS Y  WHERE X.DETM_POLID  in ( '+
+           'select a.poln_polid from PcontPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           'AND X.DETM_POLID=Y.POLI_POLID'+
+           ' group by  X.DETM_TMOV, X.DETM_CNTA , X.DETM_SCTA order by X.DETM_CNTA';
+           savetofileLog(q.sql.text);
+           q.Open;
+
+           s.close;
+           s.sql.text:='SELECT S.DOCX_POLID, S.DOCX_PERSONA, S.DOCX_TOTAL,S.DOCX_PAGADO, DOCX_APROBADO, '+
+           's.docx_descrip, s.docx_texto FROM PCONTAFDOCXPAG S WHERE S.DOCX_POLID IN '+
+           '(select a.poln_polid from PCONTPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           'order by  s.docx_DESCRIP';
+           savetofileLog(s.sql.text);
+           s.open;
+
+           qop.close;
+           qop.SQL.text:='select POLI_TEXTO AS DESCRIP, DETM_CNTA AS CUENTA,DETM_SCTA AS COG, '+
+           'SUM(DETM_MONTO) AS MONTO from pcontfdetmovi r, pcontfpolizas n where r.detm_polid=n.poli_polid'+
+           ' and r.detm_polid in (select a.poln_polid from PcontPOLNOMI a where a.poln_nomina='+NOMINA.TEXT+')'+
+           ' and r.detm_cnta like '+#39+'5%'+#39+' GROUP BY POLI_TEXTO, DETM_CNTA,DETM_SCTA order by POLI_TEXTO, '+
+           ' DETM_CNTA,DETM_SCTA';
+           savetofileLog(qop.sql.text);
+           Qop.open;
+
+
+           ExportarXLSBi(Q,s,qop);
+
+      end;
+
+end;
+
+procedure TFDetalle.SpeedButton12Click(Sender: TObject);
+var
+VPNOMINA:string;
+begin
+  inherited;
+  VPNOMINA:='PNOMINAS';
+  IF STR_(lanomina.text,'-')='N' Then VPNOMINA:='PNNOMINAS';
+  IF STR_(lanomina.text,'-')='H' Then VPNOMINA:='PHNOMINAS';
+  IF STR_(lanomina.text,'-')='V' Then VPNOMINA:='PINOMINAS';
+
+   if Application.MessageBox('¿Seguro que desea contabilizar la nómina?¿Ha verificado bien las fechas de Devengado y Ejercido?','Confirmar',MB_ICONQUESTION+ MB_YESNO)= IDYES THEN
+      begin
+         q.close;
+         q.sql.text:='SELECT COUNT(*) FROM PCONTCONFIG WHERE CONT_NOMINA='+NOMINA.TEXT;
+         Q.open;
+         if q.fields[0].asinteger>0 then
+            begin
+               q.close;
+               q.sql.text:='UPDATE pcontconfig SET CONT_FECHADEV='#39+DATETOSTR(DEV.DATE)+#39+','+
+               'CONT_FECHAEJE='#39+DATETOSTR(EJE.DATE)+#39+
+               ' WHERE CONT_NOMINA='+#39+NOMINA.TEXT+#39;
+               Q.execsql;
+
+            q.close;
+           q.sql.text:='CALL PcontJubilados('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'R'+#39+')';
+           Q.execsql;
+
+
+               Showmessage('Se ha contabilizado la nómina y creado las ordenes de Pago');
+
             end
          else
             Showmessage('La nomina '+nomina.text+' no se ha corrido el preview');

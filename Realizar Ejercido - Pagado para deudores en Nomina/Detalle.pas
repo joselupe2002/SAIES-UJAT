@@ -460,7 +460,7 @@ begin
             'FROM (SELECT L.TPST_RUBRO AS RUBRO,DPAG_DPago DPago,TRIM(DPPA_Sfdo)  Sfdo, '+
             'DPPA_Prog Prog,f.URES_PURES_PRES URES, '+
             'SUBSTR('+VPPROYNOM+'(DPPA_Prog,f.URES_PURES_PRES,TRIM(DPPA_Sfdo), '+
-            'TO_CHAR(SYSDATE,'+#39+'YYYY'+#39+')'+otroparam+'),1,30) PROY,DPAG_Cnta Cnta,DPAG_Scta Scta, '+
+            'TO_CHAR(TO_DATE('+#39+FECHADEV.TEXT+#39+'),'+#39+'YYYY'+#39+')'+otroparam+'),1,30) PROY,DPAG_Cnta Cnta,DPAG_Scta Scta, '+
             'DECODE(DPAG_PerDed,  '+#39+'D'+#39+', DECODE(DPAG_Signo, 1, '+#39+'A'+#39+', '+#39+'C'+#39+'), '+
             'DECODE(DPAG_Signo, 1, '+#39+'C'+#39+', '+#39+'A'+#39+') ) As TMovi, '+
             'DPAG_Monto As Monto,'+#39+'c'+#39+' As tt '+

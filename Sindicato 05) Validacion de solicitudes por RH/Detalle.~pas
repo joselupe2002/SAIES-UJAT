@@ -15,26 +15,24 @@ uses
       end;
 
   TFDetalle = class(TPFDetalle)
-    PagCon: TPageControl;
-    TabDatos: TTabSheet;
+    Label17: TLabel;
+    Label19: TLabel;
+    q: TQuery;
+    QPrin: TQuery;
     Label2: TLabel;
     Label4: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label1: TLabel;
+    m: TLabel;
+    Label3: TLabel;
     Numero: TDBEdit;
     URES: TDBEdit;
     LVSOL_URES: TEdit;
-    Label11: TLabel;
     Fecha: TDBEdit;
-    Label12: TLabel;
     OBS: TDBMemo;
-    Label17: TLabel;
-    Label19: TLabel;
-    Label1: TLabel;
     GRID: TStringGrid;
     DESCRIP: TDBEdit;
-    q: TQuery;
-    m: TLabel;
-    QPrin: TQuery;
-    Label3: TLabel;
     OBSRH: TDBMemo;
     procedure FormCreate(Sender: TObject);
     procedure GrabaInsert ; override ;
@@ -152,14 +150,17 @@ while not(QPrin.eof) do
      grid.cells[7,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_DIAFIN').asstring;
           colg:=7; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
 
+
+     grid.cells[grid.colCount,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORARIO').asstring;
      grid.cells[8,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORAINI').asstring;
      grid.cells[9,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_HORAFIN').asstring;
-     colg:=9; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
+
 
      grid.cells[10,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_MOTIVO').asstring;
      colg:=10; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
 
      grid.cells[11,grid.rowcount-1]:=QPrin.fieldbyname('SOLE_TURNO').asstring;
+     colg:=11; ling:=grid.rowcount-1; TABU:=FALSE; getdescripGrid;
 
      QPrin.next;
      grid.rowcount:=grid.rowcount+1;
@@ -217,6 +218,14 @@ begin
          Q.sql.text:='SELECT * FROM SCATMOTIVO S WHERE CATM_CLAVE='+#39+str_(GRID.cells[newcol,ling],'-')+#39;
          q.OPEN;
          GRID.cells[10,ling]:=q.fieldbyname('CATM_CLAVE').asstring+'-'+q.fieldbyname('CATM_DESCRIP').asstring;
+      end;
+
+    if NewCol=11 then
+      begin
+         Q.CLOSE;
+         Q.sql.text:='SELECT * FROM PTURNO S WHERE TURN_CVETURNO='+#39+str_(GRID.cells[newcol,ling],'-')+#39;
+         q.OPEN;
+         GRID.cells[11,ling]:=q.fieldbyname('TURN_CVETURNO').asstring+'-'+q.fieldbyname('TURN_DESCRIP').asstring;
       end;
 
 
@@ -314,7 +323,7 @@ for x:=1 to grid.rowcount-1 do
             #39+str_(grid.cells[10,x],'-')+#39+','+
             #39+grid.cells[8,x]+#39+','+
             #39+grid.cells[9,x]+#39+','+
-            #39+grid.cells[11,x]+#39+')';
+            #39+STR_(grid.cells[11,x],'-')+#39+')';
 
             SAVETOFILELOG(Q.sql.text);
             q.EXECSQL;

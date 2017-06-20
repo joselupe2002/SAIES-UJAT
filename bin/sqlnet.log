@@ -10411,3 +10411,346 @@ Fatal NI connect error 12170.
     nt secondary err code: 60
     nt OS err code: 0
   Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 11-MAY-2016 18:27:13
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 11-MAY-2016 19:04:49
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 11-MAY-2016 19:05:56
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 17-MAY-2016 08:16:30
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12160, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=148.236.2.219)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=saies)(CID=(PROGRAM=E:\SAIES-UJAT\Fuentes\bin\shake.exe)(HOST=TOSHMATRIX)(USER=Matrix))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 18-MAY-2016 06:23:50
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 68
+    TNS-00068: Message 68 not found;  product=NETWORK; facility=TNS
+
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 24-MAY-2016 06:11:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 13-JUN-2016 07:10:58
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 03-AGO-2016 13:09:56
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 17-AGO-2016 06:50:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 17-AGO-2016 06:51:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 05-SEP-2016 06:52:08
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12637
+    TNS-12637: Packet receive failed
+    ns secondary err code: 12535
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 05-SEP-2016 06:52:37
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12543, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=148.236.2.219)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=saies)(CID=(PROGRAM=e:\SAIES-UJAT\Fuentes\bin\shake.exe)(HOST=TOSHMATRIX)(USER=Matrix))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 05-SEP-2016 06:54:11
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12543
+    TNS-12543: TNS:destination host unreachable
+    ns secondary err code: 12560
+    nt main err code: 513
+    TNS-00513: Destination host unreachable
+    nt secondary err code: 51
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 06-SEP-2016 06:31:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 03-OCT-2016 06:23:03
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=148.236.2.219)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=148.236.2.219)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=saies)(CID=(PROGRAM=E:\SAIES-UJAT\Fuentes\bin\shake.exe)(HOST=TOSHMATRIX)(USER=Matrix))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 04-OCT-2016 08:43:37
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12560
+    TNS-12560: TNS:protocol adapter error
+    ns secondary err code: 0
+    nt main err code: 538
+    TNS-00538: Message 538 not found;  product=NETWORK; facility=TNS
+
+    nt secondary err code: 65
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=148.236.2.219)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=saies)(CID=(PROGRAM=E:\SAIES-UJAT\Fuentes\bin\shake.exe)(HOST=TOSHMATRIX)(USER=Matrix))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 18-ENE-2017 06:16:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12560
+    TNS-12560: TNS:protocol adapter error
+    ns secondary err code: 0
+    nt main err code: 538
+    TNS-00538: Message 538 not found;  product=NETWORK; facility=TNS
+
+    nt secondary err code: 65
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.1.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.1.0 - Production
+  Time: 03-FEB-2017 03:23:29
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: TNS:operation timed out
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Operation timed out
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>

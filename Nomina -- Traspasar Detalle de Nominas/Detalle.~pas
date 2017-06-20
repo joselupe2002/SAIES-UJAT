@@ -115,6 +115,8 @@ uses
     et: TLabel;
     ver: TCheckBox;
     Label15: TLabel;
+    incluir: TCheckBox;
+    nomincluir: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Cancelar1Click(Sender: TObject);
@@ -576,8 +578,14 @@ begin
 end;
 
 procedure TFDetalle.DispoClick(Sender: TObject);
+var
+estasNominas:string;
 begin
   inherited;
+  if incluir.checked then
+     estasNominas:=nomina.text+','+nomincluir.text
+  else
+     estasNominas:=nomina.text;
 
   if nomina.text<>'' then
      begin
@@ -593,7 +601,7 @@ begin
                ' and d.dapr_mes='+chr(39)+copy(nomfec.text,4,2)+chr(39)+
                ' and d.dapr_sfdo=a.cont_sfdo and d.dapr_prog=a.cont_prog and d.dapr_ures=a.cont_ures '+
                ' and d.dapr_proy=a.cont_proy and d.dapr_scta=a.cont_scta and d.dapr_momento='+chr(39)+'824'+chr(39)+') as TIENE '+
-               ' FROM PCONTPERCEP A WHERE A.CONT_NOMINA='+nomina.text+
+               ' FROM PCONTPERCEP A WHERE A.CONT_NOMINA in ('+estasNominas+')'+
                ' and a.cont_tipo='+chr(39)+'P'+chr(39)+
                ' and a.cont_tiponom='+chr(39)+str_(lanomina.text,'-')+chr(39)+
         'GROUP BY  A.CONT_SFDO, A.CONT_URES, A.CONT_PROG, A.CONT_CNTA, A.CONT_SCTA, A.CONT_TMOVI, A.CONT_PROY)';
@@ -655,9 +663,9 @@ begin
            q.sql.text:='CALL PcontDevAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'P'+#39+')';
            Q.execsql;
 
-           q.close;
+           {q.close;
            q.sql.text:='CALL pcontejeAll('+NOMINA.TEXT+','+#39+STR_(LANOMINA.TEXT,'-')+#39+','+#39+'P'+#39+')';
-           Q.execsql;   
+           Q.execsql;  } 
 
 
            q.close;

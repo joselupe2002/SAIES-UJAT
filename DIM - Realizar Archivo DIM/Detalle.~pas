@@ -925,7 +925,9 @@ begin
   //Checar si es sindicalizado
   cont:=1;
   q.close;
-  q.SQL.text:='SELECT * FROM PDIMFINAL where ENVIAR='+#39+'S'+#39+' order by  tpsto, cveures, apepat, apemat, nombre';
+  q.SQL.text:='SELECT * FROM PDIMFINAL_2013 where ENVIAR='+#39+'S'+#39+
+  //' AND TPSTO IN ('+#39+'Z'+#39+','+#39+'ZA'+#39+')'+
+  ' order by  tpsto, cveures, apepat, apemat, nombre';
   SHOWMESSAGE(Q.sql.text);
   Q.open;
 

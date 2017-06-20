@@ -33,6 +33,8 @@ uses
     Label7: TLabel;
     PROYECTO: TDBComboBox;
     Label8: TLabel;
+    Label10: TLabel;
+    BANCOORI: TDBComboBox;
     procedure FormCreate(Sender: TObject);
     procedure GrabaInsert ; override ;
     procedure GrabaUpdate ; override ;
